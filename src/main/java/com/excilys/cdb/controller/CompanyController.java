@@ -8,26 +8,21 @@ import com.excilys.cdb.model.dao.CompanyDAO;
 import com.excilys.cdb.service.CompanyService;
 
 public class CompanyController {
-	
+
 	private CompanyService companyService = new CompanyService();
-	
+
 
 	public CompanyController() {
 	}
-	
+
 	public Company loadById(int id) {
-		
-		try {
-			return this.companyService.getCompanyDAO().find(id);
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}		
+
+		return this.companyService.getCompanyDAO().find(id);
+
 	}
-	
+
 	public List<Company> getAll() {
-		
+
 		return this.companyService.getCompanyDAO().getAll();
 	}
 }
