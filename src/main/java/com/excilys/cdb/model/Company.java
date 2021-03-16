@@ -1,6 +1,9 @@
 
 package com.excilys.cdb.model;
 
+import com.excilys.cdb.model.builder.CompanyBuilder;
+import com.excilys.cdb.model.builder.ComputerBuilder;
+
 public class Company {
 
 	// ID of the Company
@@ -17,14 +20,9 @@ public class Company {
 		super();
 	}
 
-	public Company(int id, String name) {
-		this.id = id;
-		this.name = name;
-	}
-
-	public Company(Company c) {
-		this.id = c.getId();
-		this.name = c.getName();
+	public Company(CompanyBuilder companyBuilder) {
+		this.id = companyBuilder.getId();
+		this.name = companyBuilder.getName();
 	}
 
 	/*

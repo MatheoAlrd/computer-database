@@ -37,24 +37,27 @@ public class ComputerDAO extends DAO<Computer> {
 		try {						
 			PreparedStatement ps = this.sConn.getConnection()
 					.prepareStatement(CREATE_QUERY, Statement.RETURN_GENERATED_KEYS);
+			
 			ps.setString(1, c.getName());
 
-			if (c.getIntroduced().orElse(null) != null) {
-				ps.setDate(2, Date.valueOf(c.getIntroduced().orElse(null)));
-			} else {
+			if (c.getIntroduced().isEmpty()) {
 				ps.setDate(2, null);
-			}
-			if (c.getDiscontinued().orElse(null) != null) {
-				ps.setDate(3, Date.valueOf(c.getDiscontinued().orElse(null)));
 			} else {
+				ps.setDate(2, Date.valueOf(c.getIntroduced().get()));
+			}
+			if (c.getDiscontinued().isEmpty()) {
 				ps.setDate(3, null);
-			}
-			if (c.getCompany().orElse(null) != null) {
-				ps.setInt(4, c.getCompany().orElse(null).getId());
 			} else {
-				ps.setObject(4, null);
+				ps.setDate(3, Date.valueOf(c.getDiscontinued().get()));
 			}
-			ps.executeUpdate();		
+			if (c.getCompany().isEmpty()) {
+				ps.setObject(4, null);
+			} else {
+				ps.setInt(4, c.getCompany().get().getId());
+			}
+			
+			ps.executeUpdate();
+			
 		} catch (SQLIntegrityConstraintViolationException e) {
 			System.out.println("Company id isn't valid");
 			return false;
@@ -69,8 +72,8 @@ public class ComputerDAO extends DAO<Computer> {
 		try {			
 			PreparedStatement ps = this.sConn.getConnection()
 					.prepareStatement(DELETE_QUERY, Statement.RETURN_GENERATED_KEYS);
+			
 			ps.setInt(1, id);
-
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
@@ -86,7 +89,6 @@ public class ComputerDAO extends DAO<Computer> {
 					.prepareStatement(UPDATE_NAME_QUERY, Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, name);
 			ps.setInt(2, id);
-
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
@@ -100,11 +102,13 @@ public class ComputerDAO extends DAO<Computer> {
 		try {
 			PreparedStatement ps = this.sConn.getConnection()
 					.prepareStatement(UPDATE_INTRODUCED_QUERY, Statement.RETURN_GENERATED_KEYS);
+			
 			if (introduced != null) {
 				ps.setDate(1, Date.valueOf(introduced));
 			} else {
 				ps.setDate(1, null);
 			}
+			
 			ps.setInt(2, id);
 			ps.executeUpdate();
 
@@ -119,13 +123,14 @@ public class ComputerDAO extends DAO<Computer> {
 		try {
 			PreparedStatement ps = this.sConn.getConnection()
 					.prepareStatement(UPDATE_DISCONTINUED_QUERY, Statement.RETURN_GENERATED_KEYS);
+			
 			if (discontinued != null) {
 				ps.setDate(1, Date.valueOf(discontinued));
 			} else {
 				ps.setDate(1, null);
 			}
+			
 			ps.setInt(2, id);
-
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
@@ -145,8 +150,8 @@ public class ComputerDAO extends DAO<Computer> {
 			} else {
 				ps.setObject(1, null);
 			}
+			
 			ps.setInt(2, id);
-
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
@@ -160,11 +165,7 @@ public class ComputerDAO extends DAO<Computer> {
 		this.updateName(id, c.getName());
 		this.updateIntroduced(id, c.getIntroduced().orElse(null));
 		this.updateDiscontinued(id, c.getDiscontinued().orElse(null));
-		if (c.getCompany().orElse(null) != null) {
-			this.updateCompany(id, c.getCompany().orElse(null).getId());
-		} else {
-			this.updateCompany(id, -1);
-		}
+		this.updateCompany(id, c.getCompany().orElse(new Company()).getId());
 
 	}
 
@@ -199,7 +200,6 @@ public class ComputerDAO extends DAO<Computer> {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
 		return null;
 	}
 

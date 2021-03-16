@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.excilys.cdb.model.Company;
+import com.excilys.cdb.model.builder.CompanyBuilder;
 
 public class CompanyDAO extends DAO<Company> {
 	
@@ -23,7 +24,10 @@ public class CompanyDAO extends DAO<Company> {
 				ResultSet.CONCUR_READ_ONLY).executeQuery("SELECT * FROM company WHERE id = " + id);
 
 		if (result.first()) {
-			return new Company(id, result.getString("name"));
+			return new CompanyBuilder()
+					.setId(result.getInt("id"))
+					.setName(result.getString("name"))
+					.build();
 		}
 
 		return null;
@@ -39,8 +43,10 @@ public class CompanyDAO extends DAO<Company> {
 					ResultSet.CONCUR_READ_ONLY).executeQuery("SELECT * FROM company");
 
 			while  (result.next()) {
-				companies.add(new Company(result.getInt("id"),
-						result.getString("name")));
+				companies.add(new CompanyBuilder()
+						.setId(result.getInt("id"))
+						.setName(result.getString("name"))
+						.build());
 			}
 
 
