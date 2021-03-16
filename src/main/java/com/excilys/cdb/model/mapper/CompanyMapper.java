@@ -17,8 +17,7 @@ public class CompanyMapper {
 	}
 	
 	public Company companyFromMap(Map<String,Object> map) {
-		
+				
 		return mapper.convertValue(map, Company.class);		
 	}
-
 }

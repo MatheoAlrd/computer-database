@@ -3,11 +3,14 @@ package com.excilys.cdb.ui;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 import com.excilys.cdb.controller.CompanyController;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.model.builder.ComputerBuilder;
+import com.excilys.cdb.model.mapper.CompanyMapper;
 
 public abstract class CLI {
 	
@@ -30,9 +33,10 @@ public abstract class CLI {
 	protected static final String COMMAND_BAD = "Command not executed.";
 	
 	protected Computer useComputer() {
-
-		ComputerBuilder computerBuilder = new ComputerBuilder();
+		
 		CompanyController ctrlCompany = new CompanyController();
+		CompanyMapper companyMapper = new CompanyMapper();
+		ComputerBuilder computerBuilder = new ComputerBuilder();
 
 		System.out.println(ENTER_NAME);
 		String name = this.useString();
@@ -56,7 +60,7 @@ public abstract class CLI {
 		System.out.println(ENTER_ID);
 		int companyId = useInt();
 		if (companyId != -1) {
-			//computerBuilder.setCompany(ctrlCompany.loadById(companyId));
+			computerBuilder.setCompany(companyMapper.companyFromMap(ctrlCompany.loadById(companyId)));
 		}					
 
 		return computerBuilder.build();

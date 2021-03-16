@@ -4,6 +4,7 @@ public class Menu {
 	
 	public void afficherMenu() {
 		
+		System.out.println();
 		System.out.println("+--------------------------+");
 		System.out.println("|         Main Menu        |");
 		System.out.println("+--------------------------+");

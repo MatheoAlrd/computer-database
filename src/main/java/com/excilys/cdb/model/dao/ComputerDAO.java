@@ -10,6 +10,7 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
@@ -38,12 +39,12 @@ public class ComputerDAO extends DAO<Computer> {
 			PreparedStatement ps = this.sConn.getConnection()
 					.prepareStatement(CREATE_QUERY, Statement.RETURN_GENERATED_KEYS);
 			
-			ps.setString(1, c.getName());
+			ps.setObject(1, c.getName());
 
 			if (c.getIntroduced().isEmpty()) {
 				ps.setDate(2, null);
 			} else {
-				ps.setDate(2, Date.valueOf(c.getIntroduced().get()));
+				ps.setDate(2, Date.valueOf(c.getDiscontinued().get()));
 			}
 			if (c.getDiscontinued().isEmpty()) {
 				ps.setDate(3, null);

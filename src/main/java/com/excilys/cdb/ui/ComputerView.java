@@ -9,6 +9,7 @@ public class ComputerView {
 	
 	public void showMenuComputer() {
 		
+		System.out.println();
 		System.out.println("+--------------------------+");
 		System.out.println("|       Computer Menu      |");
 		System.out.println("+--------------------------+");

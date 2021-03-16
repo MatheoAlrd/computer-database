@@ -7,6 +7,7 @@ public class CompanyView {
 	
 	public void showMenuCompany() {
 		
+		System.out.println();
 		System.out.println("+--------------------------+");
 		System.out.println("|       Company Menu       |");
 		System.out.println("+--------------------------+");
@@ -29,7 +30,11 @@ public class CompanyView {
 	public void print(Map<String,Object> map) {
 		
 		this.printType();
+		if(map == null) {
+			this.printErrorDoesNotExist();
+		} else {
 		map.entrySet().stream().forEach(System.out::println);
+		}
 	}
 
 	public void printId(int id) {
