@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.model.dao.ComputerDAO;
 import com.excilys.cdb.service.ComputerService;
 
 public class ComputerController {

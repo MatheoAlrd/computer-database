@@ -5,6 +5,19 @@ import java.util.List;
 import com.excilys.cdb.model.Company;
 
 public class CompanyView {
+	
+	public void showMenuCompany() {
+		
+		System.out.println("+--------------------------+");
+		System.out.println("|       Company Menu       |");
+		System.out.println("+--------------------------+");
+		System.out.println("| 1.    Find a Company     |");
+		System.out.println("+--------------------------+");
+		System.out.println("| 2.   List all Companies  |");
+		System.out.println("+--------------------------+");
+		System.out.println("| 3.         Quit          |");
+		System.out.println("+--------------------------+");
+	}
 
 	public void printType() {		
 		System.out.println("-- Company --");

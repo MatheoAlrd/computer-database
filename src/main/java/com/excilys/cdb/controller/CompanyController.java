@@ -1,10 +1,9 @@
 package com.excilys.cdb.controller;
 
-import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import com.excilys.cdb.model.Company;
-import com.excilys.cdb.model.dao.CompanyDAO;
 import com.excilys.cdb.service.CompanyService;
 
 public class CompanyController {
@@ -17,12 +16,12 @@ public class CompanyController {
 
 	public Company loadById(int id) {
 
-		return this.companyService.getCompanyDAO().find(id);
+		return this.companyService.find(id);
 
 	}
 
 	public List<Company> getAll() {
 
-		return this.companyService.getCompanyDAO().getAll();
+		return this.companyService.getAll();
 	}
 }

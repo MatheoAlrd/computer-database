@@ -2,7 +2,6 @@
 package com.excilys.cdb.model;
 
 import com.excilys.cdb.model.builder.CompanyBuilder;
-import com.excilys.cdb.model.builder.ComputerBuilder;
 
 public class Company {
 
