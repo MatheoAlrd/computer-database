@@ -1,20 +1,24 @@
 package com.excilys.cdb.model.mapper;
 
-import java.util.HashMap;
 import java.util.Map;
+
+import org.codehaus.jackson.map.ObjectMapper;
 
 import com.excilys.cdb.model.Company;
 
 public class CompanyMapper {
+	
+	private ObjectMapper mapper = new ObjectMapper();
 		
-	public Map<String,Object> mapfromCompany(Company c){
+	@SuppressWarnings("unchecked")
+	public Map<String,Object> mapFromCompany(Company company){
+				
+		return mapper.convertValue(company, Map.class);
+	}
+	
+	public Company companyFromMap(Map<String,Object> map) {
 		
-		Map<String,Object> companyMap = new HashMap<String,Object>();
-		
-		companyMap.put("id",c.getId());
-		companyMap.put("name",c.getName());
-		
-		return companyMap;
+		return mapper.convertValue(map, Company.class);		
 	}
 
 }

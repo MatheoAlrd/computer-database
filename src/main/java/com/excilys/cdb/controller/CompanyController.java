@@ -3,7 +3,6 @@ package com.excilys.cdb.controller;
 import java.util.List;
 import java.util.Map;
 
-import com.excilys.cdb.model.Company;
 import com.excilys.cdb.service.CompanyService;
 
 public class CompanyController {
@@ -14,13 +13,13 @@ public class CompanyController {
 	public CompanyController() {
 	}
 
-	public Company loadById(int id) {
+	public Map<String, Object> loadById(int id) {
 
 		return this.companyService.find(id);
 
 	}
 
-	public List<Company> getAll() {
+	public List<Map<String,Object>> getAll() {
 
 		return this.companyService.getAll();
 	}

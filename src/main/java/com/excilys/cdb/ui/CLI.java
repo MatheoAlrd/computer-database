@@ -56,7 +56,7 @@ public abstract class CLI {
 		System.out.println(ENTER_ID);
 		int companyId = useInt();
 		if (companyId != -1) {
-			computerBuilder.setCompany(ctrlCompany.loadById(companyId));
+			//computerBuilder.setCompany(ctrlCompany.loadById(companyId));
 		}					
 
 		return computerBuilder.build();
