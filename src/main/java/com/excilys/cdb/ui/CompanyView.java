@@ -1,34 +1,39 @@
 package com.excilys.cdb.ui;
 
 import java.util.List;
-
-import com.excilys.cdb.model.Company;
+import java.util.Map;
 
 public class CompanyView {
+	
+	public void showMenuCompany() {
+		
+		System.out.println();
+		System.out.println("+--------------------------+");
+		System.out.println("|       Company Menu       |");
+		System.out.println("+--------------------------+");
+		System.out.println("| 1.    Find a Company     |");
+		System.out.println("+--------------------------+");
+		System.out.println("| 2.   List all Companies  |");
+		System.out.println("+--------------------------+");
+		System.out.println("| 3.         Quit          |");
+		System.out.println("+--------------------------+");
+	}
 
 	public void printType() {		
-		System.out.println("-- Company --");
+		System.out.println("\n-- Company --");
 	}
 
 	public void printErrorDoesNotExist() {
 		System.out.println("This company does not exist");
 	}
 
-	public void print(int id, String name) {
-		if (id == 0) {
+	public void print(Map<String,Object> map) {
+		
+		this.printType();
+		if(map == null) {
 			this.printErrorDoesNotExist();
 		} else {
-			this.printType();
-			this.printId(id);
-			this.printName(name);
-		}
-	}
-
-	public void print(Company c) {
-		if (c != null) {		
-			this.printType();
-			this.printId(c.getId());
-			this.printName(c.getName());
+		map.entrySet().stream().forEach(System.out::println);
 		}
 	}
 
@@ -40,9 +45,9 @@ public class CompanyView {
 		System.out.println("Name: " + name);
 	}
 
-	public void printAll(List<Company> listCompany) {
-		for (Company c : listCompany) {
-			print(c);
+	public void printAll(List<Map<String,Object>> listCompany) {
+		for (Map<String,Object> map : listCompany) {
+			print(map);
 		}		
 	}
 
