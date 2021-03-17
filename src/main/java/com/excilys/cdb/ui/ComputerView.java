@@ -6,6 +6,26 @@ import java.util.List;
 import com.excilys.cdb.model.Computer;
 
 public class ComputerView {
+	
+	public void showMenuComputer() {
+		
+		System.out.println();
+		System.out.println("+--------------------------+");
+		System.out.println("|       Computer Menu      |");
+		System.out.println("+--------------------------+");
+		System.out.println("| 1.   Create a Computer   |");
+		System.out.println("+--------------------------+");
+		System.out.println("| 2.   Delete a Computer   |");
+		System.out.println("+--------------------------+");
+		System.out.println("| 3.   Update a Computer   |");
+		System.out.println("+--------------------------+");
+		System.out.println("| 4.    Find a Computer    |");
+		System.out.println("+--------------------------+");
+		System.out.println("| 5.   List all Computers  |");
+		System.out.println("+--------------------------+");
+		System.out.println("| 6.         Quit          |");
+		System.out.println("+--------------------------+");
+	}
 
 	public void printType() {		
 		System.out.println("-- Computer --");
