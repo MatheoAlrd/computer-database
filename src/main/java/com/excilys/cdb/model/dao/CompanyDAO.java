@@ -19,9 +19,8 @@ public class CompanyDAO extends DAO<Company> {
 
 	public Company find(int id) {
 
-		ResultSet result;
 		try {
-			result = this.sConn.getConnection()
+			ResultSet result = this.sConn.getConnection()
 					.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
 							ResultSet.CONCUR_READ_ONLY).executeQuery("SELECT * FROM company WHERE id = " + id);
 
@@ -32,8 +31,7 @@ public class CompanyDAO extends DAO<Company> {
 						.build();
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 
 		return null;
@@ -42,8 +40,8 @@ public class CompanyDAO extends DAO<Company> {
 	public List<Company> getAll() {
 
 		List<Company> companies = new ArrayList<Company>();
+		
 		try {
-
 			ResultSet result = this.sConn.getConnection()
 					.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
 							ResultSet.CONCUR_READ_ONLY).executeQuery("SELECT * FROM company");
@@ -54,10 +52,8 @@ public class CompanyDAO extends DAO<Company> {
 						.setName(result.getString("name"))
 						.build());
 			}
-
-
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		return companies;
 	}

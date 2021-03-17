@@ -43,7 +43,7 @@ public class CLIMenu extends CLI {
 				return true;
 			default:
 				inputRight = false;
-				System.out.println(WRONG_INPUT);
+				logger.error(WRONG_INPUT);
 				break;
 			}
 		}

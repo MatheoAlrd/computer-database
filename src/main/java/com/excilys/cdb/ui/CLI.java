@@ -3,9 +3,10 @@ package com.excilys.cdb.ui;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.excilys.cdb.controller.CompanyController;
 import com.excilys.cdb.model.Computer;
@@ -15,6 +16,8 @@ import com.excilys.cdb.model.mapper.CompanyMapper;
 public abstract class CLI {
 	
 	protected Scanner sc = new Scanner(System.in);
+	
+	protected static final Logger logger = LoggerFactory.getLogger(CLI.class);
 	
 	protected static final String WRONG_INPUT = "Wrong Input";
 	protected static final String WRONG_INPUT_TYPE = "Wrong Input Type";
@@ -51,7 +54,7 @@ public abstract class CLI {
 
 		if (introduced != null && discontinued != null) {
 			while (discontinued.isBefore(introduced)) {
-				System.out.println(DATE_BEFORE);
+				logger.error(DATE_BEFORE);
 				discontinued = this.useDate();
 			}
 		}
@@ -84,13 +87,13 @@ public abstract class CLI {
 				res = Integer.parseInt(input);
 
 				if (res < 0) {
-					System.out.println(WRONG_INPUT);
+					logger.error(WRONG_INPUT);
 					inputTypeRight = false;
 				} else {
 					return res;
 				}
 			} catch (Exception e) {
-				System.out.println(WRONG_INPUT_TYPE);
+				logger.error(WRONG_INPUT_TYPE);
 				inputTypeRight = false;
 
 			}
@@ -108,7 +111,7 @@ public abstract class CLI {
 				input = this.sc.nextLine();
 				inputTypeRight = true;
 			} catch (Exception e) {
-				System.out.println(WRONG_INPUT_TYPE);
+				logger.error(WRONG_INPUT_TYPE);
 			}
 		}
 		return input;
@@ -127,14 +130,19 @@ public abstract class CLI {
 
 			try {
 				tmpDate = LocalDate.parse(input, DateTimeFormatter.ISO_LOCAL_DATE);
+				
+				if(tmpDate.isBefore(LocalDate.of(1970, 1, 1))) {
+					logger.error("Date is too early");
+					tmpDate = null;
+					System.out.println(ENTER_DATE);
+				}
+				
 			} catch (DateTimeParseException e) {
-				System.out.println("Date Format non valide");
+				logger.error("Date Format is not valid");
 				System.out.println(ENTER_DATE);
 			}
 		}
 		return tmpDate;
 	}
 	
-	
-
 }

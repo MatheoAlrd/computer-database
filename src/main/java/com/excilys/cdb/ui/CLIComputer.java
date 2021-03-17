@@ -1,7 +1,6 @@
 package com.excilys.cdb.ui;
 
 import com.excilys.cdb.controller.ComputerController;
-import com.excilys.cdb.model.mapper.ComputerMapper;
 
 public class CLIComputer extends CLI {
 	
@@ -28,8 +27,7 @@ public class CLIComputer extends CLI {
 		while (!inputRight) {
 			input = this.useString();
 			inputRight = true;
-
-
+			
 			switch (input) {
 			case "1":
 				this.createComputer();
@@ -50,7 +48,7 @@ public class CLIComputer extends CLI {
 				return true;
 			default:
 				inputRight = false;
-				System.out.println(WRONG_INPUT);
+				logger.error(WRONG_INPUT);
 				break;
 			}
 		}
@@ -58,55 +56,25 @@ public class CLIComputer extends CLI {
 	}
 
 	private void createComputer() {
-
-		if (this.ctrlComputer.create(this.useComputer())) {
-			System.out.println(COMMAND_GOOD);
-		} else {
-			System.out.println(COMMAND_BAD);
-		}
+		this.ctrlComputer.create(this.useComputer());		
 	}
 
 	private void deleteComputer() {
-
-		int input = -1;
-
-		boolean stop = false;
-
-		while (!stop) {
-
-			System.out.println(ID_RESEARCH);
-			input = this.useInt();
-
-			if (this.ctrlComputer.delete(input)) {
-				System.out.println(COMMAND_GOOD);
-				stop = true;
-			} else  {
-				System.out.println(COMMAND_BAD);
-			}
-		}
+		System.out.println(ID_RESEARCH);
+		this.ctrlComputer.delete(this.useInt());
 	}
 
 	private void updateComputer() {
-
-		int input = -1;
 		System.out.println(ID_RESEARCH);
-		input = this.useInt();
-
-		this.ctrlComputer.update(input, this.useComputer());
-		System.out.println(COMMAND_GOOD);
+		this.ctrlComputer.update(this.useInt(), this.useComputer());
 	}
 
-
-
-
 	private void findComputerById() {
-
 		System.out.println(ID_RESEARCH);
 		viewComputer.print(this.ctrlComputer.loadById(this.useInt()));
 	}	
 
 	private void listAllComputers() {
-
 		viewComputer.printAll(this.ctrlComputer.getAll());
 	}
 

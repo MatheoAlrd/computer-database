@@ -3,10 +3,10 @@ package com.excilys.cdb.ui;
 import com.excilys.cdb.controller.CompanyController;
 
 public class CLICompany extends CLI {
-	
+
 	private CompanyView viewCompany = new CompanyView();
 	private CompanyController ctrlCompany = new CompanyController();
-	
+
 	protected void useMenuCompany() {
 
 		boolean isOver = false;
@@ -38,7 +38,7 @@ public class CLICompany extends CLI {
 				return true;
 			default:
 				inputRight = false;
-				System.out.println(WRONG_INPUT);
+				logger.error(WRONG_INPUT);
 				break;
 			}
 		}
@@ -47,22 +47,8 @@ public class CLICompany extends CLI {
 
 	private void findCompanyById() {
 
-		int input = -1;
-		boolean inputRight = false;
-
-		while (!inputRight) {
-
-			System.out.println(ID_RESEARCH);
-			input = this.useInt();
-
-			if (input < 0) {
-				System.out.println(WRONG_INPUT);
-			} else {
-				inputRight = true;
-				this.viewCompany.print(this.ctrlCompany.loadById(input));
-
-			}
-		}		
+		System.out.println(ID_RESEARCH);
+		this.viewCompany.print(this.ctrlCompany.loadById(this.useInt()));
 	}
 
 	private void listAllCompanies() {

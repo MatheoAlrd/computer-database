@@ -10,7 +10,6 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
@@ -34,17 +33,17 @@ public class ComputerDAO extends DAO<Computer> {
 		super();
 	}
 
-	public boolean create(Computer c) {
+	public void create(Computer c) {
 		try {						
 			PreparedStatement ps = this.sConn.getConnection()
 					.prepareStatement(CREATE_QUERY, Statement.RETURN_GENERATED_KEYS);
-			
+
 			ps.setObject(1, c.getName());
 
 			if (c.getIntroduced().isEmpty()) {
 				ps.setDate(2, null);
 			} else {
-				ps.setDate(2, Date.valueOf(c.getDiscontinued().get()));
+				ps.setDate(2, Date.valueOf(c.getIntroduced().get()));
 			}
 			if (c.getDiscontinued().isEmpty()) {
 				ps.setDate(3, null);
@@ -56,35 +55,30 @@ public class ComputerDAO extends DAO<Computer> {
 			} else {
 				ps.setInt(4, c.getCompany().get().getId());
 			}
-			
+
 			ps.executeUpdate();
-			
+
 		} catch (SQLIntegrityConstraintViolationException e) {
 			System.out.println("Company id isn't valid");
-			return false;
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
+			logger.error(e.getMessage());
 		}
-		return true;
 	}
 
-	public boolean delete(int id) {
+	public void delete(int id) {
 		try {			
 			PreparedStatement ps = this.sConn.getConnection()
 					.prepareStatement(DELETE_QUERY, Statement.RETURN_GENERATED_KEYS);
-			
+
 			ps.setInt(1, id);
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
+			logger.error(e.getMessage());
 		}
-		return true;
 	}
 
-	public boolean updateName(int id, String name) {
+	public void updateName(int id, String name) {
 		try {			
 			PreparedStatement ps = this.sConn.getConnection()
 					.prepareStatement(UPDATE_NAME_QUERY, Statement.RETURN_GENERATED_KEYS);
@@ -93,55 +87,49 @@ public class ComputerDAO extends DAO<Computer> {
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
+			logger.error(e.getMessage());
 		}
-		return true;		
 	}
 
-	public boolean updateIntroduced(int id, LocalDate introduced) {
+	public void updateIntroduced(int id, LocalDate introduced) {
 		try {
 			PreparedStatement ps = this.sConn.getConnection()
 					.prepareStatement(UPDATE_INTRODUCED_QUERY, Statement.RETURN_GENERATED_KEYS);
-			
+
 			if (introduced != null) {
 				ps.setDate(1, Date.valueOf(introduced));
 			} else {
 				ps.setDate(1, null);
 			}
-			
+
 			ps.setInt(2, id);
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
+			logger.error(e.getMessage());
 		}
-		return true;		
 	}
 
-	public boolean updateDiscontinued(int id, LocalDate discontinued) {
+	public void updateDiscontinued(int id, LocalDate discontinued) {
 		try {
 			PreparedStatement ps = this.sConn.getConnection()
 					.prepareStatement(UPDATE_DISCONTINUED_QUERY, Statement.RETURN_GENERATED_KEYS);
-			
+
 			if (discontinued != null) {
 				ps.setDate(1, Date.valueOf(discontinued));
 			} else {
 				ps.setDate(1, null);
 			}
-			
+
 			ps.setInt(2, id);
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
+			logger.error(e.getMessage());
 		}
-		return true;		
 	}
 
-	public boolean updateCompany(int id, int companyId) {
+	public void updateCompany(int id, int companyId) {
 		try {
 			PreparedStatement ps = this.sConn.getConnection()
 					.prepareStatement(UPDATE_COMPANY_ID_QUERY, Statement.RETURN_GENERATED_KEYS);
@@ -151,15 +139,13 @@ public class ComputerDAO extends DAO<Computer> {
 			} else {
 				ps.setObject(1, null);
 			}
-			
+
 			ps.setInt(2, id);
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
+			logger.error(e.getMessage());
 		}
-		return true;		
 	}
 
 	public void update(int id, Computer c) {
@@ -199,7 +185,7 @@ public class ComputerDAO extends DAO<Computer> {
 				System.out.println("This computer does not exist");
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		return null;
 	}
@@ -232,7 +218,7 @@ public class ComputerDAO extends DAO<Computer> {
 				computers.add(computerBuilder.build());
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		return computers;
 	}

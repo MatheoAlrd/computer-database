@@ -2,7 +2,6 @@ package com.excilys.cdb.controller;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.service.ComputerService;
@@ -15,28 +14,28 @@ public class ComputerController {
 		super();
 	}
 
-	public boolean create(Computer c) {
-		return this.computerService.getComputerDAO().create(c);
+	public void create(Computer c) {
+		this.computerService.getComputerDAO().create(c);
 	}
 
-	public boolean delete(int id) {
-		return this.computerService.getComputerDAO().delete(id);
+	public void delete(int id) {
+		this.computerService.getComputerDAO().delete(id);
 	}
 	
-	public boolean updateName(int id, String name) {
-		return this.computerService.getComputerDAO().updateName(id, name);
+	public void updateName(int id, String name) {
+		this.computerService.getComputerDAO().updateName(id, name);
 	}
 	
-	public boolean updateIntroduced(int id, LocalDate introduced) {
-		return this.computerService.getComputerDAO().updateIntroduced(id, introduced);
+	public void updateIntroduced(int id, LocalDate introduced) {
+		this.computerService.getComputerDAO().updateIntroduced(id, introduced);
 	}
 	
-	public boolean updateDiscontinued(int id, LocalDate discontinued) {
-		return this.computerService.getComputerDAO().updateDiscontinued(id, discontinued);
+	public void updateDiscontinued(int id, LocalDate discontinued) {
+		this.computerService.getComputerDAO().updateDiscontinued(id, discontinued);
 	}
 	
-	public boolean updateCompanyId(int id, int companyId) {
-		return this.computerService.getComputerDAO().updateCompany(id, companyId);
+	public void updateCompanyId(int id, int companyId) {
+		this.computerService.getComputerDAO().updateCompany(id, companyId);
 	}
 	
 	public void update(int id, Computer c) {
