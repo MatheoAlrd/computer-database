@@ -1,7 +1,6 @@
 package com.excilys.cdb.ui;
 
 import com.excilys.cdb.controller.ComputerController;
-import com.excilys.cdb.model.mapper.ComputerMapper;
 
 public class CLIComputer extends CLI {
 	

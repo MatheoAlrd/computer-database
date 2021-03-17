@@ -6,7 +6,7 @@ import java.util.ResourceBundle;
 
 public abstract class DAO<T> {
 
-	private static final ResourceBundle DB = ResourceBundle.getBundle("ressources.db");
+	private static final ResourceBundle DB = ResourceBundle.getBundle("db");
 
 	private static final String DRIVER = DB.getString("db.driver");
 	private static final String URL = DB.getString("db.url");

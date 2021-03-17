@@ -10,7 +10,6 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
