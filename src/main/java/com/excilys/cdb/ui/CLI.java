@@ -17,7 +17,7 @@ public abstract class CLI {
 	
 	protected Scanner sc = new Scanner(System.in);
 	
-	private static final Logger logger = LoggerFactory.getLogger(CLI.class);
+	protected static final Logger logger = LoggerFactory.getLogger(CLI.class);
 	
 	protected static final String WRONG_INPUT = "Wrong Input";
 	protected static final String WRONG_INPUT_TYPE = "Wrong Input Type";
@@ -54,9 +54,8 @@ public abstract class CLI {
 
 		if (introduced != null && discontinued != null) {
 			while (discontinued.isBefore(introduced)) {
-				System.out.println(DATE_BEFORE);
+				logger.error(DATE_BEFORE);
 				discontinued = this.useDate();
-				logger.warn("Discontinued is before Introduced");
 			}
 		}
 		computerBuilder.setDiscontinued(discontinued);
@@ -131,8 +130,15 @@ public abstract class CLI {
 
 			try {
 				tmpDate = LocalDate.parse(input, DateTimeFormatter.ISO_LOCAL_DATE);
+				
+				if(tmpDate.isBefore(LocalDate.of(1970, 1, 1))) {
+					logger.error("Date is too early");
+					tmpDate = null;
+					System.out.println(ENTER_DATE);
+				}
+				
 			} catch (DateTimeParseException e) {
-				logger.error("Date Format non valide");
+				logger.error("Date Format is not valid");
 				System.out.println(ENTER_DATE);
 			}
 		}

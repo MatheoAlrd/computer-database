@@ -4,10 +4,16 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.excilys.cdb.ui.CLI;
+
 public abstract class DAO<T> {
+	
+	protected static final Logger logger = LoggerFactory.getLogger(CLI.class);
 
 	private static final ResourceBundle DB = ResourceBundle.getBundle("db");
-
 	private static final String DRIVER = DB.getString("db.driver");
 	private static final String URL = DB.getString("db.url");
 	private static final String USER = DB.getString("db.user");
@@ -20,7 +26,7 @@ public abstract class DAO<T> {
 			Class.forName(DRIVER);
 			sConn = SingleConnection.getSingleConnection(DriverManager.getConnection(URL, USER, PWD));
 		} catch (SQLException | ClassNotFoundException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}			
 	}
 
@@ -32,7 +38,7 @@ public abstract class DAO<T> {
 		try {
 			this.sConn.getConnection().close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 	}
 
