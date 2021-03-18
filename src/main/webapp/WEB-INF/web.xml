@@ -6,10 +6,46 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
    	http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
 
-	<display-name>Servlet 4.0 Web Application</display-name>
+	<display-name>Computer Database Web Application</display-name>
 
-	<welcome-file-list>
-		<welcome-file>/WEB-INF/static/views/dashboard.html</welcome-file>
-	</welcome-file-list>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/../views/500.html</location>
+	</error-page>
+	<error-page>
+		<error-code>403</error-code>
+		<location>/../views/403.html</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/../views/404.html</location>
+	</error-page>
+
+	<servlet>
+		<servlet-name>DashboardServlet</servlet-name>
+		<servlet-class>com.excilys.cdb.servlet.DashboardServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>DashboardServlet</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>AddComputerServlet</servlet-name>
+		<servlet-class>com.excilys.cdb.servlet.AddComputerServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>AddComputerServlet</servlet-name>
+		<url-pattern>/addComputer</url-pattern>
+	</servlet-mapping>
+
+	<jsp-config>
+		<jsp-property-group>
+			<url-pattern>*.jsp</url-pattern>
+			<include-prelude>/WEB-INF/jsp/taglibs.jsp</include-prelude>
+		</jsp-property-group>
+	</jsp-config>
 
 </web-app>
