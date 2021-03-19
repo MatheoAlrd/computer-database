@@ -48,7 +48,7 @@ public class DashboardServlet extends HttpServlet {
 			computers = ctrlComputer.getAll();
 		} else {
 			try {
-			computers.add(ctrlComputer.loadById(Integer.parseInt(search)));
+			computers = ctrlComputer.loadById(Integer.parseInt(search));
 			} catch (NumberFormatException e) {
 				computers = ctrlComputer.loadByName(search);
 			}

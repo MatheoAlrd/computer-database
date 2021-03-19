@@ -13,14 +13,14 @@ public class CompanyController {
 	public CompanyController() {
 	}
 
-	public Map<String, Object> loadById(int id) {
+	public List<Map<String, Object>> find(int id) {
 
 		return this.companyService.find(id);
 
 	}
 
-	public List<Map<String,Object>> getAll() {
+	public List<Map<String,Object>> findAll() {
 
-		return this.companyService.getAll();
+		return this.companyService.findAll();
 	}
 }

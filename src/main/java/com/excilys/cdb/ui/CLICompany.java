@@ -48,12 +48,12 @@ public class CLICompany extends CLI {
 	private void findCompanyById() {
 
 		System.out.println(ID_RESEARCH);
-		this.viewCompany.print(this.ctrlCompany.loadById(this.useInt()));
+		this.viewCompany.printAll(this.ctrlCompany.find(this.useInt()));
 	}
 
 	private void listAllCompanies() {
 
-		viewCompany.printAll(ctrlCompany.getAll());
+		viewCompany.printAll(ctrlCompany.findAll());
 	}
 
 }

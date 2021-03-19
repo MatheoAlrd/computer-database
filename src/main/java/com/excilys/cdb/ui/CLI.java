@@ -63,7 +63,7 @@ public abstract class CLI {
 		System.out.println(ENTER_ID);
 		int companyId = useInt();
 		if (companyId != -1) {
-			computerBuilder.setCompany(companyMapper.companyFromMap(ctrlCompany.loadById(companyId)));
+			computerBuilder.setCompany(companyMapper.companyFromMap(ctrlCompany.find(companyId).get(0)));
 		}					
 
 		return computerBuilder.build();
