@@ -45,8 +45,14 @@ public class ComputerController {
 	public Computer loadById(int id) {
 		return this.computerService.getComputerDAO().find(id);
 	}
-
+	
+	public List<Computer> loadByName(String name) {
+		return this.computerService.getComputerDAO().find(name);
+	}
+	
 	public List<Computer> getAll() {		
 		return this.computerService.getComputerDAO().getAll();
 	}
+
+
 }

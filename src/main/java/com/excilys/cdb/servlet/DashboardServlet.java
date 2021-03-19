@@ -44,13 +44,15 @@ public class DashboardServlet extends HttpServlet {
 		List<Computer> computers = new ArrayList<Computer>();
 
 		String search = request.getParameter("search");
-		if(search == null) {
+		if(search == null || search.equals("#")) {
 			computers = ctrlComputer.getAll();
 		} else {
+			try {
 			computers.add(ctrlComputer.loadById(Integer.parseInt(search)));
-
+			} catch (NumberFormatException e) {
+				computers = ctrlComputer.loadByName(search);
+			}
 		}
-
 		return computers;
 	}
 
