@@ -18,24 +18,24 @@ public class CompanyService {
 		return companyDAO;
 	}
 
-	public List<Map<String,Object>> find(int id) {
+	public List<Company> find(int id) {
 
 		List<Map<String,Object>> listCompany = new ArrayList<Map<String,Object>>();
 
 		for(Company c : this.companyDAO.find(id)) {
 			listCompany.add(this.companyMapper.mapFromCompany(c));
 		}
-		return listCompany;
+		return this.companyDAO.find(id);
 	}
 
-	public List<Map<String, Object>> findAll() {
+	public List<Company> findAll() {
 
 		List<Map<String,Object>> listCompany = new ArrayList<Map<String,Object>>();
 
 		for(Company c : this.companyDAO.findAll()) {
 			listCompany.add(this.companyMapper.mapFromCompany(c));
 		}
-		return listCompany;
+		return this.companyDAO.findAll();
 	}
 
 

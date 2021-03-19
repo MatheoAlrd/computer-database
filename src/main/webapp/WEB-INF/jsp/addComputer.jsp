@@ -11,7 +11,7 @@
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="."> Application - Computer Database </a>
+            <a class="navbar-brand" href="."> Application - Computer Database - ALLARD Mathéo</a>
         </div>
     </header>
 
@@ -36,15 +36,17 @@
                             </div>
                             <div class="form-group">
                                 <label for="companyId">Company</label>
-                                <select class="form-control" id="companyId" >
-                                    <option value="0">--</option>
+                                <select class="form-control" id="company" >
+                                    <c:forEach items="${companies}" var="company">
+										<option value="${company.id}">${company.name}</option>
+									</c:forEach>
                                 </select>
                             </div>                  
                         </fieldset>
                         <div class="actions pull-right">
                             <input type="submit" value="Add" class="btn btn-primary">
                             or
-                            <a href="dashboard.html" class="btn btn-default">Cancel</a>
+                            <a href="." class="btn btn-default">Cancel</a>
                         </div>
                     </form>
                 </div>

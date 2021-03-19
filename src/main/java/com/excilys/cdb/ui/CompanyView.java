@@ -3,6 +3,8 @@ package com.excilys.cdb.ui;
 import java.util.List;
 import java.util.Map;
 
+import com.excilys.cdb.model.Company;
+
 public class CompanyView {
 	
 	public void showMenuCompany() {
@@ -27,13 +29,15 @@ public class CompanyView {
 		System.out.println("This company does not exist");
 	}
 
-	public void print(Map<String,Object> map) {
+	public void print(Company c) {
 		
 		this.printType();
-		if(map == null) {
+		if(c == null) {
 			this.printErrorDoesNotExist();
 		} else {
-		map.entrySet().stream().forEach(System.out::println);
+			this.printType();
+			this.printId(c.getId());
+			this.printName(c.getName());
 		}
 	}
 
@@ -45,9 +49,9 @@ public class CompanyView {
 		System.out.println("Name: " + name);
 	}
 
-	public void printAll(List<Map<String,Object>> listCompany) {
-		for (Map<String,Object> map : listCompany) {
-			print(map);
+	public void printAll(List<Company> list) {
+		for (Company c : list) {
+			print(c);
 		}		
 	}
 

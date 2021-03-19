@@ -29,7 +29,7 @@ public class DashboardServlet extends HttpServlet {
 		List<Computer> computers = listComputers(request, session);
 		request.setAttribute("computers", computers);		
 
-		String totalComputers = "A lot of ";
+		String totalComputers = computers.size()+" ";
 		request.setAttribute("totalComputers", totalComputers);
 
 		this.getServletContext().getRequestDispatcher("/WEB-INF/jsp/dashboard.jsp").forward(request,response);
