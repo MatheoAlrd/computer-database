@@ -23,7 +23,7 @@ public class ComputerController {
 	}
 	
 	public void updateName(int id, String name) {
-		this.computerService.getComputerDAO().updateName(id, name);
+		//this.computerService.getComputerDAO().updateName(id, name);
 	}
 	
 	public void updateIntroduced(int id, LocalDate introduced) {
@@ -51,7 +51,7 @@ public class ComputerController {
 	}
 	
 	public List<Computer> getAll() {		
-		return this.computerService.getComputerDAO().getAll();
+		return this.computerService.getComputerDAO().findAll();
 	}
 
 

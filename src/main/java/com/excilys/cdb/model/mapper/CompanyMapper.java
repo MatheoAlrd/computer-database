@@ -1,10 +1,13 @@
 package com.excilys.cdb.model.mapper;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.excilys.cdb.model.Company;
+import com.excilys.cdb.model.builder.CompanyBuilder;
 
 public class CompanyMapper {
 	
@@ -20,4 +23,13 @@ public class CompanyMapper {
 				
 		return mapper.convertValue(map, Company.class);		
 	}
+	
+	public Company companyFromResultSet(ResultSet result) throws SQLException {
+			
+		return new CompanyBuilder()
+				.setId(result.getInt("id"))
+				.setName(result.getString("name"))
+				.build();		
+	}
+	
 }

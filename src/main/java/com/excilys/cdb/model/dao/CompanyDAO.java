@@ -1,6 +1,7 @@
 
 package com.excilys.cdb.model.dao;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -9,11 +10,16 @@ import java.util.List;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.cdb.model.Company;
-import com.excilys.cdb.model.builder.CompanyBuilder;
+import com.excilys.cdb.model.mapper.CompanyMapper;
 
 public class CompanyDAO extends DAO<Company> {
+	
+	private static final String SELECT_BY_ID_QUERY = "SELECT id, name FROM company WHERE id = ?";
+	private static final String SELECT_ALL_QUERY = "SELECT id, name FROM company";
 
 	private static CompanyDAO instance;
+	private CompanyMapper companyMapper = new CompanyMapper();
+
 
 	private CompanyDAO() {
 		super();
@@ -24,15 +30,15 @@ public class CompanyDAO extends DAO<Company> {
 
 		try {
 			this.openConnection();
-			ResultSet result = this.getConnection()
-					.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-							ResultSet.CONCUR_READ_ONLY).executeQuery("SELECT * FROM company WHERE id = " + id);
+			PreparedStatement ps = this.getConnection()
+					.prepareStatement(SELECT_BY_ID_QUERY,
+							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			ps.setInt(1, id);
+			
+			ResultSet result = ps.executeQuery();
 
 			if (result.first()) {
-				return new CompanyBuilder()
-						.setId(result.getInt("id"))
-						.setName(result.getString("name"))
-						.build();
+				return this.companyMapper.companyFromResultSet(result);
 			}
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
@@ -43,7 +49,7 @@ public class CompanyDAO extends DAO<Company> {
 		return null;
 	}
 
-	public List<Company> getAll() {
+	public List<Company> findAll() {
 
 		List<Company> companies = new ArrayList<Company>();
 		
@@ -51,13 +57,10 @@ public class CompanyDAO extends DAO<Company> {
 			this.openConnection();
 			ResultSet result = this.getConnection()
 					.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-							ResultSet.CONCUR_READ_ONLY).executeQuery("SELECT * FROM company");
+							ResultSet.CONCUR_READ_ONLY).executeQuery(SELECT_ALL_QUERY);
 
 			while  (result.next()) {
-				companies.add(new CompanyBuilder()
-						.setId(result.getInt("id"))
-						.setName(result.getString("name"))
-						.build());
+				companies.add(this.companyMapper.companyFromResultSet(result));
 			}
 		} catch (SQLException e) {
 			logger.error(e.getMessage());

@@ -27,7 +27,7 @@ public class CompanyService {
 		
 		List<Map<String,Object>> listCompany = new ArrayList<Map<String,Object>>();
 		
-		for(Company c : this.companyDAO.getAll()) {
+		for(Company c : this.companyDAO.findAll()) {
 			listCompany.add(this.companyMapper.mapFromCompany(c));
 		}
 		return listCompany;
