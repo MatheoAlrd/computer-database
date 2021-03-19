@@ -75,7 +75,8 @@ public class ComputerDAO extends DAO<Computer> {
 	}
 
 	public void delete(int id) {
-		try {			
+		try {
+			this.openConnection();
 			PreparedStatement ps = this.getConnection()
 					.prepareStatement(DELETE_QUERY, Statement.RETURN_GENERATED_KEYS);
 
@@ -84,11 +85,14 @@ public class ComputerDAO extends DAO<Computer> {
 
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
+		} finally {
+			this.closeConnection();
 		}
 	}
 
 	public void updateName(int id, String name) {
-		try {			
+		try {
+			this.openConnection();
 			PreparedStatement ps = this.getConnection()
 					.prepareStatement(UPDATE_NAME_QUERY, Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, name);
@@ -97,11 +101,14 @@ public class ComputerDAO extends DAO<Computer> {
 
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
+		} finally {
+			this.closeConnection();
 		}
 	}
 
 	public void updateIntroduced(int id, LocalDate introduced) {
 		try {
+			this.openConnection();
 			PreparedStatement ps = this.getConnection()
 					.prepareStatement(UPDATE_INTRODUCED_QUERY, Statement.RETURN_GENERATED_KEYS);
 
@@ -116,11 +123,14 @@ public class ComputerDAO extends DAO<Computer> {
 
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
+		} finally {
+			this.closeConnection();
 		}
 	}
 
 	public void updateDiscontinued(int id, LocalDate discontinued) {
 		try {
+			this.openConnection();
 			PreparedStatement ps = this.getConnection()
 					.prepareStatement(UPDATE_DISCONTINUED_QUERY, Statement.RETURN_GENERATED_KEYS);
 
@@ -135,11 +145,14 @@ public class ComputerDAO extends DAO<Computer> {
 
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
+		} finally {
+			this.closeConnection();
 		}
 	}
 
 	public void updateCompany(int id, int companyId) {
 		try {
+			this.openConnection();
 			PreparedStatement ps = this.getConnection()
 					.prepareStatement(UPDATE_COMPANY_ID_QUERY, Statement.RETURN_GENERATED_KEYS);
 
@@ -154,6 +167,8 @@ public class ComputerDAO extends DAO<Computer> {
 
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
+		} finally {
+			this.closeConnection();
 		}
 	}
 
@@ -162,11 +177,11 @@ public class ComputerDAO extends DAO<Computer> {
 		this.updateIntroduced(id, c.getIntroduced().orElse(null));
 		this.updateDiscontinued(id, c.getDiscontinued().orElse(null));
 		this.updateCompany(id, c.getCompany().orElse(new Company()).getId());
-
 	}
 
 	public Computer find(int id) {
 		try {
+			this.openConnection();
 			PreparedStatement ps = this.getConnection()
 					.prepareStatement(SELECT_BY_ID_QUERY,
 							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -182,6 +197,8 @@ public class ComputerDAO extends DAO<Computer> {
 			}
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
+		} finally {
+			this.closeConnection();
 		}
 		return null;
 	}
@@ -190,6 +207,7 @@ public class ComputerDAO extends DAO<Computer> {
 		
 		List<Computer> computers = new ArrayList<Computer>();
 		try {
+			this.openConnection();
 			PreparedStatement ps = this.getConnection()
 					.prepareStatement(SELECT_BY_NAME_QUERY,
 							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -204,7 +222,7 @@ public class ComputerDAO extends DAO<Computer> {
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
 		} finally {
-			//this.sConn.close();
+			this.closeConnection();
 		}
 		return computers;
 	}
@@ -213,31 +231,20 @@ public class ComputerDAO extends DAO<Computer> {
 
 		List<Computer> computers = new ArrayList<Computer>();
 		try {
-
+			this.openConnection();
 			PreparedStatement ps = this.getConnection()
 					.prepareStatement(SELECT_ALL_QUERY, Statement.RETURN_GENERATED_KEYS);
 
 			ResultSet result = ps.executeQuery();
 
-			while (result.next()) {
-				ComputerBuilder computerBuilder = new ComputerBuilder()
-						.setId(result.getInt("id"))
-						.setName(result.getString("name"));
-
-				if (result.getDate("introduced") != null) {
-					computerBuilder.setIntroduced(result.getDate("introduced").toLocalDate());
-				}
-				if (result.getString("discontinued") != null) {
-					computerBuilder.setDiscontinued(result.getDate("discontinued").toLocalDate());
-				}
-				if (result.getObject("company_id") != null) {
-					computerBuilder.setCompany(this.findCompany(result.getInt("company_id")));
-				}
-
-				computers.add(computerBuilder.build());
+			while (result.next()) {											
+				computers.add(computerMapper.computerFromResultSet(result));
 			}
+			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
+		} finally {
+			this.closeConnection();
 		}
 		return computers;
 	}

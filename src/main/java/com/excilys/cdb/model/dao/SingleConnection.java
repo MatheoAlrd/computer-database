@@ -6,8 +6,6 @@ import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.cdb.ui.CLI;
-
 public final class SingleConnection {
 	
 	protected static final Logger logger = LoggerFactory.getLogger(SingleConnection.class);

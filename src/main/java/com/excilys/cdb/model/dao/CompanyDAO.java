@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.LoggerFactory;
+
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.builder.CompanyBuilder;
 
@@ -15,12 +17,14 @@ public class CompanyDAO extends DAO<Company> {
 
 	private CompanyDAO() {
 		super();
+		logger = LoggerFactory.getLogger(CompanyDAO.class);
 	}
 
 	public Company find(int id) {
 
 		try {
-			ResultSet result = this.sConn.getConnection()
+			this.openConnection();
+			ResultSet result = this.getConnection()
 					.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
 							ResultSet.CONCUR_READ_ONLY).executeQuery("SELECT * FROM company WHERE id = " + id);
 
@@ -32,6 +36,8 @@ public class CompanyDAO extends DAO<Company> {
 			}
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
+		} finally {
+			this.closeConnection();
 		}
 
 		return null;
@@ -42,7 +48,8 @@ public class CompanyDAO extends DAO<Company> {
 		List<Company> companies = new ArrayList<Company>();
 		
 		try {
-			ResultSet result = this.sConn.getConnection()
+			this.openConnection();
+			ResultSet result = this.getConnection()
 					.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
 							ResultSet.CONCUR_READ_ONLY).executeQuery("SELECT * FROM company");
 
@@ -54,6 +61,8 @@ public class CompanyDAO extends DAO<Company> {
 			}
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
+		} finally {
+			this.closeConnection();
 		}
 		return companies;
 	}
