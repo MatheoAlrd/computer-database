@@ -16,12 +16,14 @@ import com.excilys.cdb.controller.ComputerController;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.builder.CompanyBuilder;
 import com.excilys.cdb.model.builder.ComputerBuilder;
+import com.excilys.cdb.service.CompanyService;
+import com.excilys.cdb.service.ComputerService;
 
 public class AddComputerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-	private CompanyController ctrlCompany = new CompanyController();
-	private ComputerController ctrlComputer = new ComputerController();
+	private CompanyService servCompany = new CompanyService();
+	private ComputerService servComputer = new ComputerService();
 
        
     public AddComputerServlet() {
@@ -33,30 +35,25 @@ public class AddComputerServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		
 		List<Company> companies = listCompanies(request, session);
-		request.setAttribute("companies", companies);	
+		request.setAttribute("companies", companies);
 		
 		this.getServletContext().getRequestDispatcher("/WEB-INF/jsp/addComputer.jsp").forward(request,response);
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-				
+		
 		String name = request.getParameter("computerName");
-		LocalDate introduced = LocalDate.parse(request.getParameter("introduced"), DateTimeFormatter.ISO_LOCAL_DATE);
-		LocalDate discontinued = LocalDate.parse(request.getParameter("discontinued"), DateTimeFormatter.ISO_LOCAL_DATE);
+		String introduced = request.getParameter("discontinued");
+		String discontinued = request.getParameter("discontinued");
 		String companyId = request.getParameter("companyId");
-		
-		ctrlComputer.create(new ComputerBuilder()
-				.setName(name)
-				.setIntroduced(introduced)
-				.setDiscontinued(discontinued)
-				.setCompany(new CompanyBuilder().setId(Integer.parseInt(companyId)).build())
-				.build());
-		
+
+		servComputer.create(servComputer
+				.validateComputer(name, introduced, discontinued, companyId));
 	}
 	
 	private List<Company> listCompanies(HttpServletRequest request, HttpSession session) {
 
-		return ctrlCompany.findAll();
+		return servCompany.findAll();
 	}
 
 }

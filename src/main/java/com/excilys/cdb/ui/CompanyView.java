@@ -1,7 +1,6 @@
 package com.excilys.cdb.ui;
 
 import java.util.List;
-import java.util.Map;
 
 import com.excilys.cdb.model.Company;
 

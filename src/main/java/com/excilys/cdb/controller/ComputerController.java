@@ -14,27 +14,27 @@ public class ComputerController {
 	}
 
 	public void create(Computer c) {
-		this.computerService.getComputerDAO().create(c);
+		this.computerService.create(c);
 	}
 
 	public void delete(int id) {
-		this.computerService.getComputerDAO().delete(id);
+		this.computerService.delete(id);
 	}
 	
 	public void update(int id, Computer c) {
-		this.computerService.getComputerDAO().update(id, c);
+		this.computerService.update(id, c);
 	}
 
-	public List<Computer> loadById(int id) {
-		return this.computerService.getComputerDAO().find(id);
+	public List<Computer> find(int id) {
+		return this.computerService.find(id);
 	}
 	
-	public List<Computer> loadByName(String name) {
-		return this.computerService.getComputerDAO().find(name);
+	public List<Computer> find(String name) {
+		return this.computerService.find(name);
 	}
 	
 	public List<Computer> getAll() {		
-		return this.computerService.getComputerDAO().findAll();
+		return this.computerService.findAll();
 	}
 
 

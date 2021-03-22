@@ -10,8 +10,7 @@ import com.excilys.cdb.model.mapper.CompanyMapper;
 
 public class CompanyService {
 
-	CompanyMapper companyMapper = new CompanyMapper();
-
+	private CompanyMapper companyMapper = new CompanyMapper();
 	private CompanyDAO companyDAO = CompanyDAO.getInstance();
 
 	public CompanyDAO getCompanyDAO() {
