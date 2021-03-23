@@ -93,7 +93,7 @@ public class Computer {
 				"\nname = " + this.name +
 				"\ndate introduced = " + this.introduced +
 				"\ndate discontinued = " + this.discontinued +
-				"\ncompany_id = " + this.company.getId() +
+				"\ncompany = " + this.company +
 				"\n";
 	}
 

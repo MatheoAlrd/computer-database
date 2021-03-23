@@ -35,6 +35,21 @@ public class ComputerService {
 		return this.computerDAO.findAll();
 	}
 	
+	public List<Computer> findPage(String name, int pageSize, int offset) {		
+		return this.computerDAO.findPage(name, pageSize, offset);
+	}
+	
+	public List<Computer> findAllPage(int pageSize, int offset) {	
+		return this.computerDAO.findAllPage(pageSize, offset);
+	}
+	
+	public int count() {		
+		return this.computerDAO.count();
+	}
+	
+	public int count(String name) {		
+		return this.computerDAO.count(name);
+	}
 
 	public ComputerDAO getComputerDAO() {
 		return computerDAO;
@@ -42,6 +57,10 @@ public class ComputerService {
 	
 	public Computer validateComputer(String name, String introduced, String discontinued, String companyId) {
 		return this.computerValidator.validateComputer(name, introduced, discontinued, companyId);
+	}
+	
+	public Computer valdiateComputer(Computer c) {
+		return this.computerValidator.validateComputer(c);
 	}
 
 }

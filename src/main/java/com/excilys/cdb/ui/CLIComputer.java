@@ -75,7 +75,7 @@ public class CLIComputer extends CLI {
 	}	
 
 	private void listAllComputers() {
-		viewComputer.printAll(this.ctrlComputer.getAll());
+		viewComputer.printAll(this.ctrlComputer.findAll());
 	}
 
 }

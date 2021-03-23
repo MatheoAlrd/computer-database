@@ -37,6 +37,7 @@
                             <div class="form-group">
                                 <label for="companyId">Company</label>
                                 <select name="companyId" class="form-control" id="company" >
+                                	<option value="0">None</option>                                
                                     <c:forEach items="${companies}" var="company">
 										<option value="${company.id}">${company.name}</option>
 									</c:forEach>
@@ -44,11 +45,9 @@
                             </div>                  
                         </fieldset>
                         <div class="actions pull-right">
-                        	<a href=".">
                             	<input type="submit" value="Add" class="btn btn-primary">
-                            </a>                           
                             or
-                            <a href="." class="btn btn-default">Cancel</a>
+                            <a href="/cdb" class="btn btn-default">Cancel</a>
                         </div>
                     </form>
                 </div>

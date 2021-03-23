@@ -27,7 +27,15 @@ public class ComputerDAO extends DAO<Computer> {
 			+ "WHERE computer.name LIKE ? ";
 	private static final String SELECT_ALL_QUERY = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name FROM computer "
 			+ "LEFT JOIN company ON computer.company_id = company.id";
-
+	private static final String SELECT_BY_NAME_LIMIT_QUERY = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name FROM computer "
+			+ "LEFT JOIN company ON computer.company_id = company.id "
+			+ "WHERE computer.name LIKE ? "
+			+ "LIMIT ?,?";
+	private static final String SELECT_ALL_LIMIT_QUERY = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name FROM computer "
+			+ "LEFT JOIN company ON computer.company_id = company.id "
+			+ "LIMIT ?,?";
+	private static final String SELECT_COUNT_ALL_QUERY = "SELECT COUNT(id) FROM computer";
+	private static final String SELECT_COUNT_BY_NAME_QUERY = "SELECT COUNT(id) FROM computer WHERE computer.name LIKE ?";
 
 	private static ComputerDAO instance;
 	private ComputerMapper computerMapper = new ComputerMapper();
@@ -95,7 +103,7 @@ public class ComputerDAO extends DAO<Computer> {
 			ps.setInt(1, id);
 
 			ResultSet result = ps.executeQuery();
-			return computerMapper.computerFromResultSet(result);
+			return computerMapper.computersFromResultSet(result);
 
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
@@ -117,7 +125,7 @@ public class ComputerDAO extends DAO<Computer> {
 
 			ResultSet result = ps.executeQuery();
 
-			return computerMapper.computerFromResultSet(result);
+			return computerMapper.computersFromResultSet(result);
 
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
@@ -130,15 +138,57 @@ public class ComputerDAO extends DAO<Computer> {
 	public List<Computer> findAll() {
 		try {
 			this.openConnection();
+
+			ResultSet result = this.getConnection().createStatement().executeQuery(SELECT_ALL_QUERY);
+
+			return computerMapper.computersFromResultSet(result);
+
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+		} finally {
+			this.closeConnection();
+		}
+		return new ArrayList<Computer>();
+	}
+	
+	public List<Computer> findPage(String name, int pageSize, int offset) {
+
+		List<Computer> computers = new ArrayList<Computer>();
+		try {
+			this.openConnection();
 			PreparedStatement ps = this.getConnection()
-					.prepareStatement(SELECT_ALL_QUERY, Statement.RETURN_GENERATED_KEYS);
+					.prepareStatement(SELECT_BY_NAME_LIMIT_QUERY,
+							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			ps.setString(1, "%"+name+"%");
+			ps.setInt(2, offset);
+			ps.setInt(3, pageSize);
 
 			ResultSet result = ps.executeQuery();
 
-			return computerMapper.computerFromResultSet(result);
+			return computerMapper.computersFromResultSet(result);
 
 		} catch (SQLException e) {
-			System.out.println("je catch ici");
+			logger.error(e.getMessage());
+		} finally {
+			this.closeConnection();
+		}
+		return computers;
+	}
+	
+	public List<Computer> findAllPage(int pageSize, int offset) {
+		try {
+			this.openConnection();
+			PreparedStatement ps = this.getConnection()
+					.prepareStatement(SELECT_ALL_LIMIT_QUERY,
+							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			ps.setInt(1, offset);
+			ps.setInt(2, pageSize);
+
+			ResultSet result = ps.executeQuery();
+
+			return computerMapper.computersFromResultSet(result);
+
+		} catch (SQLException e) {
 			logger.error(e.getMessage());
 		} finally {
 			this.closeConnection();
@@ -148,6 +198,44 @@ public class ComputerDAO extends DAO<Computer> {
 
 	public List<Company> findCompany(int id) throws SQLException {
 		return CompanyDAO.getInstance().find(id);
+	}
+	
+	public int count() {
+		try {
+			this.openConnection();
+
+			ResultSet result = this.getConnection().createStatement().executeQuery(SELECT_COUNT_ALL_QUERY);
+			if(result.next()) {
+				return result.getInt(1);
+			}
+
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+		} finally {
+			this.closeConnection();
+		}
+		return 0; 
+	}
+	
+	public int count(String name) {
+		try {
+			this.openConnection();
+			PreparedStatement ps = this.getConnection()
+					.prepareStatement(SELECT_COUNT_BY_NAME_QUERY,
+							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			ps.setString(1, "%"+name+"%");
+
+			ResultSet result = ps.executeQuery();
+			if(result.next()) {
+				return result.getInt(1);
+			}
+
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+		} finally {
+			this.closeConnection();
+		}
+		return 0;
 	}
 
 	public static ComputerDAO getInstance() {

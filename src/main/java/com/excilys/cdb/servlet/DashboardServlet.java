@@ -12,11 +12,14 @@ import javax.servlet.http.HttpSession;
 
 import com.excilys.cdb.controller.ComputerController;
 import com.excilys.cdb.model.Computer;
+import com.excilys.cdb.model.PageLoadAll;
+import com.excilys.cdb.model.PageSQLQuery;
+import com.excilys.cdb.service.ComputerService;
 
 public class DashboardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	private ComputerController ctrlComputer = new ComputerController();	
+	private ComputerService servComputer = new ComputerService();
 
 	public DashboardServlet() {
 		super();
@@ -25,12 +28,12 @@ public class DashboardServlet extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		HttpSession session = request.getSession();
+		Object[] con = {request,session};
+		con = this.paginate(request, session);
+		request = (HttpServletRequest) con[0];
+		session = (HttpSession) con[1];
+		//request = this.paginateLoadAll(request);
 
-		List<Computer> computers = listComputers(request, session);
-		request.setAttribute("computers", computers);		
-
-		String totalComputers = computers.size()+" ";
-		request.setAttribute("totalComputers", totalComputers);
 
 		this.getServletContext().getRequestDispatcher("/WEB-INF/jsp/dashboard.jsp").forward(request,response);
 	}
@@ -39,21 +42,132 @@ public class DashboardServlet extends HttpServlet {
 
 	}
 
-	private List<Computer> listComputers(HttpServletRequest request, HttpSession session) {
+	private List<Computer> listComputers(HttpServletRequest request) {
 
 		List<Computer> computers = new ArrayList<Computer>();
 
 		String search = request.getParameter("search");
-		if(search == null || search.equals("#")) {
-			computers = ctrlComputer.getAll();
+
+		if(search == null || search.equals("#")) {		
+			computers = servComputer.findAll();
 		} else {
 			try {
-			computers = ctrlComputer.find(Integer.parseInt(search));
+				computers = servComputer.find(Integer.parseInt(search));
 			} catch (NumberFormatException e) {
-				computers = ctrlComputer.find(search);
+				computers = servComputer.find(search);
 			}
 		}
 		return computers;
+	}
+
+	private List<Computer> listComputersPage(String search, int pageSize, int offset){
+
+		List<Computer> computers = new ArrayList<Computer>();
+
+		if(search == null) {
+			return computers;
+		}
+		if(search.equals("#")) {
+			computers = servComputer.findAllPage(pageSize, offset);
+		} else {
+			try {
+				computers = servComputer.find(Integer.parseInt(search));
+			} catch (NumberFormatException e) {
+				computers = servComputer.findPage(search, pageSize, offset);
+			}
+		}
+
+		return computers;
+	}
+	
+	private int countComputers(String search) {
+		if(search == null) {
+			return 0;
+		}
+		if(search.equals("#")) {
+			return servComputer.count();
+		} else {
+			return servComputer.count(search);
+		}
+
+	}
+
+	private Object[] paginate(HttpServletRequest request, HttpSession session) {
+
+		int page = 1;
+		int pageSize = 100;
+		String search = null;
+
+		if(session.getAttribute("page") != null) {
+			page = (int) session.getAttribute("page");
+		}
+		if(session.getAttribute("pageSize") != null) {
+			pageSize = (int) session.getAttribute("pageSize");
+		}
+		if(session.getAttribute("search") != null) {
+			search = (String) session.getAttribute("search");
+		}
+
+		String spageNum = request.getParameter("page");
+		if(spageNum != null) {
+			page = Integer.parseInt(spageNum);
+			session.setAttribute("page",page);
+		}
+		String spageSize = request.getParameter("pageSize");
+		if(spageSize != null) {
+			pageSize = Integer.parseInt(spageSize);
+			session.setAttribute("pageSize",pageSize);
+			page = 1;
+			session.setAttribute("page",page);
+		}
+		String currentSearch = request.getParameter("search");
+		if(currentSearch != null) {
+			search = currentSearch;
+			session.setAttribute("search",search);
+			page = 1;
+			session.setAttribute("page",page);
+		}
+		System.out.println("page = " + page);
+		System.out.println("pageSize = " + pageSize);
+		System.out.println("search = " + search);
+
+		int totalComputers = this.countComputers(search);
+
+		List<Computer> computers = listComputersPage(search,pageSize,pageSize*(page-1));
+		
+		PageSQLQuery<Computer> currentPage = new PageSQLQuery<Computer>(page,pageSize,totalComputers,computers);
+		request.setAttribute("pageMax", currentPage.getTotalPage());
+		request.setAttribute("previousPage", currentPage.previousPage());
+		request.setAttribute("nextPage", currentPage.nextPage());
+
+		request.setAttribute("computers", computers);
+		request.setAttribute("totalComputers", totalComputers);
+
+		Object[] res = {request,session};
+		return res;
+	}
+
+	private HttpServletRequest paginateLoadAll(HttpServletRequest request) {
+
+		List<Computer> computers = listComputers(request);
+
+		String spageNum = request.getParameter("page");
+		spageNum = spageNum == null ? "1" : request.getParameter("page");
+		int pageNum = Integer.parseInt(spageNum);
+		//String spageSize = request.getParameter("pageSize");
+		//int pageSize = Integer.parseInt(spageSize);
+
+		PageLoadAll<Computer> currentPage = new PageLoadAll<Computer>(pageNum,100,computers);
+		request.setAttribute("pageMax", currentPage.getTotalPage());
+		request.setAttribute("previousPage", currentPage.previousPage());
+		request.setAttribute("nextPage", currentPage.nextPage());
+
+		List<Computer> computerPage = currentPage.getDataList();
+		request.setAttribute("computers", computerPage);
+
+		String totalComputers = computers.size()+" ";
+		request.setAttribute("totalComputers", totalComputers);	
+		return request;
 	}
 
 }

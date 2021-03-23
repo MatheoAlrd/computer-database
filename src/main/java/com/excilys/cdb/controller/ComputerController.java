@@ -33,7 +33,7 @@ public class ComputerController {
 		return this.computerService.find(name);
 	}
 	
-	public List<Computer> getAll() {		
+	public List<Computer> findAll() {		
 		return this.computerService.findAll();
 	}
 
