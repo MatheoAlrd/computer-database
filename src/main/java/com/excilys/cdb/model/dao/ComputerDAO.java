@@ -1,73 +1,70 @@
 
 package com.excilys.cdb.model.dao;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.LoggerFactory;
+
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.model.builder.ComputerBuilder;
+import com.excilys.cdb.model.mapper.ComputerMapper;
 
 public class ComputerDAO extends DAO<Computer> {
 
-
 	private static final String CREATE_QUERY = "INSERT INTO computer (name,introduced,discontinued,company_id) VALUES (?,?,?,?)";
 	private static final String DELETE_QUERY = "DELETE FROM computer WHERE id = ?";
-	private static final String UPDATE_NAME_QUERY = "UPDATE computer SET name = ? WHERE id = ?";
-	private static final String UPDATE_INTRODUCED_QUERY = "UPDATE computer SET introduced = ? WHERE id = ?";
-	private static final String UPDATE_DISCONTINUED_QUERY = "UPDATE computer SET discontinued = ? WHERE id = ?";
-	private static final String UPDATE_COMPANY_ID_QUERY = "UPDATE computer SET company_id = ? WHERE id = ?";
-	private static final String SELECT_BY_ID_QUERY = "SELECT id, name, introduced, discontinued, company_id FROM computer WHERE id = ?";
-	private static final String SELECT_ALL_QUERY = "SELECT id, name, introduced, discontinued, company_id FROM computer";
+	private static final String UPDATE_QUERY = "UPDATE computer SET name = ?,  introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
+	private static final String SELECT_BY_ID_QUERY = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name FROM computer "
+			+ "LEFT JOIN company ON computer.company_id = company.id "
+			+ "WHERE computer.id = ? ";
+	private static final String SELECT_BY_NAME_QUERY = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name FROM computer "
+			+ "LEFT JOIN company ON computer.company_id = company.id "
+			+ "WHERE computer.name LIKE ? ";
+	private static final String SELECT_ALL_QUERY = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name FROM computer "
+			+ "LEFT JOIN company ON computer.company_id = company.id";
+	private static final String SELECT_BY_NAME_LIMIT_QUERY = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name FROM computer "
+			+ "LEFT JOIN company ON computer.company_id = company.id "
+			+ "WHERE computer.name LIKE ? "
+			+ "LIMIT ?,?";
+	private static final String SELECT_ALL_LIMIT_QUERY = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name FROM computer "
+			+ "LEFT JOIN company ON computer.company_id = company.id "
+			+ "LIMIT ?,?";
+	private static final String SELECT_COUNT_ALL_QUERY = "SELECT COUNT(id) FROM computer";
+	private static final String SELECT_COUNT_BY_NAME_QUERY = "SELECT COUNT(id) FROM computer WHERE computer.name LIKE ?";
 
 	private static ComputerDAO instance;
+	private ComputerMapper computerMapper = new ComputerMapper();
 
 	private ComputerDAO() {
 		super();
+		logger = LoggerFactory.getLogger(ComputerDAO.class);
 	}
 
 	public void create(Computer c) {
-		try {						
-			PreparedStatement ps = this.sConn.getConnection()
+		try {
+			this.openConnection();
+			PreparedStatement ps = this.getConnection()
 					.prepareStatement(CREATE_QUERY, Statement.RETURN_GENERATED_KEYS);
 
-			ps.setObject(1, c.getName());
-
-			if (c.getIntroduced().isEmpty()) {
-				ps.setDate(2, null);
-			} else {
-				ps.setDate(2, Date.valueOf(c.getIntroduced().get()));
-			}
-			if (c.getDiscontinued().isEmpty()) {
-				ps.setDate(3, null);
-			} else {
-				ps.setDate(3, Date.valueOf(c.getDiscontinued().get()));
-			}
-			if (c.getCompany().isEmpty()) {
-				ps.setObject(4, null);
-			} else {
-				ps.setInt(4, c.getCompany().get().getId());
-			}
-
+			ps = computerMapper.preparedStatementFromComputer(ps, c);
 			ps.executeUpdate();
 
-		} catch (SQLIntegrityConstraintViolationException e) {
-			System.out.println("Company id isn't valid");
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
+		} finally {
+			this.closeConnection();
 		}
 	}
 
 	public void delete(int id) {
-		try {			
-			PreparedStatement ps = this.sConn.getConnection()
+		try {
+			this.openConnection();
+			PreparedStatement ps = this.getConnection()
 					.prepareStatement(DELETE_QUERY, Statement.RETURN_GENERATED_KEYS);
 
 			ps.setInt(1, id);
@@ -75,156 +72,170 @@ public class ComputerDAO extends DAO<Computer> {
 
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-		}
-	}
-
-	public void updateName(int id, String name) {
-		try {			
-			PreparedStatement ps = this.sConn.getConnection()
-					.prepareStatement(UPDATE_NAME_QUERY, Statement.RETURN_GENERATED_KEYS);
-			ps.setString(1, name);
-			ps.setInt(2, id);
-			ps.executeUpdate();
-
-		} catch (SQLException e) {
-			logger.error(e.getMessage());
-		}
-	}
-
-	public void updateIntroduced(int id, LocalDate introduced) {
-		try {
-			PreparedStatement ps = this.sConn.getConnection()
-					.prepareStatement(UPDATE_INTRODUCED_QUERY, Statement.RETURN_GENERATED_KEYS);
-
-			if (introduced != null) {
-				ps.setDate(1, Date.valueOf(introduced));
-			} else {
-				ps.setDate(1, null);
-			}
-
-			ps.setInt(2, id);
-			ps.executeUpdate();
-
-		} catch (SQLException e) {
-			logger.error(e.getMessage());
-		}
-	}
-
-	public void updateDiscontinued(int id, LocalDate discontinued) {
-		try {
-			PreparedStatement ps = this.sConn.getConnection()
-					.prepareStatement(UPDATE_DISCONTINUED_QUERY, Statement.RETURN_GENERATED_KEYS);
-
-			if (discontinued != null) {
-				ps.setDate(1, Date.valueOf(discontinued));
-			} else {
-				ps.setDate(1, null);
-			}
-
-			ps.setInt(2, id);
-			ps.executeUpdate();
-
-		} catch (SQLException e) {
-			logger.error(e.getMessage());
-		}
-	}
-
-	public void updateCompany(int id, int companyId) {
-		try {
-			PreparedStatement ps = this.sConn.getConnection()
-					.prepareStatement(UPDATE_COMPANY_ID_QUERY, Statement.RETURN_GENERATED_KEYS);
-
-			if (companyId != -1) {
-				ps.setInt(1, companyId);
-			} else {
-				ps.setObject(1, null);
-			}
-
-			ps.setInt(2, id);
-			ps.executeUpdate();
-
-		} catch (SQLException e) {
-			logger.error(e.getMessage());
+		} finally {
+			this.closeConnection();
 		}
 	}
 
 	public void update(int id, Computer c) {
-		this.updateName(id, c.getName());
-		this.updateIntroduced(id, c.getIntroduced().orElse(null));
-		this.updateDiscontinued(id, c.getDiscontinued().orElse(null));
-		this.updateCompany(id, c.getCompany().orElse(new Company()).getId());
+		try {
+			this.openConnection();
+			PreparedStatement ps = this.getConnection()
+					.prepareStatement(UPDATE_QUERY, Statement.RETURN_GENERATED_KEYS);
 
+			ps = computerMapper.preparedStatementFromComputer(ps, c);
+			ps.setInt(5, id);
+			ps.executeUpdate();
+
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+		} finally {
+			this.closeConnection();
+		}
 	}
 
-	public Computer find(int id) {
+	public List<Computer> find(int id) {
 		try {
-			PreparedStatement ps = this.sConn.getConnection()
+			this.openConnection();
+			PreparedStatement ps = this.getConnection()
 					.prepareStatement(SELECT_BY_ID_QUERY,
 							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			ps.setInt(1, id);
 
 			ResultSet result = ps.executeQuery();
+			return computerMapper.computersFromResultSet(result);
 
-			if (result.first()) {
-				ComputerBuilder computerBuilder = new ComputerBuilder()
-						.setId(id)
-						.setName(result.getString("name"));
-
-				if (result.getDate("introduced") != null) {
-					computerBuilder.setIntroduced(result.getDate("introduced").toLocalDate());
-				}
-				if (result.getDate("discontinued") != null) {
-					computerBuilder.setDiscontinued(result.getDate("discontinued").toLocalDate());
-				}
-				if (result.getObject("company_id") != null) {
-					computerBuilder.setCompany(CompanyDAO.getInstance().find(result.getInt("company_id")));
-				}			
-				return computerBuilder.build();
-
-			} else {
-				System.out.println("This computer does not exist");
-			}
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
+		} finally {
+			this.closeConnection();
 		}
 		return null;
 	}
 
-	public List<Computer> getAll() {
+	public List<Computer> find(String name) {
 
 		List<Computer> computers = new ArrayList<Computer>();
 		try {
-
-			PreparedStatement ps = this.sConn.getConnection()
-					.prepareStatement(SELECT_ALL_QUERY, Statement.RETURN_GENERATED_KEYS);
+			this.openConnection();
+			PreparedStatement ps = this.getConnection()
+					.prepareStatement(SELECT_BY_NAME_QUERY,
+							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			ps.setString(1, "%"+name+"%");
 
 			ResultSet result = ps.executeQuery();
 
-			while (result.next()) {
-				ComputerBuilder computerBuilder = new ComputerBuilder()
-						.setId(result.getInt("id"))
-						.setName(result.getString("name"));
+			return computerMapper.computersFromResultSet(result);
 
-				if (result.getDate("introduced") != null) {
-					computerBuilder.setIntroduced(result.getDate("introduced").toLocalDate());
-				}
-				if (result.getString("discontinued") != null) {
-					computerBuilder.setDiscontinued(result.getDate("discontinued").toLocalDate());
-				}
-				if (result.getObject("company_id") != null) {
-					computerBuilder.setCompany(this.findCompany(result.getInt("company_id")));
-				}
-
-				computers.add(computerBuilder.build());
-			}
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
+		} finally {
+			this.closeConnection();
 		}
 		return computers;
 	}
 
-	public Company findCompany(int id) throws SQLException {
+	public List<Computer> findAll() {
+		try {
+			this.openConnection();
+
+			ResultSet result = this.getConnection().createStatement().executeQuery(SELECT_ALL_QUERY);
+
+			return computerMapper.computersFromResultSet(result);
+
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+		} finally {
+			this.closeConnection();
+		}
+		return new ArrayList<Computer>();
+	}
+	
+	public List<Computer> findPage(String name, int pageSize, int offset) {
+
+		List<Computer> computers = new ArrayList<Computer>();
+		try {
+			this.openConnection();
+			PreparedStatement ps = this.getConnection()
+					.prepareStatement(SELECT_BY_NAME_LIMIT_QUERY,
+							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			ps.setString(1, "%"+name+"%");
+			ps.setInt(2, offset);
+			ps.setInt(3, pageSize);
+
+			ResultSet result = ps.executeQuery();
+
+			return computerMapper.computersFromResultSet(result);
+
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+		} finally {
+			this.closeConnection();
+		}
+		return computers;
+	}
+	
+	public List<Computer> findAllPage(int pageSize, int offset) {
+		try {
+			this.openConnection();
+			PreparedStatement ps = this.getConnection()
+					.prepareStatement(SELECT_ALL_LIMIT_QUERY,
+							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			ps.setInt(1, offset);
+			ps.setInt(2, pageSize);
+
+			ResultSet result = ps.executeQuery();
+
+			return computerMapper.computersFromResultSet(result);
+
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+		} finally {
+			this.closeConnection();
+		}
+		return new ArrayList<Computer>();
+	}
+
+	public List<Company> findCompany(int id) throws SQLException {
 		return CompanyDAO.getInstance().find(id);
+	}
+	
+	public int count() {
+		try {
+			this.openConnection();
+
+			ResultSet result = this.getConnection().createStatement().executeQuery(SELECT_COUNT_ALL_QUERY);
+			if(result.next()) {
+				return result.getInt(1);
+			}
+
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+		} finally {
+			this.closeConnection();
+		}
+		return 0; 
+	}
+	
+	public int count(String name) {
+		try {
+			this.openConnection();
+			PreparedStatement ps = this.getConnection()
+					.prepareStatement(SELECT_COUNT_BY_NAME_QUERY,
+							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			ps.setString(1, "%"+name+"%");
+
+			ResultSet result = ps.executeQuery();
+			if(result.next()) {
+				return result.getInt(1);
+			}
+
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+		} finally {
+			this.closeConnection();
+		}
+		return 0;
 	}
 
 	public static ComputerDAO getInstance() {

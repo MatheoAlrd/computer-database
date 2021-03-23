@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import com.excilys.cdb.controller.CompanyController;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.model.builder.ComputerBuilder;
-import com.excilys.cdb.model.mapper.CompanyMapper;
 
 public abstract class CLI {
 	
@@ -38,7 +37,6 @@ public abstract class CLI {
 	protected Computer useComputer() {
 		
 		CompanyController ctrlCompany = new CompanyController();
-		CompanyMapper companyMapper = new CompanyMapper();
 		ComputerBuilder computerBuilder = new ComputerBuilder();
 
 		System.out.println(ENTER_NAME);
@@ -63,7 +61,7 @@ public abstract class CLI {
 		System.out.println(ENTER_ID);
 		int companyId = useInt();
 		if (companyId != -1) {
-			computerBuilder.setCompany(companyMapper.companyFromMap(ctrlCompany.loadById(companyId)));
+			computerBuilder.setCompany(ctrlCompany.find(companyId).get(0));
 		}					
 
 		return computerBuilder.build();

@@ -71,11 +71,11 @@ public class CLIComputer extends CLI {
 
 	private void findComputerById() {
 		System.out.println(ID_RESEARCH);
-		viewComputer.print(this.ctrlComputer.loadById(this.useInt()));
+		viewComputer.printAll(this.ctrlComputer.find(this.useInt()));
 	}	
 
 	private void listAllComputers() {
-		viewComputer.printAll(this.ctrlComputer.getAll());
+		viewComputer.printAll(this.ctrlComputer.findAll());
 	}
 
 }
