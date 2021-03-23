@@ -28,7 +28,7 @@ public class ComputerMapper {
 		return mapper.convertValue(map, Computer.class);		
 	}
 
-	public List<Computer> computerFromResultSet(ResultSet result) throws SQLException {
+	public List<Computer> computersFromResultSet(ResultSet result) throws SQLException {
 
 		List<Computer> computers = new ArrayList<Computer>();
 

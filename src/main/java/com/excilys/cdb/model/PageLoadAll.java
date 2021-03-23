@@ -2,7 +2,7 @@ package com.excilys.cdb.model;
 
 import java.util.List;
 
-public class Page<T> {
+public class PageLoadAll<T> {
 
     //How many records are displayed per page
     private int pageSize;
@@ -15,11 +15,11 @@ public class Page<T> {
     //To display data, use generics
     private List<T> dataList;
 
-    public Page() {
+    public PageLoadAll() {
         super();
     }
 
-    public Page(int pageSize, int currentPage, int totalRecord, int totalPage, List<T> dataList) {
+    public PageLoadAll(int pageSize, int currentPage, int totalRecord, int totalPage, List<T> dataList) {
         super();
         this.pageSize = pageSize;
         this.currentPage = currentPage;
@@ -28,11 +28,11 @@ public class Page<T> {
         this.dataList = dataList;
     }
 
-    public Page(int pageNum, int pageSize, List<T> sourceList){
+    public PageLoadAll(int pageNum, int pageSize, List<T> sourceList){
+    	
         if (sourceList == null){
             return;
         }
-
         //Total number of records
         this.totalRecord = sourceList.size();
         //How many records are displayed per page
@@ -41,6 +41,9 @@ public class Page<T> {
         this.totalPage = this.totalRecord / this.pageSize;
         if (this.totalRecord % this.pageSize != 0) {
             this.totalPage += 1;
+        }
+        if(this.totalPage == 0) {
+        	this.totalPage = 1;
         }
 
         //Current Page Data
