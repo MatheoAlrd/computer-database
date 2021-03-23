@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 
 import com.excilys.cdb.controller.ComputerController;
 import com.excilys.cdb.model.Computer;
+import com.excilys.cdb.model.Page;
 
 public class DashboardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -27,10 +28,23 @@ public class DashboardServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 
 		List<Computer> computers = listComputers(request, session);
-		request.setAttribute("computers", computers);		
+		
+		String spageNum = request.getParameter("page");
+		spageNum = spageNum == null ? "1" : request.getParameter("page");
+		int pageNum = Integer.parseInt(spageNum);
+		//String spageSize = request.getParameter("pageSize");
+		//int pageSize = Integer.parseInt(spageSize);
+		
+		Page<Computer> currentPage = new Page<Computer>(pageNum,100,computers);
+		request.setAttribute("pageMax", currentPage.getTotalPage());
+		request.setAttribute("previousPage", currentPage.previousPage());
+		request.setAttribute("nextPage", currentPage.nextPage());
+		
+		List<Computer> computerPage = currentPage.getDataList();
+		request.setAttribute("computers", computerPage);
 
 		String totalComputers = computers.size()+" ";
-		request.setAttribute("totalComputers", totalComputers);
+		request.setAttribute("totalComputers", totalComputers);		
 
 		this.getServletContext().getRequestDispatcher("/WEB-INF/jsp/dashboard.jsp").forward(request,response);
 	}

@@ -43,5 +43,9 @@ public class ComputerService {
 	public Computer validateComputer(String name, String introduced, String discontinued, String companyId) {
 		return this.computerValidator.validateComputer(name, introduced, discontinued, companyId);
 	}
+	
+	public Computer valdiateComputer(Computer c) {
+		return this.computerValidator.validateComputer(c);
+	}
 
 }

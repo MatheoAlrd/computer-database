@@ -17,6 +17,7 @@ import com.excilys.cdb.model.builder.ComputerBuilder;
 public class ComputerMapper {
 
 	private ObjectMapper mapper = new ObjectMapper();
+	//private ComputerValidator computerValidator = new ComputerValidator();
 
 	@SuppressWarnings("unchecked")
 	public Map<String,Object> mapFromComputer(Computer computer){				
@@ -31,8 +32,8 @@ public class ComputerMapper {
 
 		List<Computer> computers = new ArrayList<Computer>();
 
-		while (result.next()) {											
-
+		while (result.next()) {
+			
 			ComputerBuilder computerBuilder = new ComputerBuilder()
 					.setId(result.getInt("computer.id"))
 					.setName(result.getString("computer.name"));
@@ -57,7 +58,7 @@ public class ComputerMapper {
 	}
 
 	public PreparedStatement preparedStatementFromComputer(PreparedStatement ps, Computer c) throws SQLException {
-
+		
 		ps.setObject(1, c.getName());
 
 		if (c.getIntroduced().isEmpty()) {

@@ -91,23 +91,25 @@
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
 			<ul class="pagination">
-				<li><a href="#" aria-label="Previous"> <span
+				<li><a href="dashboard?page=1" aria-label="First"> <span
 						aria-hidden="true">&laquo;</span>
 				</a></li>
-				<li><a href="#">1</a></li>
-				<li><a href="#">2</a></li>
-				<li><a href="#">3</a></li>
-				<li><a href="#">4</a></li>
-				<li><a href="#">5</a></li>
-				<li><a href="#" aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+				<li><a href="dashboard?page=${previousPage}">Previous</a></li>
+				<c:forEach var="page" begin="1" end="${pageMax}" step="1">						
+						<li><a href="dashboard?page=${page}">${page}</a></li>					
+				</c:forEach>
+				<li><a href="dashboard?page=${nextPage}">Next</a></li>
+				<li><a href="dashboard?page=${pageMax}" aria-label="Last"> <span aria-hidden="true">&raquo;</span>
 				</a></li>
 			</ul>
 		</div>
 
 		<div class="btn-group btn-group-sm pull-right" role="group">
-			<button type="button" class="btn btn-default">10</button>
-			<button type="button" class="btn btn-default">50</button>
-			<button type="button" class="btn btn-default">100</button>
+			<form id="pageSizeForm" action="#" method="GET">
+				<button name="pageSize" type="submit" class="btn btn-default" value="10">10</button>
+				<button name="pageSize" type="submit" class="btn btn-default" value="50">50</button>
+				<button name="pageSize" type="submit" class="btn btn-default" value="100">100</button>
+			</form>
 		</div>
 
 	</footer>
