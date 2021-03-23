@@ -1,8 +1,8 @@
 package com.excilys.cdb.controller;
 
 import java.util.List;
-import java.util.Map;
 
+import com.excilys.cdb.model.Company;
 import com.excilys.cdb.service.CompanyService;
 
 public class CompanyController {
@@ -13,14 +13,14 @@ public class CompanyController {
 	public CompanyController() {
 	}
 
-	public Map<String, Object> loadById(int id) {
+	public List<Company> find(int id) {
 
 		return this.companyService.find(id);
 
 	}
 
-	public List<Map<String,Object>> getAll() {
+	public List<Company> findAll() {
 
-		return this.companyService.getAll();
+		return this.companyService.findAll();
 	}
 }
