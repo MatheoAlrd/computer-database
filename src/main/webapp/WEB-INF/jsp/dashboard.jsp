@@ -13,7 +13,7 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="."> Application - Computer Database - ALLARD Mathéo</a>
+			<a class="navbar-brand" href=".">Application - Computer Database - ALLARD Mathéo</a>
 		</div>
 	</header>
 
@@ -95,11 +95,15 @@
 						aria-hidden="true">&laquo;</span>
 				</a></li>
 				<li><a href="dashboard?page=${previousPage}">Previous</a></li>
-				<li><a href="">...</a></li>
-				<c:forEach var="page" begin="${page-1}" end="${page+1}" step="1">						
+				<c:if test="${pageStart != 1}">
+					<li><a href="">...</a></li>
+				</c:if>
+				<c:forEach var="page" begin="${pageStart}" end="${pageEnd}" step="1">						
 						<li><a href="dashboard?page=${page}">${page}</a></li>					
 				</c:forEach>
-				<li><a href="">...</a></li>
+				<c:if test="${pageEnd != pageMax}">
+					<li><a href="">...</a></li>
+				</c:if>
 				<li><a href="dashboard?page=${nextPage}">Next</a></li>
 				<li><a href="dashboard?page=${pageMax}" aria-label="Last"> <span aria-hidden="true">&raquo;</span>
 				</a></li>
@@ -116,6 +120,7 @@
 		</div>
 	</footer>
 	<script src="../js/jquery.min.js"></script>
+	<script src="../js/jquery.validate.min.js"></script>
 	<script src="../js/bootstrap.min.js"></script>
 	<script src="../js/dashboard.js"></script>
 

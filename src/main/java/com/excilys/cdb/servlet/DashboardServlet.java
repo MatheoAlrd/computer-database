@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.excilys.cdb.controller.ComputerController;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.model.PageLoadAll;
 import com.excilys.cdb.model.PageSQLQuery;
@@ -79,7 +78,7 @@ public class DashboardServlet extends HttpServlet {
 
 		return computers;
 	}
-	
+
 	private int countComputers(String search) {
 		if(search == null) {
 			return 0;
@@ -127,15 +126,25 @@ public class DashboardServlet extends HttpServlet {
 			page = 1;
 			session.setAttribute("page",page);
 		}
-		System.out.println("page = " + page);
-		System.out.println("pageSize = " + pageSize);
-		System.out.println("search = " + search);
 
 		int totalComputers = this.countComputers(search);
 
 		List<Computer> computers = listComputersPage(search,pageSize,pageSize*(page-1));
-		
+
 		PageSQLQuery<Computer> currentPage = new PageSQLQuery<Computer>(page,pageSize,totalComputers,computers);
+
+		if(page - 1 < 1) {
+			session.setAttribute("pageStart",1);
+		} else {
+			session.setAttribute("pageStart",page - 1);
+		}
+
+		if(page + 1 > currentPage.getTotalPage()) {
+			session.setAttribute("pageEnd",currentPage.getTotalPage());
+		} else {
+			session.setAttribute("pageEnd",page + 1);
+		}
+
 		request.setAttribute("pageMax", currentPage.getTotalPage());
 		request.setAttribute("previousPage", currentPage.previousPage());
 		request.setAttribute("nextPage", currentPage.nextPage());
@@ -169,5 +178,6 @@ public class DashboardServlet extends HttpServlet {
 		request.setAttribute("totalComputers", totalComputers);	
 		return request;
 	}
+
 
 }
