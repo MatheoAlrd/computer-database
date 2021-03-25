@@ -11,11 +11,7 @@
 
 </head>
 <body>
-	<header class="navbar navbar-inverse navbar-fixed-top">
-		<div class="container">
-			<a class="navbar-brand" href=".">Application - Computer Database - ALLARD Mathéo</a>
-		</div>
-	</header>
+	<%@include file="header.jsp"%>
 
 	<section id="main">
 		<div class="container">
@@ -25,21 +21,27 @@
 					<form id="searchForm" action="#" method="GET" class="form-inline">
 
 						<input type="search" id="searchbox" name="search"
-							class="form-control" placeholder="Search name" /> <input
-							type="submit" id="searchsubmit" value="Filter by name"
+							class="form-control" placeholder="Search name" />
+						<input type="submit" id="searchsubmit" value="Filter by name"
 							class="btn btn-primary" />
 					</form>
 				</div>
 				<div class="pull-right">
-					<a class="btn btn-success" id="addComputer" href="addComputer">Add
-						Computer</a> <a class="btn btn-default" id="editComputer" href="editComputer"
-						onclick="$.fn.toggleEditMode();">Edit</a>
+					<a class="btn btn-success" id="addComputer" href="addComputer">Add Computer</a>
+					<a class="btn btn-default" id="editComputer" onclick="$.fn.toggleEditMode();">Edit</a>
 				</div>
 			</div>
 		</div>
 
 		<form id="deleteForm" action="#" method="POST">
-			<input type="hidden" name="selection" value="">
+			<input type="hidden" name="selection">
+		</form>
+		
+		<form id="editForm" action="#" method="POST">
+			<input type="hidden" name="computerNameSelected">
+			<input type="hidden" name="computerIntroducedSelected">
+			<input type="hidden" name="computerDiscontinuedSelected">
+			<input type="hidden" name="computerCompanyNameSelected">
 		</form>
 
 		<div class="container" style="margin-top: 10px;">
@@ -49,20 +51,20 @@
 						<!-- Variable declarations for passing labels as parameters -->
 						<!-- Table header for Computer Name -->
 
-						<th class="editMode" style="width: 60px; height: 22px;"><input
-							type="checkbox" id="selectall" /> <span
-							style="vertical-align: top;"> - <a href="#"
-								id="deleteSelected" onclick="$.fn.deleteSelected();"> <i
-									class="fa fa-trash-o fa-lg"></i>
-							</a>
-						</span></th>
+						<th class="editMode" style="width: 60px; height: 22px;">
+							<input type="checkbox" id="selectall"/>
+							<span style="vertical-align: top;"> - 
+								<a href=""	id="deleteSelected" onclick="$.fn.deleteSelected();">
+									<i class="fa fa-trash-o fa-lg"></i>
+								</a>
+							</span>
+						</th>
 						<th>Computer name</th>
 						<th>Introduced date</th>
 						<!-- Table header for Discontinued Date -->
 						<th>Discontinued date</th>
 						<!-- Table header for Company -->
 						<th>Company</th>
-
 					</tr>
 				</thead>
 
@@ -74,7 +76,7 @@
 						<tr>
 							<td class="editMode"><input type="checkbox" name="cb"
 								class="cb" value="${computer.id}"></td>
-							<td><a href="editComputer.html" onclick="">${computer.name}</a></td>
+							<td><a href="editComputer" onclick="$.fn.getSelectedComputerAttributes(${computer});"> ${computer.name}</a></td>
 							<td>${computer.introduced.orElse(null)}</td>
 							<td>${computer.discontinued.orElse(null)}</td>
 							<td>${computer.company.orElse(null).name}</td>
@@ -119,10 +121,8 @@
 			</div>
 		</div>
 	</footer>
-	<script src="../js/jquery.min.js"></script>
-	<script src="../js/jquery.validate.min.js"></script>
-	<script src="../js/bootstrap.min.js"></script>
-	<script src="../js/dashboard.js"></script>
+	
+	<script><%@include file="../../js/dashboard.js"%></script>
 
 </body>
 </html>

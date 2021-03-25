@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.model.dao.ComputerDAO;
+import com.excilys.cdb.model.dto.ComputerDTO;
 import com.excilys.cdb.model.validator.ComputerValidator;
 
 public class ComputerService {
@@ -54,13 +55,4 @@ public class ComputerService {
 	public ComputerDAO getComputerDAO() {
 		return computerDAO;
 	}
-	
-	public Computer validateComputer(String name, String introduced, String discontinued, String companyId) {
-		return this.computerValidator.validateComputer(name, introduced, discontinued, companyId);
-	}
-	
-	public Computer valdiateComputer(Computer c) {
-		return this.computerValidator.validateComputer(c);
-	}
-
 }

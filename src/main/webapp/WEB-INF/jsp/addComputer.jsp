@@ -20,7 +20,7 @@
             <div class="row">
                 <div class="col-xs-8 col-xs-offset-2 box">
                     <h1>Add Computer</h1>
-                    <form id ="addFormComputer" action="addComputer" method="POST">
+                    <form id ="addFormComputer" name ="addFormComputer" action="addComputer" method="POST">
                         <fieldset>
                             <div class="form-group">
                                 <label for="computerName">Computer name</label>
@@ -55,9 +55,12 @@
         </div>
     </section>
     
-    <script src="../js/jquery.min.js"></script>
-    <script src="../js/jquery.validate.min.js"></script>
-	<script src="../js/formAddComputerValidation.js"></script>
-	
+    <script><%@include file="../../js/formAddComputerValidation.js"%></script>
+    <script>
+   		$(document).ready(function(){
+      		$("#addFormComputer").validate();
+    	});
+	</script>
+    	
 </body>	
 </html>

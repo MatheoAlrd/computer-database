@@ -1,6 +1,6 @@
 
 jQuery(document).ready(function() {
-	jQuery("#formAddComputer").validate({
+	jQuery("#formStep").validate({
 		rules: {
 			"computerName": {
 				"required": true,
