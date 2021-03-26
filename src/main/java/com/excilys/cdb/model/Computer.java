@@ -42,11 +42,11 @@ public class Computer {
 	 * Getter and Setters
 	 */
 
-	public int getId() {
+	public int getID() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setID(int id) {
 		this.id = id;
 	}
 

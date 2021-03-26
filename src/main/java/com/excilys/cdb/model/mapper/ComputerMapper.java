@@ -18,6 +18,7 @@ import com.excilys.cdb.exception.InvalidValuesException;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.model.builder.CompanyBuilder;
 import com.excilys.cdb.model.builder.ComputerBuilder;
+import com.excilys.cdb.model.dto.CompanyDTO;
 import com.excilys.cdb.model.dto.ComputerDTO;
 import com.excilys.cdb.model.validator.ComputerValidator;
 
@@ -40,72 +41,76 @@ public class ComputerMapper {
 	}
 
 	public Optional<Computer> toComputer(ComputerDTO c) {
-		
+
 		Optional<Computer> computer = Optional.empty();
 		try {
-			computerValidator.validateComputer(c);
+			computerValidator.validate(c);
 			computer = Optional.of(new ComputerBuilder()
 					.setName(c.getName())
 					.setIntroduced(LocalDate.parse(c.getIntroduced()))
 					.setDiscontinued(LocalDate.parse(c.getDiscontinued()))
-					.setCompany(new CompanyBuilder().setId(Integer.parseInt(c.getCompanyID())).build())
+					.setCompany(new CompanyBuilder()
+							.setId(Integer.parseInt(c.getCompanyID()))
+							.build())
 					.build());
 		} catch (InvalidValuesException e) {
 			logger.error(e.getMessage());
 		}
-		
+
 		return computer;
 	}
 
-	public List<Computer> computersFromResultSet(ResultSet result) throws SQLException {
+	public ComputerDTO toComputerDTO(Computer c) {
+		String introduced = c.getIntroduced() == null ? null : c.getIntroduced().toString();
+		String discontinued = c.getDiscontinued() == null ? null : c.getDiscontinued().toString();
+		String companyID = c.getCompany() == null ? null : ""+c.getCompany().getID();
 
-		List<Computer> computers = new ArrayList<Computer>();
+		return new ComputerDTO(c.getName(),introduced,discontinued,companyID);
+
+	}
+
+	public List<ComputerDTO> computersFromResultSet(ResultSet result) throws SQLException {
+
+		List<ComputerDTO> computers = new ArrayList<ComputerDTO>();
 
 		while (result.next()) {
 
-			ComputerBuilder computerBuilder = new ComputerBuilder()
-					.setId(result.getInt("computer.id"))
-					.setName(result.getString("computer.name"));
-
-			if (result.getDate("computer.introduced") != null) {
-				computerBuilder.setIntroduced(result.getDate("computer.introduced").toLocalDate());
+			ComputerDTO c = new ComputerDTO(result.getString("computer.name"),
+					result.getDate("computer.introduced").toString(),
+					result.getDate("computer.discontinued").toString(),
+					result.getObject("computer.company.id").toString());
+			
+			try {
+				computerValidator.validate(c);
+				computers.add(c);			
+			} catch (InvalidValuesException e) {
+				logger.error(e.getMessage());
 			}
-			if (result.getDate("computer.discontinued") != null) {
-				computerBuilder.setDiscontinued(result.getDate("computer.discontinued").toLocalDate());
-			}
-
-			if (result.getObject("computer.company_id") != null && result.getString("company.name") != null) {
-				computerBuilder.setCompany(new CompanyBuilder()
-						.setId(result.getInt("computer.company_id"))
-						.setName(result.getString("company.name"))
-						.build());
-			}
-
-			computers.add(computerBuilder.build());	
 		}
 		return computers;
 	}
 
-	public PreparedStatement preparedStatementFromComputer(PreparedStatement ps, Computer c) throws SQLException {
+	public PreparedStatement preparedStatementFromComputer(PreparedStatement ps, ComputerDTO c) throws SQLException {
 
-		ps.setObject(1, c.getName());
-
-		if (c.getIntroduced().isEmpty()) {
+		ps.setString(1, c.getName());
+		
+		if(c.getIntroduced() == null) {
 			ps.setDate(2, null);
 		} else {
-			ps.setDate(2, Date.valueOf(c.getIntroduced().get()));
+			ps.setDate(2, Date.valueOf(c.getIntroduced()));
 		}
-		if (c.getDiscontinued().isEmpty()) {
+		
+		if(c.getDiscontinued() == null) {
 			ps.setDate(3, null);
 		} else {
-			ps.setDate(3, Date.valueOf(c.getDiscontinued().get()));
+			ps.setDate(3, Date.valueOf(c.getDiscontinued()));
 		}
-		if (c.getCompany().isEmpty()) {
-			ps.setObject(4, null);
+		
+		if(c.getCompanyID() == null) {
+			ps.setObject(4,null);
 		} else {
-			ps.setInt(4, c.getCompany().get().getId());
+			ps.setInt(4, Integer.parseInt(c.getCompanyID()));
 		}
-
 		return ps;
 	}
 

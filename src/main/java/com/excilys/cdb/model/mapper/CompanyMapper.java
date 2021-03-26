@@ -40,7 +40,7 @@ public class CompanyMapper {
 		Optional<Company> company = Optional.empty();
 		
 		try {
-			companyValidator.validateCompany(c);
+			companyValidator.validate(c);
 			company = Optional.of(new CompanyBuilder()
 					.setId(Integer.parseInt(c.getID()))
 					.setName(c.getName())
@@ -52,20 +52,23 @@ public class CompanyMapper {
 	}
 	
 	public CompanyDTO toCompanyDTO(Company c) {
-		return new CompanyDTO(""+c.getId(),c.getName());
+		return new CompanyDTO(""+c.getID(),c.getName());
 	}
 
-	public List<Company> companyFromResultSet(ResultSet result) throws SQLException {
+	public List<CompanyDTO> companyDTOFromResultSet(ResultSet result) throws SQLException {
 
-		List<Company> companies = new ArrayList<Company>();
+		List<CompanyDTO> companies = new ArrayList<CompanyDTO>();
 
 		while(result.next()) {
-			companies.add(new CompanyBuilder()
-					.setId(result.getInt("id"))
-					.setName(result.getString("name"))
-					.build());
+			CompanyDTO c = new CompanyDTO(""+result.getInt("id"),result.getString("name"));
+			
+			try {
+				companyValidator.validate(c);
+				companies.add(c);			
+			} catch (InvalidValuesException e) {
+				logger.error(e.getMessage());
+			}
 		}
-
 		return companies;
 	}
 

@@ -10,7 +10,6 @@ import com.excilys.cdb.model.validator.ComputerValidator;
 public class ComputerService {
 	
 	private ComputerDAO computerDAO = ComputerDAO.getInstance();
-	private ComputerValidator computerValidator = new ComputerValidator();
 	
 	public void create(Computer c) {
 		this.computerDAO.create(c);

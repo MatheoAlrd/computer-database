@@ -13,7 +13,7 @@ public class ComputerValidator {
 
 	private static ComputerValidator instance;
 
-	public void validateComputer(ComputerDTO c) throws InvalidValuesException{
+	public void validate(ComputerDTO c) throws InvalidValuesException{
 
 		this.isNameValid(c.getName());
 		this.isDateValid(c.getIntroduced());
@@ -39,7 +39,10 @@ public class ComputerValidator {
 		}
 	}
 
-	private void isDateValid(String date) throws DateInvalidException {		
+	private void isDateValid(String date) throws DateInvalidException {	
+		if(date == null) {
+			return;
+		}
 		try {
 			LocalDate.parse(date);
 		}

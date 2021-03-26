@@ -9,7 +9,7 @@ public class CompanyValidator {
 	
 	private static CompanyValidator instance;
 	
-	public void validateCompany(CompanyDTO c) throws InvalidValuesException {
+	public void validate(CompanyDTO c) throws InvalidValuesException {
 		
 		this.isIDValid(c.getID());
 		this.isNameValid(c.getName());		
