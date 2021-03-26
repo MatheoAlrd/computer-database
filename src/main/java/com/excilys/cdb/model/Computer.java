@@ -2,7 +2,6 @@
 package com.excilys.cdb.model;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import com.excilys.cdb.model.builder.ComputerBuilder;
 
@@ -59,24 +58,24 @@ public class Computer {
 		this.name = name;
 	}
 
-	public Optional<LocalDate> getIntroduced() {
-		return Optional.ofNullable(this.introduced);
+	public LocalDate getIntroduced() {
+		return this.introduced;
 	}
 
 	public void setIntroduced(LocalDate introduced) {
 		this.introduced = introduced;
 	}
 
-	public Optional<LocalDate> getDiscontinued() {
-		return Optional.ofNullable(this.discontinued);
+	public LocalDate getDiscontinued() {
+		return this.discontinued;
 	}
 
 	public void setDiscontinued(LocalDate discontinued) {
 		this.discontinued = discontinued;
 	}
 
-	public Optional<Company> getCompany() {
-		return Optional.ofNullable(this.company);
+	public Company getCompany() {
+		return this.company;
 	}
 
 	public void setCompany(Company company) {

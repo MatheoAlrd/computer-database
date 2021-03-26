@@ -11,8 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.model.PageLoadAll;
-import com.excilys.cdb.model.PageSQLQuery;
+import com.excilys.cdb.model.Page;
 import com.excilys.cdb.service.ComputerService;
 
 public class DashboardServlet extends HttpServlet {
@@ -30,8 +29,13 @@ public class DashboardServlet extends HttpServlet {
 		Object[] con = {request,session};
 		con = this.paginate(request, session);
 		request = (HttpServletRequest) con[0];
-		session = (HttpSession) con[1];
-		//request = this.paginateLoadAll(request);
+		session = (HttpSession) con[1];		
+		/*
+		System.out.println(request.getParameter("computerNameSelected"));
+		System.out.println(request.getParameter("computerIntroducedSelected"));
+		System.out.println(request.getParameter("computerDiscontinuedSelected"));
+		System.out.println(request.getParameter("computerCompanyNameSelected"));
+		 */
 
 
 		this.getServletContext().getRequestDispatcher("/WEB-INF/jsp/dashboard.jsp").forward(request,response);
@@ -39,24 +43,6 @@ public class DashboardServlet extends HttpServlet {
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-	}
-
-	private List<Computer> listComputers(HttpServletRequest request) {
-
-		List<Computer> computers = new ArrayList<Computer>();
-
-		String search = request.getParameter("search");
-
-		if(search == null || search.equals("#")) {		
-			computers = servComputer.findAll();
-		} else {
-			try {
-				computers = servComputer.find(Integer.parseInt(search));
-			} catch (NumberFormatException e) {
-				computers = servComputer.find(search);
-			}
-		}
-		return computers;
 	}
 
 	private List<Computer> listComputersPage(String search, int pageSize, int offset){
@@ -131,7 +117,7 @@ public class DashboardServlet extends HttpServlet {
 
 		List<Computer> computers = listComputersPage(search,pageSize,pageSize*(page-1));
 
-		PageSQLQuery<Computer> currentPage = new PageSQLQuery<Computer>(page,pageSize,totalComputers,computers);
+		Page<Computer> currentPage = new Page<Computer>(page,pageSize,totalComputers,computers);
 
 		if(page - 1 < 1) {
 			session.setAttribute("pageStart",1);
@@ -155,29 +141,4 @@ public class DashboardServlet extends HttpServlet {
 		Object[] res = {request,session};
 		return res;
 	}
-
-	private HttpServletRequest paginateLoadAll(HttpServletRequest request) {
-
-		List<Computer> computers = listComputers(request);
-
-		String spageNum = request.getParameter("page");
-		spageNum = spageNum == null ? "1" : request.getParameter("page");
-		int pageNum = Integer.parseInt(spageNum);
-		//String spageSize = request.getParameter("pageSize");
-		//int pageSize = Integer.parseInt(spageSize);
-
-		PageLoadAll<Computer> currentPage = new PageLoadAll<Computer>(pageNum,100,computers);
-		request.setAttribute("pageMax", currentPage.getTotalPage());
-		request.setAttribute("previousPage", currentPage.previousPage());
-		request.setAttribute("nextPage", currentPage.nextPage());
-
-		List<Computer> computerPage = currentPage.getDataList();
-		request.setAttribute("computers", computerPage);
-
-		String totalComputers = computers.size()+" ";
-		request.setAttribute("totalComputers", totalComputers);	
-		return request;
-	}
-
-
 }

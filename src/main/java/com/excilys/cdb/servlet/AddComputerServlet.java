@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.excilys.cdb.model.Company;
+import com.excilys.cdb.model.dto.ComputerDTO;
+import com.excilys.cdb.model.mapper.ComputerMapper;
 import com.excilys.cdb.service.CompanyService;
 import com.excilys.cdb.service.ComputerService;
 
@@ -18,6 +20,7 @@ public class AddComputerServlet extends HttpServlet {
 	
 	private CompanyService servCompany = new CompanyService();
 	private ComputerService servComputer = new ComputerService();
+	private ComputerMapper computerMapper = ComputerMapper.getInstance();
        
     public AddComputerServlet() {
         super();
@@ -40,8 +43,8 @@ public class AddComputerServlet extends HttpServlet {
 		String discontinued = request.getParameter("discontinued");
 		String companyId = request.getParameter("companyId");
 
-		servComputer.create(servComputer
-				.validateComputer(name, introduced, discontinued, companyId));
+		servComputer.create(computerMapper
+				.toComputer(new ComputerDTO(name, introduced, discontinued, companyId)).orElseThrow());
 		
 		response.sendRedirect("dashboard");
 	}

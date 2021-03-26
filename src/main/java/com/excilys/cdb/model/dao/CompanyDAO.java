@@ -9,10 +9,10 @@ import java.util.List;
 
 import org.slf4j.LoggerFactory;
 
-import com.excilys.cdb.model.Company;
+import com.excilys.cdb.model.dto.CompanyDTO;
 import com.excilys.cdb.model.mapper.CompanyMapper;
 
-public class CompanyDAO extends DAO<Company> {
+public class CompanyDAO extends DAO<CompanyDTO> {
 
 	private static final String SELECT_BY_ID_QUERY = "SELECT id, name FROM company WHERE id = ?";
 	private static final String SELECT_ALL_QUERY = "SELECT id, name FROM company";
@@ -26,7 +26,7 @@ public class CompanyDAO extends DAO<Company> {
 		logger = LoggerFactory.getLogger(CompanyDAO.class);
 	}
 
-	public List<Company> find(int id) {
+	public List<CompanyDTO> find(int id) {
 
 		try {
 			this.openConnection();
@@ -34,10 +34,10 @@ public class CompanyDAO extends DAO<Company> {
 					.prepareStatement(SELECT_BY_ID_QUERY,
 							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			ps.setInt(1, id);
-			return this.companyMapper.companyFromResultSet(ps.executeQuery());
+			return this.companyMapper.companyDTOFromResultSet(ps.executeQuery());
 
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
+			logger.error("Couldn't find the company by its id "+e.getMessage());
 		} finally {
 			this.closeConnection();
 		}
@@ -45,9 +45,9 @@ public class CompanyDAO extends DAO<Company> {
 		return null;
 	}
 
-	public List<Company> findAll() {
+	public List<CompanyDTO> findAll() {
 
-		List<Company> companies = new ArrayList<Company>();
+		List<CompanyDTO> companies = new ArrayList<CompanyDTO>();
 
 		try {
 			this.openConnection();
@@ -55,10 +55,10 @@ public class CompanyDAO extends DAO<Company> {
 					.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
 							ResultSet.CONCUR_READ_ONLY).executeQuery(SELECT_ALL_QUERY);
 
-			companies = this.companyMapper.companyFromResultSet(result);
+			companies = this.companyMapper.companyDTOFromResultSet(result);
 			
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
+			logger.error("Couldn't find all the companies "+e.getMessage());
 		} finally {
 			this.closeConnection();
 		}

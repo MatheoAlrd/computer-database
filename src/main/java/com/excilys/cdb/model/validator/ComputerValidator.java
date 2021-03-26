@@ -1,57 +1,75 @@
 package com.excilys.cdb.model.validator;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
-import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.model.builder.CompanyBuilder;
-import com.excilys.cdb.model.builder.ComputerBuilder;
+import com.excilys.cdb.exception.IDInvalidException;
+import com.excilys.cdb.exception.DateIntervalInvalidException;
+import com.excilys.cdb.exception.DateInvalidException;
+import com.excilys.cdb.exception.InvalidValuesException;
+import com.excilys.cdb.exception.NameInvalidException;
+import com.excilys.cdb.model.dto.ComputerDTO;
 
 public class ComputerValidator {
 
-	public ComputerValidator() {
-		super();
-	}
-	
-	public Computer validateComputer(Computer c) {
-		return new ComputerBuilder()
-				.setName(c.getName())
-				.setIntroduced(c.getIntroduced().isEmpty() ? 
-						null : c.getIntroduced().get())
-				.setDiscontinued(c.getDiscontinued().isEmpty() ? 
-						null : c.getDiscontinued().get())
-				.setCompany(c.getCompany().isEmpty() ?
-						null : c.getCompany().get().getId() == 0 ?
-								null : c.getCompany().get())
-				.build();
+	private static ComputerValidator instance;
+
+	public void validate(ComputerDTO c) throws InvalidValuesException{
+
+		this.isNameValid(c.getName());
+		this.isDateValid(c.getIntroduced());
+		this.isDateValid(c.getDiscontinued());
+		this.isValidInterval(c.getIntroduced(), c.getDiscontinued());
+		this.isIDValid(c.getCompanyID());
+
 	}
 
-	public Computer validateComputer(String name, String introduced, String discontinued, String companyId) {
-		return new ComputerBuilder()
-				.setName(name)
-				.setIntroduced(introduced.isEmpty() ? 
-						null : LocalDate.parse(introduced, DateTimeFormatter.ISO_LOCAL_DATE))
-				.setDiscontinued(discontinued.isEmpty() ? 
-						null : LocalDate.parse(discontinued, DateTimeFormatter.ISO_LOCAL_DATE))
-				.setCompany(companyId.isEmpty() ?
-						null : companyId == "0" ?
-								null : new CompanyBuilder().setId(Integer.parseInt(companyId)).build())
-				.build();
+	private void isIDValid(String id) throws IDInvalidException {
+		if(id == null) {
+			return;
+		}
+		try {
+			Integer.parseInt(id);
+		}
+		catch (Exception e) {
+			throw new IDInvalidException();
+		}
 	}
-	
-	public Computer validateComputer(String name, String introduced, String discontinued, String companyId, String companyName) {
-		return new ComputerBuilder()
-				.setName(name)
-				.setIntroduced(introduced.isEmpty() ? 
-						null : LocalDate.parse(introduced, DateTimeFormatter.ISO_LOCAL_DATE))
-				.setDiscontinued(discontinued.isEmpty() ? 
-						null : LocalDate.parse(discontinued, DateTimeFormatter.ISO_LOCAL_DATE))
-				.setCompany(companyId.isEmpty() ?
-						null : companyId == "0" ?
-								null : new CompanyBuilder().setId(Integer.parseInt(companyId))
-								.setName(companyName)
-								.build())
-				.build();
+
+	private void isNameValid(String name) throws NameInvalidException {
+
+		if(name.isBlank() || name.length() > 255) {
+			throw new NameInvalidException();
+		}
 	}
+
+	private void isDateValid(String date) throws DateInvalidException {	
+		if(date == null) {
+			return;
+		}
+		try {
+			LocalDate.parse(date);
+		}
+		catch (Exception e) {
+			throw new DateInvalidException();
+		}
+
+	}
+
+	private void isValidInterval(String introduced, String discontinued) throws DateIntervalInvalidException {
+		if(introduced == null || discontinued == null) {
+			return;
+		}
+		if(LocalDate.parse(discontinued).isBefore(LocalDate.parse(introduced))) {
+			throw new DateIntervalInvalidException();
+		}
+	}
+
+	public static ComputerValidator getInstance() {
+		if(instance == null) {
+			instance = new ComputerValidator();
+		}
+		return instance;
+	}
+
 
 }

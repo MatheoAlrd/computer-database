@@ -28,9 +28,7 @@ public class CompanyView {
 		System.out.println("This company does not exist");
 	}
 
-	public void print(Company c) {
-		
-		this.printType();
+	public void print(Company c) {		
 		if(c == null) {
 			this.printErrorDoesNotExist();
 		} else {

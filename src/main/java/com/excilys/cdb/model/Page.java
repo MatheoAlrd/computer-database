@@ -2,7 +2,7 @@ package com.excilys.cdb.model;
 
 import java.util.List;
 
-public class PageSQLQuery<T> {
+public class Page<T> {
 	
     //How many records are displayed per page
     private int pageSize;
@@ -15,11 +15,11 @@ public class PageSQLQuery<T> {
     //To display data, use generics
     private List<T> dataList;
     
-    public PageSQLQuery() {
+    public Page() {
     	super();
     }
     
-    public PageSQLQuery(int pageNum, int pageSize, int totalRecord, List<T> sourceList) {
+    public Page(int pageNum, int pageSize, int totalRecord, List<T> sourceList) {
     	
     	if (sourceList == null){
             return;
