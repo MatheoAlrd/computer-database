@@ -30,12 +30,12 @@ public class DashboardServlet extends HttpServlet {
 		con = this.paginate(request, session);
 		request = (HttpServletRequest) con[0];
 		session = (HttpSession) con[1];		
-		
+		/*
 		System.out.println(request.getParameter("computerNameSelected"));
 		System.out.println(request.getParameter("computerIntroducedSelected"));
 		System.out.println(request.getParameter("computerDiscontinuedSelected"));
 		System.out.println(request.getParameter("computerCompanyNameSelected"));
-
+		 */
 
 
 		this.getServletContext().getRequestDispatcher("/WEB-INF/jsp/dashboard.jsp").forward(request,response);
@@ -43,24 +43,6 @@ public class DashboardServlet extends HttpServlet {
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-	}
-
-	private List<Computer> listComputers(HttpServletRequest request) {
-
-		List<Computer> computers = new ArrayList<Computer>();
-
-		String search = request.getParameter("search");
-
-		if(search == null || search.equals("#")) {		
-			computers = servComputer.findAll();
-		} else {
-			try {
-				computers = servComputer.find(Integer.parseInt(search));
-			} catch (NumberFormatException e) {
-				computers = servComputer.find(search);
-			}
-		}
-		return computers;
 	}
 
 	private List<Computer> listComputersPage(String search, int pageSize, int offset){

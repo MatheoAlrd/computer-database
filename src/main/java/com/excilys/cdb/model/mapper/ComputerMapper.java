@@ -18,7 +18,6 @@ import com.excilys.cdb.exception.InvalidValuesException;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.model.builder.CompanyBuilder;
 import com.excilys.cdb.model.builder.ComputerBuilder;
-import com.excilys.cdb.model.dto.CompanyDTO;
 import com.excilys.cdb.model.dto.ComputerDTO;
 import com.excilys.cdb.model.validator.ComputerValidator;
 
@@ -47,14 +46,14 @@ public class ComputerMapper {
 			computerValidator.validate(c);
 			computer = Optional.of(new ComputerBuilder()
 					.setName(c.getName())
-					.setIntroduced(LocalDate.parse(c.getIntroduced()))
-					.setDiscontinued(LocalDate.parse(c.getDiscontinued()))
-					.setCompany(new CompanyBuilder()
+					.setIntroduced(c.getIntroduced() == null ? null : LocalDate.parse(c.getIntroduced()))
+					.setDiscontinued(c.getDiscontinued() == null ? null : LocalDate.parse(c.getDiscontinued()))
+					.setCompany(c.getCompanyID() == null ? null : new CompanyBuilder()
 							.setId(Integer.parseInt(c.getCompanyID()))
 							.build())
 					.build());
 		} catch (InvalidValuesException e) {
-			logger.error(e.getMessage());
+			logger.error("Didn't transform Computer DTO Computer because values were invalid",e);
 		}
 
 		return computer;
@@ -63,53 +62,75 @@ public class ComputerMapper {
 	public ComputerDTO toComputerDTO(Computer c) {
 		String introduced = c.getIntroduced() == null ? null : c.getIntroduced().toString();
 		String discontinued = c.getDiscontinued() == null ? null : c.getDiscontinued().toString();
-		String companyID = c.getCompany() == null ? null : ""+c.getCompany().getID();
+		String companyID = c.getCompany() == null ? null : ""+c.getCompany().getId();
 
 		return new ComputerDTO(c.getName(),introduced,discontinued,companyID);
 
 	}
 
-	public List<ComputerDTO> computersFromResultSet(ResultSet result) throws SQLException {
+	public List<ComputerDTO> computersFromResultSet(ResultSet result) {
 
 		List<ComputerDTO> computers = new ArrayList<ComputerDTO>();
+		String name,introduced,discontinued,companyId;
+		try {
+			while (result.next()) {
+				name = result.getString("computer.name");
 
-		while (result.next()) {
+				if(result.getDate("computer.introduced") == null) {
+					introduced = null;
+				} else {
+					introduced = result.getDate("computer.introduced").toString();
+				}
 
-			ComputerDTO c = new ComputerDTO(result.getString("computer.name"),
-					result.getDate("computer.introduced").toString(),
-					result.getDate("computer.discontinued").toString(),
-					result.getObject("computer.company.id").toString());
-			
-			try {
+				if(result.getDate("computer.discontinued") == null) {
+					discontinued = null;
+				} else {
+					discontinued = result.getDate("computer.discontinued").toString();
+				}
+
+				if(result.getObject("computer.company_id") == null) {
+					companyId = null;
+				} else {
+					companyId = result.getObject("computer.company_id").toString();
+				}
+
+				ComputerDTO c = new ComputerDTO(name, introduced, discontinued, companyId);
 				computerValidator.validate(c);
 				computers.add(c);			
-			} catch (InvalidValuesException e) {
-				logger.error(e.getMessage());
 			}
+		} catch (InvalidValuesException e) {
+			logger.error("Didn't transform ResultSet because values were Invalid \n"+e.getMessage());
+		} catch (SQLException e) {
+			logger.error("Didn't transform ResultSet because there is an SQL Exception \n"+e.getMessage());
 		}
 		return computers;
 	}
 
-	public PreparedStatement preparedStatementFromComputer(PreparedStatement ps, ComputerDTO c) throws SQLException {
+	public PreparedStatement preparedStatementFromComputer(PreparedStatement ps, ComputerDTO c) {
 
-		ps.setString(1, c.getName());
-		
-		if(c.getIntroduced() == null) {
-			ps.setDate(2, null);
-		} else {
-			ps.setDate(2, Date.valueOf(c.getIntroduced()));
-		}
-		
-		if(c.getDiscontinued() == null) {
-			ps.setDate(3, null);
-		} else {
-			ps.setDate(3, Date.valueOf(c.getDiscontinued()));
-		}
-		
-		if(c.getCompanyID() == null) {
-			ps.setObject(4,null);
-		} else {
-			ps.setInt(4, Integer.parseInt(c.getCompanyID()));
+		try {
+			ps.setString(1, c.getName());
+
+			if(c.getIntroduced() == null) {
+				ps.setDate(2, null);
+			} else {
+				ps.setDate(2, Date.valueOf(c.getIntroduced()));
+			}
+
+			if(c.getDiscontinued() == null) {
+				ps.setDate(3, null);
+			} else {
+				ps.setDate(3, Date.valueOf(c.getDiscontinued()));
+			}
+
+			if(c.getCompanyID() == null) {
+				ps.setObject(4,null);
+			} else {
+				ps.setInt(4, Integer.parseInt(c.getCompanyID()));
+			}
+
+		} catch (SQLException e) {
+			logger.error("Didn't change the PreparedStatement because there is a SQL exception \n"+e.getMessage());
 		}
 		return ps;
 	}

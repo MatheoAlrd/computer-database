@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.slf4j.LoggerFactory;
 
-import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.model.dto.CompanyDTO;
 import com.excilys.cdb.model.dto.ComputerDTO;
@@ -57,7 +56,7 @@ public class ComputerDAO extends DAO<Computer> {
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
+			logger.error("Couldn't create the computer "+e.getMessage());
 		} finally {
 			this.closeConnection();
 		}
@@ -73,7 +72,7 @@ public class ComputerDAO extends DAO<Computer> {
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
+			logger.error("Couldn't delete the computer "+e.getMessage());
 		} finally {
 			this.closeConnection();
 		}
@@ -90,7 +89,7 @@ public class ComputerDAO extends DAO<Computer> {
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
+			logger.error("Couldn't update the computer "+e.getMessage());
 		} finally {
 			this.closeConnection();
 		}
@@ -108,16 +107,15 @@ public class ComputerDAO extends DAO<Computer> {
 			return computerMapper.computersFromResultSet(result);
 
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
+			logger.error("Couldn't find the computer by its id "+e.getMessage());
 		} finally {
 			this.closeConnection();
 		}
-		return null;
+		return new ArrayList<ComputerDTO>();
 	}
 
 	public List<ComputerDTO> find(String name) {
 
-		List<ComputerDTO> computers = new ArrayList<ComputerDTO>();
 		try {
 			this.openConnection();
 			PreparedStatement ps = this.getConnection()
@@ -130,11 +128,11 @@ public class ComputerDAO extends DAO<Computer> {
 			return computerMapper.computersFromResultSet(result);
 
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
+			logger.error("Couldn't find the computer by its name "+e.getMessage());
 		} finally {
 			this.closeConnection();
 		}
-		return computers;
+		return new ArrayList<ComputerDTO>();
 	}
 
 	public List<ComputerDTO> findAll() {
@@ -146,7 +144,7 @@ public class ComputerDAO extends DAO<Computer> {
 			return computerMapper.computersFromResultSet(result);
 
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
+			logger.error("Couldn't find all computers "+e.getMessage());
 		} finally {
 			this.closeConnection();
 		}
@@ -154,8 +152,6 @@ public class ComputerDAO extends DAO<Computer> {
 	}
 	
 	public List<ComputerDTO> findPage(String name, int pageSize, int offset) {
-
-		List<ComputerDTO> computers = new ArrayList<ComputerDTO>();
 		try {
 			this.openConnection();
 			PreparedStatement ps = this.getConnection()
@@ -170,11 +166,11 @@ public class ComputerDAO extends DAO<Computer> {
 			return computerMapper.computersFromResultSet(result);
 
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
+			logger.error("Couldn't find all the computers by their name in the page "+e.getMessage());
 		} finally {
 			this.closeConnection();
 		}
-		return computers;
+		return new ArrayList<ComputerDTO>();
 	}
 	
 	public List<ComputerDTO> findAllPage(int pageSize, int offset) {
@@ -191,7 +187,7 @@ public class ComputerDAO extends DAO<Computer> {
 			return computerMapper.computersFromResultSet(result);
 
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
+			logger.error("Couldn't find all the computers in the page "+e.getMessage());
 		} finally {
 			this.closeConnection();
 		}
@@ -212,7 +208,7 @@ public class ComputerDAO extends DAO<Computer> {
 			}
 
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
+			logger.error("Couldn't count all the computer "+e.getMessage());
 		} finally {
 			this.closeConnection();
 		}
@@ -233,7 +229,7 @@ public class ComputerDAO extends DAO<Computer> {
 			}
 
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
+			logger.error("Couldn't count all the computer by their names "+e.getMessage());
 		} finally {
 			this.closeConnection();
 		}

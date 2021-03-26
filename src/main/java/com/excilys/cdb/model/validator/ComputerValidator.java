@@ -24,6 +24,9 @@ public class ComputerValidator {
 	}
 
 	private void isIDValid(String id) throws IDInvalidException {
+		if(id == null) {
+			return;
+		}
 		try {
 			Integer.parseInt(id);
 		}

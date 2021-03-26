@@ -77,9 +77,9 @@
 							<td class="editMode"><input type="checkbox" name="cb"
 								class="cb" value="${computer.id}"></td>
 							<td><a href="editComputer" onclick="$.fn.getSelectedComputerAttributes(${computer});"> ${computer.name}</a></td>
-							<td>${computer.introduced.orElse(null)}</td>
-							<td>${computer.discontinued.orElse(null)}</td>
-							<td>${computer.company.orElse(null).name}</td>
+							<td>${computer.introduced}</td>
+							<td>${computer.discontinued}</td>
+							<td>${computer.company.name}</td>
 
 						</tr>
 

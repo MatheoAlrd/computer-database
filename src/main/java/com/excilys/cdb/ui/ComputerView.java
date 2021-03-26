@@ -51,14 +51,14 @@ public class ComputerView {
 	public void print(Computer c) {
 		if (c != null) {
 			this.printType();
-			this.printId(c.getID());
+			this.printId(c.getId());
 			this.printName(c.getName());
 			this.printIntroduced(c.getIntroduced());
 			this.printDiscontinued(c.getDiscontinued());
 			if (c.getCompany() == null) {
 				this.printCompanyNull();
 			} else {
-				this.printCompanyId(c.getCompany().getID());
+				this.printCompanyId(c.getCompany().getId());
 			}
 		}
 	}

@@ -37,7 +37,7 @@ public class CompanyDAO extends DAO<CompanyDTO> {
 			return this.companyMapper.companyDTOFromResultSet(ps.executeQuery());
 
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
+			logger.error("Couldn't find the company by its id "+e.getMessage());
 		} finally {
 			this.closeConnection();
 		}
@@ -58,7 +58,7 @@ public class CompanyDAO extends DAO<CompanyDTO> {
 			companies = this.companyMapper.companyDTOFromResultSet(result);
 			
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
+			logger.error("Couldn't find all the companies "+e.getMessage());
 		} finally {
 			this.closeConnection();
 		}

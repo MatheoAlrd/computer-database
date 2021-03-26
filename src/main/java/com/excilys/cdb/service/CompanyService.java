@@ -2,10 +2,10 @@ package com.excilys.cdb.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.dao.CompanyDAO;
+import com.excilys.cdb.model.dto.CompanyDTO;
 import com.excilys.cdb.model.mapper.CompanyMapper;
 
 public class CompanyService {
@@ -19,22 +19,22 @@ public class CompanyService {
 
 	public List<Company> find(int id) {
 
-		List<Map<String,Object>> listCompany = new ArrayList<Map<String,Object>>();
+		List<Company> listCompany = new ArrayList<Company>();
 
-		for(Company c : this.companyDAO.find(id)) {
-			listCompany.add(this.companyMapper.mapFromCompany(c));
+		for(CompanyDTO c : this.companyDAO.find(id)) {
+			listCompany.add(this.companyMapper.toCompany(c).orElseThrow());
 		}
-		return this.companyDAO.find(id);
+		return listCompany;
 	}
 
 	public List<Company> findAll() {
 
-		List<Map<String,Object>> listCompany = new ArrayList<Map<String,Object>>();
+		List<Company> listCompany = new ArrayList<Company>();
 
-		for(Company c : this.companyDAO.findAll()) {
-			listCompany.add(this.companyMapper.mapFromCompany(c));
+		for(CompanyDTO c : this.companyDAO.findAll()) {
+			listCompany.add(this.companyMapper.toCompany(c).orElseThrow());
 		}
-		return this.companyDAO.findAll();
+		return listCompany;
 	}
 
 

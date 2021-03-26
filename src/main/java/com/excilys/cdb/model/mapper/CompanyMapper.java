@@ -52,7 +52,7 @@ public class CompanyMapper {
 	}
 	
 	public CompanyDTO toCompanyDTO(Company c) {
-		return new CompanyDTO(""+c.getID(),c.getName());
+		return new CompanyDTO(""+c.getId(),c.getName());
 	}
 
 	public List<CompanyDTO> companyDTOFromResultSet(ResultSet result) throws SQLException {

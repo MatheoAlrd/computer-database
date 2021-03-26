@@ -33,7 +33,7 @@ public class CompanyView {
 			this.printErrorDoesNotExist();
 		} else {
 			this.printType();
-			this.printId(c.getID());
+			this.printId(c.getId());
 			this.printName(c.getName());
 		}
 	}
