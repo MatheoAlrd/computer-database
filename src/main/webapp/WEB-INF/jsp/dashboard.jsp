@@ -36,13 +36,6 @@
 		<form id="deleteForm" action="#" method="POST">
 			<input type="hidden" name="selection">
 		</form>
-		
-		<form id="editForm" action="#" method="POST">
-			<input type="hidden" name="computerNameSelected">
-			<input type="hidden" name="computerIntroducedSelected">
-			<input type="hidden" name="computerDiscontinuedSelected">
-			<input type="hidden" name="computerCompanyNameSelected">
-		</form>
 
 		<div class="container" style="margin-top: 10px;">
 			<table class="table table-striped table-bordered">
@@ -71,20 +64,15 @@
 				<!-- Browse attribute computers -->
 				<tbody id="results">
 					<c:forEach items="${computers}" var="computer">
-
-
 						<tr>
 							<td class="editMode"><input type="checkbox" name="cb"
 								class="cb" value="${computer.id}"></td>
-							<td><a href="editComputer" onclick="$.fn.getSelectedComputerAttributes(${computer});"> ${computer.name}</a></td>
+							<td><a href="editComputer?id=${computer.id}"> ${computer.name}</a></td>
 							<td>${computer.introduced}</td>
 							<td>${computer.discontinued}</td>
-							<td>${computer.company.name}</td>
-
+							<td>${computer.companyName}</td>
 						</tr>
-
 					</c:forEach>
-
 				</tbody>
 			</table>
 		</div>

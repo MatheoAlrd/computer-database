@@ -3,12 +3,17 @@ package com.excilys.cdb.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.model.dao.ComputerDAO;
 import com.excilys.cdb.model.dto.ComputerDTO;
 import com.excilys.cdb.model.mapper.ComputerMapper;
 
 public class ComputerService {
+	
+	protected static Logger logger = LoggerFactory.getLogger(ComputerService.class);
 	
 	private ComputerMapper computerMapper = new ComputerMapper();
 	private ComputerDAO computerDAO = ComputerDAO.getInstance();
