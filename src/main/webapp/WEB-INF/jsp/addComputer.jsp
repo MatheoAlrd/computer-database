@@ -9,11 +9,7 @@
 <style><%@include file="../../css/main.css"%></style>
 </head>
 <body>
-    <header class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="."> Application - Computer Database - ALLARD Mathéo</a>
-        </div>
-    </header>
+    <%@include file="header.jsp"%>
 
     <section id="main">
         <div class="container">

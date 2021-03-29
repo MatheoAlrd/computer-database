@@ -18,12 +18,12 @@ public class ComputerValidator {
 		this.isNameValid(c.getName());
 		this.isDateValid(c.getIntroduced());
 		this.isDateValid(c.getDiscontinued());
-		this.isValidInterval(c.getIntroduced(), c.getDiscontinued());
-		this.isIDValid(c.getCompanyID());
+		this.isDateIntervalValid(c.getIntroduced(), c.getDiscontinued());
+		this.isIdValid(c.getCompanyId());
 
 	}
 
-	private void isIDValid(String id) throws IDInvalidException {
+	private void isIdValid(String id) throws IDInvalidException {
 		if(id == null) {
 			return;
 		}
@@ -42,8 +42,8 @@ public class ComputerValidator {
 		}
 	}
 
-	private void isDateValid(String date) throws DateInvalidException {	
-		if(date == null) {
+	private void isDateValid(String date) throws DateInvalidException {
+		if(date == null || date == "") {
 			return;
 		}
 		try {
@@ -55,8 +55,11 @@ public class ComputerValidator {
 
 	}
 
-	private void isValidInterval(String introduced, String discontinued) throws DateIntervalInvalidException {
+	private void isDateIntervalValid(String introduced, String discontinued) throws DateIntervalInvalidException {
 		if(introduced == null || discontinued == null) {
+			return;
+		}
+		if(introduced == "" || discontinued == "") {
 			return;
 		}
 		if(LocalDate.parse(discontinued).isBefore(LocalDate.parse(introduced))) {

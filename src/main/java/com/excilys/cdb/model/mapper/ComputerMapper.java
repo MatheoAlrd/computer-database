@@ -23,9 +23,10 @@ import com.excilys.cdb.model.validator.ComputerValidator;
 
 public class ComputerMapper {
 
+	protected static Logger logger = LoggerFactory.getLogger(ComputerMapper.class);
+
 	private static ComputerMapper instance;
 	private ComputerValidator computerValidator = new ComputerValidator();
-	protected static Logger logger = LoggerFactory.getLogger(ComputerMapper.class);
 
 
 	private ObjectMapper mapper = new ObjectMapper();
@@ -45,15 +46,17 @@ public class ComputerMapper {
 		try {
 			computerValidator.validate(c);
 			computer = Optional.of(new ComputerBuilder()
+					.setId(Integer.parseInt(c.getId()))
 					.setName(c.getName())
-					.setIntroduced(c.getIntroduced() == null ? null : LocalDate.parse(c.getIntroduced()))
-					.setDiscontinued(c.getDiscontinued() == null ? null : LocalDate.parse(c.getDiscontinued()))
-					.setCompany(c.getCompanyID() == null ? null : new CompanyBuilder()
-							.setId(Integer.parseInt(c.getCompanyID()))
+					.setIntroduced(c.getIntroduced() == null || "".equals(c.getIntroduced()) ? null : LocalDate.parse(c.getIntroduced()))
+					.setDiscontinued(c.getDiscontinued() == null || "".equals(c.getDiscontinued()) ? null : LocalDate.parse(c.getDiscontinued()))
+					.setCompany(c.getCompanyId() == null || "0".equals(c.getCompanyId()) ? null :new CompanyBuilder()
+							.setId(Integer.parseInt(c.getCompanyId()))
+							.setName(c.getCompanyName())
 							.build())
 					.build());
 		} catch (InvalidValuesException e) {
-			logger.error("Didn't transform Computer DTO Computer because values were invalid",e);
+			logger.error("Didn't transform Computer DTO Computer because values were invalid \n\t"+e.getMessage());
 		}
 
 		return computer;
@@ -62,18 +65,23 @@ public class ComputerMapper {
 	public ComputerDTO toComputerDTO(Computer c) {
 		String introduced = c.getIntroduced() == null ? null : c.getIntroduced().toString();
 		String discontinued = c.getDiscontinued() == null ? null : c.getDiscontinued().toString();
-		String companyID = c.getCompany() == null ? null : ""+c.getCompany().getId();
-
-		return new ComputerDTO(c.getName(),introduced,discontinued,companyID);
+		String companyId = c.getCompany() == null ? null : ""+c.getCompany().getId();
+		String companyName = c.getCompany() == null ? null : c.getCompany().getName();
+		
+		
+		return new ComputerDTO(""+c.getId(),c.getName(),introduced,discontinued,companyId,companyName);
 
 	}
 
 	public List<ComputerDTO> computersFromResultSet(ResultSet result) {
 
-		List<ComputerDTO> computers = new ArrayList<ComputerDTO>();
-		String name,introduced,discontinued,companyId;
+		List<ComputerDTO> computersDTO = new ArrayList<ComputerDTO>();
+		String id,name,introduced,discontinued,companyId,companyName;
 		try {
 			while (result.next()) {
+				
+				id = ""+result.getInt("computer.id");
+				
 				name = result.getString("computer.name");
 
 				if(result.getDate("computer.introduced") == null) {
@@ -93,17 +101,23 @@ public class ComputerMapper {
 				} else {
 					companyId = result.getObject("computer.company_id").toString();
 				}
-
-				ComputerDTO c = new ComputerDTO(name, introduced, discontinued, companyId);
+				
+				if(result.getString("company.name") == null) {
+					companyName = null;
+				} else {
+					companyName = result.getString("company.name");
+				}
+				
+				ComputerDTO c = new ComputerDTO(id,name, introduced, discontinued, companyId, companyName);
 				computerValidator.validate(c);
-				computers.add(c);			
+				computersDTO.add(c);			
 			}
 		} catch (InvalidValuesException e) {
-			logger.error("Didn't transform ResultSet because values were Invalid \n"+e.getMessage());
+			logger.error("Didn't transform ResultSet because values were Invalid \n\t"+e.getMessage());
 		} catch (SQLException e) {
-			logger.error("Didn't transform ResultSet because there is an SQL Exception \n"+e.getMessage());
+			logger.error("Didn't transform ResultSet because there is an SQL Exception \n\t"+e.getMessage());
 		}
-		return computers;
+		return computersDTO;
 	}
 
 	public PreparedStatement preparedStatementFromComputer(PreparedStatement ps, ComputerDTO c) {
@@ -123,14 +137,14 @@ public class ComputerMapper {
 				ps.setDate(3, Date.valueOf(c.getDiscontinued()));
 			}
 
-			if(c.getCompanyID() == null) {
+			if(c.getCompanyId() == null) {
 				ps.setObject(4,null);
 			} else {
-				ps.setInt(4, Integer.parseInt(c.getCompanyID()));
+				ps.setInt(4, Integer.parseInt(c.getCompanyId()));
 			}
 
 		} catch (SQLException e) {
-			logger.error("Didn't change the PreparedStatement because there is a SQL exception \n"+e.getMessage());
+			logger.error("Didn't change the PreparedStatement because there is a SQL exception \n\t"+e.getMessage());
 		}
 		return ps;
 	}
