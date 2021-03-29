@@ -75,6 +75,25 @@ public class ComputerService {
 		return listComputer;
 	}
 	
+	public List<Computer> findPageOrderBy(String name, int pageSize, int offset, String sort, boolean asc) {
+		List<Computer> listComputer = new ArrayList<Computer>();
+
+		for(ComputerDTO c : this.computerDAO.findPageOrderBy(name, pageSize, offset, sort, asc)) {
+			listComputer.add(this.computerMapper.toComputer(c).orElseThrow());
+		}
+		return listComputer;
+	}
+	
+	public List<Computer> findAllPageOrderBy(int pageSize, int offset, String sort, boolean asc) {
+		List<Computer> listComputer = new ArrayList<Computer>();
+
+		for(ComputerDTO c : this.computerDAO.findAllPageOrderBy(pageSize, offset, sort, asc)) {
+			listComputer.add(this.computerMapper.toComputer(c).orElseThrow());
+		}
+		return listComputer;
+	}
+	
+	
 	public int count() {		
 		return this.computerDAO.count();
 	}

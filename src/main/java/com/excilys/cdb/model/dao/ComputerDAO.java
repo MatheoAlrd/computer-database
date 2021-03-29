@@ -20,6 +20,7 @@ public class ComputerDAO extends DAO<Computer> {
 	private static final String CREATE_QUERY = "INSERT INTO computer (name,introduced,discontinued,company_id) VALUES (?,?,?,?)";
 	private static final String DELETE_QUERY = "DELETE FROM computer WHERE id = ?";
 	private static final String UPDATE_QUERY = "UPDATE computer SET name = ?,  introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
+	
 	private static final String SELECT_BY_ID_QUERY = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name FROM computer "
 			+ "LEFT JOIN company ON computer.company_id = company.id "
 			+ "WHERE computer.id = ? ";
@@ -28,15 +29,14 @@ public class ComputerDAO extends DAO<Computer> {
 			+ "WHERE computer.name LIKE ? ";
 	private static final String SELECT_ALL_QUERY = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name FROM computer "
 			+ "LEFT JOIN company ON computer.company_id = company.id";
-	private static final String SELECT_BY_NAME_LIMIT_QUERY = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name FROM computer "
-			+ "LEFT JOIN company ON computer.company_id = company.id "
-			+ "WHERE computer.name LIKE ? "
-			+ "LIMIT ?,?";
-	private static final String SELECT_ALL_LIMIT_QUERY = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name FROM computer "
-			+ "LEFT JOIN company ON computer.company_id = company.id "
-			+ "LIMIT ?,?";
+	
 	private static final String SELECT_COUNT_ALL_QUERY = "SELECT COUNT(id) FROM computer";
 	private static final String SELECT_COUNT_BY_NAME_QUERY = "SELECT COUNT(id) FROM computer WHERE computer.name LIKE ?";
+	
+	private static final String LIMIT = "LIMIT ?,? ";
+	private static final String ORDER_BY = "ORDER BY ? ";
+	private static final String ASC = "ASC ";
+	private static final String DESC = "DESC ";
 
 	private static ComputerDAO instance;
 	private ComputerMapper computerMapper = new ComputerMapper();
@@ -155,7 +155,7 @@ public class ComputerDAO extends DAO<Computer> {
 		try {
 			this.openConnection();
 			PreparedStatement ps = this.getConnection()
-					.prepareStatement(SELECT_BY_NAME_LIMIT_QUERY,
+					.prepareStatement(SELECT_BY_NAME_QUERY + LIMIT,
 							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			ps.setString(1, "%"+name+"%");
 			ps.setInt(2, offset);
@@ -177,7 +177,7 @@ public class ComputerDAO extends DAO<Computer> {
 		try {
 			this.openConnection();
 			PreparedStatement ps = this.getConnection()
-					.prepareStatement(SELECT_ALL_LIMIT_QUERY,
+					.prepareStatement(SELECT_ALL_QUERY + LIMIT,
 							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			ps.setInt(1, offset);
 			ps.setInt(2, pageSize);
@@ -194,7 +194,68 @@ public class ComputerDAO extends DAO<Computer> {
 		return new ArrayList<ComputerDTO>();
 	}
 
-	public List<CompanyDTO> findCompany(int id) throws SQLException {
+	public List<ComputerDTO> findPageOrderBy(String name, int pageSize, int offset, String sort, boolean asc) {
+		try {
+			this.openConnection();
+			String query = SELECT_BY_NAME_QUERY + ORDER_BY;
+			if(asc) {
+				query+=ASC;
+			} else {
+				query+=DESC;
+			}
+			query+=LIMIT;
+			System.out.println(query+" "+name+" "+sort+" "+offset+" "+pageSize);
+			PreparedStatement ps = this.getConnection()
+					.prepareStatement(query,
+							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			ps.setString(1, "%"+name+"%");
+			ps.setString(2, sort);
+			ps.setInt(3, offset);
+			ps.setInt(4, pageSize);
+
+			ResultSet result = ps.executeQuery();
+
+			return computerMapper.computersFromResultSet(result);
+
+		} catch (SQLException e) {
+			logger.error("Couldn't find all the computers by their name in the page "+e.getMessage());
+		} finally {
+			this.closeConnection();
+		}
+		return new ArrayList<ComputerDTO>();
+	}
+	
+	public List<ComputerDTO> findAllPageOrderBy(int pageSize, int offset, String sort, boolean asc) {
+		try {
+			this.openConnection();			
+			String query = SELECT_BY_NAME_QUERY + ORDER_BY;
+			if(asc) {
+				query+=ASC;
+			} else {
+				query+=DESC;
+			}
+			query+=LIMIT;
+			System.out.println(query+" "+sort+" "+offset+" "+pageSize);
+			PreparedStatement ps = this.getConnection()
+					.prepareStatement(query,
+							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			ps.setString(1, sort);
+			ps.setInt(2, offset);
+			ps.setInt(3, pageSize);
+
+			ResultSet result = ps.executeQuery();
+
+			return computerMapper.computersFromResultSet(result);
+
+		} catch (SQLException e) {
+			logger.error("Couldn't find all the computers in the page "+e.getMessage());
+		} finally {
+			this.closeConnection();
+		}
+		return new ArrayList<ComputerDTO>();
+	}
+	
+public List<CompanyDTO> findCompany(int id) throws SQLException {
 		return CompanyDAO.getInstance().find(id);
 	}
 	

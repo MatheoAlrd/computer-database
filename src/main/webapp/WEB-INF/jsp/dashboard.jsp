@@ -48,16 +48,20 @@
 							<input type="checkbox" id="selectall"/>
 							<span style="vertical-align: top;"> - 
 								<a href=""	id="deleteSelected" onclick="$.fn.deleteSelected();">
-									<i class="fa fa-trash-o fa-lg"></i>
+									<i class="fa fa-trash-o fa-lg" ></i>
 								</a>
+								-
+								<a href="dashboard?sort=id">&varr;</a>
 							</span>
 						</th>
-						<th>Computer name</th>
-						<th>Introduced date</th>
+						<!-- Table header for Computer Name -->
+						<th>Computer name <a href="dashboard?sort=name">&varr;</a> </th>
+						<!-- Table header for Introduced Date -->
+						<th>Introduced date <a href="dashboard?sort=introduced"  >&varr;</a> </th>
 						<!-- Table header for Discontinued Date -->
-						<th>Discontinued date</th>
+						<th>Discontinued date <a href="dashboard?sort=discontinued">&varr;</a> </th>
 						<!-- Table header for Company -->
-						<th>Company</th>
+						<th>Company <a href="dashboard?sort=company_id">&varr;</a> </th>
 					</tr>
 				</thead>
 
