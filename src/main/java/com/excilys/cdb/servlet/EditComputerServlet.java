@@ -43,8 +43,6 @@ public class EditComputerServlet extends HttpServlet {
 		request.setAttribute("discontinued", computerToEdit.getDiscontinued());
 		request.setAttribute("companyId", computerToEdit.getCompanyId());
 		
-		System.out.println(computerToEdit.getCompanyId());
-
 		this.getServletContext().getRequestDispatcher("/WEB-INF/jsp/editComputer.jsp").forward(request,response);
 	}
 
@@ -57,7 +55,6 @@ public class EditComputerServlet extends HttpServlet {
 		String companyId = request.getParameter("companyId");
 		String companyName = request.getParameter("company.name");
 		
-		System.out.println(companyId + " "+ companyName);
 		
 		try {
 			servComputer.update(Integer.parseInt(id), computerMapper

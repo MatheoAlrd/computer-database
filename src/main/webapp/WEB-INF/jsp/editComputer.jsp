@@ -40,7 +40,7 @@
                                 <select name="companyId" class="form-control" id="company" >
                                 	<option value="0">None</option>                                
                                     <c:forEach items="${companies}" var="company">
-                                    	<c:if test = "${company.id = companyId}">
+                                    	<c:if test = "${company.id == companyId}">
 											<option value="${company.id}" selected="selected">${company.name}</option>
 										</c:if>
 										<c:if test="${company.id != companyId}">
