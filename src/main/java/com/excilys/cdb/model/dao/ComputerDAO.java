@@ -34,9 +34,9 @@ public class ComputerDAO extends DAO<Computer> {
 	private static final String SELECT_COUNT_BY_NAME_QUERY = "SELECT COUNT(id) FROM computer WHERE computer.name LIKE ?";
 	
 	private static final String LIMIT = "LIMIT ?,? ";
-	private static final String ORDER_BY = "ORDER BY ? ";
-	private static final String ASC = "ASC ";
-	private static final String DESC = "DESC ";
+	private static final String ORDER_BY = "ORDER BY ";
+	private static final String ASC = " ASC ";
+	private static final String DESC = " DESC ";
 
 	private static ComputerDAO instance;
 	private ComputerMapper computerMapper = new ComputerMapper();
@@ -197,21 +197,19 @@ public class ComputerDAO extends DAO<Computer> {
 	public List<ComputerDTO> findPageOrderBy(String name, int pageSize, int offset, String sort, boolean asc) {
 		try {
 			this.openConnection();
-			String query = SELECT_BY_NAME_QUERY + ORDER_BY;
+			String query = SELECT_BY_NAME_QUERY + ORDER_BY + "computer." + sort;
 			if(asc) {
 				query+=ASC;
 			} else {
 				query+=DESC;
 			}
 			query+=LIMIT;
-			System.out.println(query+" "+name+" "+sort+" "+offset+" "+pageSize);
 			PreparedStatement ps = this.getConnection()
 					.prepareStatement(query,
 							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			ps.setString(1, "%"+name+"%");
-			ps.setString(2, sort);
-			ps.setInt(3, offset);
-			ps.setInt(4, pageSize);
+			ps.setInt(2, offset);
+			ps.setInt(3, pageSize);
 
 			ResultSet result = ps.executeQuery();
 
@@ -228,7 +226,7 @@ public class ComputerDAO extends DAO<Computer> {
 	public List<ComputerDTO> findAllPageOrderBy(int pageSize, int offset, String sort, boolean asc) {
 		try {
 			this.openConnection();			
-			String query = SELECT_BY_NAME_QUERY + ORDER_BY;
+			String query = SELECT_ALL_QUERY + ORDER_BY + "computer." + sort;
 			if(asc) {
 				query+=ASC;
 			} else {
@@ -239,7 +237,6 @@ public class ComputerDAO extends DAO<Computer> {
 			PreparedStatement ps = this.getConnection()
 					.prepareStatement(query,
 							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			ps.setString(1, sort);
 			ps.setInt(2, offset);
 			ps.setInt(3, pageSize);
 
