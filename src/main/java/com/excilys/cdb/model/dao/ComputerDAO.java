@@ -1,6 +1,7 @@
 
 package com.excilys.cdb.model.dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,8 +11,9 @@ import java.util.List;
 
 import org.slf4j.LoggerFactory;
 
-import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
+import com.excilys.cdb.model.dto.CompanyDTO;
+import com.excilys.cdb.model.dto.ComputerDTO;
 import com.excilys.cdb.model.mapper.ComputerMapper;
 
 public class ComputerDAO extends DAO<Computer> {
@@ -19,6 +21,7 @@ public class ComputerDAO extends DAO<Computer> {
 	private static final String CREATE_QUERY = "INSERT INTO computer (name,introduced,discontinued,company_id) VALUES (?,?,?,?)";
 	private static final String DELETE_QUERY = "DELETE FROM computer WHERE id = ?";
 	private static final String UPDATE_QUERY = "UPDATE computer SET name = ?,  introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
+		
 	private static final String SELECT_BY_ID_QUERY = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name FROM computer "
 			+ "LEFT JOIN company ON computer.company_id = company.id "
 			+ "WHERE computer.id = ? ";
@@ -27,15 +30,14 @@ public class ComputerDAO extends DAO<Computer> {
 			+ "WHERE computer.name LIKE ? ";
 	private static final String SELECT_ALL_QUERY = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name FROM computer "
 			+ "LEFT JOIN company ON computer.company_id = company.id";
-	private static final String SELECT_BY_NAME_LIMIT_QUERY = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name FROM computer "
-			+ "LEFT JOIN company ON computer.company_id = company.id "
-			+ "WHERE computer.name LIKE ? "
-			+ "LIMIT ?,?";
-	private static final String SELECT_ALL_LIMIT_QUERY = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name FROM computer "
-			+ "LEFT JOIN company ON computer.company_id = company.id "
-			+ "LIMIT ?,?";
+	
 	private static final String SELECT_COUNT_ALL_QUERY = "SELECT COUNT(id) FROM computer";
 	private static final String SELECT_COUNT_BY_NAME_QUERY = "SELECT COUNT(id) FROM computer WHERE computer.name LIKE ?";
+	
+	private static final String LIMIT = "LIMIT ?,? ";
+	private static final String ORDER_BY = "ORDER BY ";
+	private static final String ASC = " ASC ";
+	private static final String DESC = " DESC ";
 
 	private static ComputerDAO instance;
 	private ComputerMapper computerMapper = new ComputerMapper();
@@ -45,60 +47,46 @@ public class ComputerDAO extends DAO<Computer> {
 		logger = LoggerFactory.getLogger(ComputerDAO.class);
 	}
 
-	public void create(Computer c) {
-		try {
-			this.openConnection();
-			PreparedStatement ps = this.getConnection()
-					.prepareStatement(CREATE_QUERY, Statement.RETURN_GENERATED_KEYS);
+	public void create(ComputerDTO c) {
+		try (Connection con = this.getConnection()) {
+			PreparedStatement ps = con.prepareStatement(CREATE_QUERY, Statement.RETURN_GENERATED_KEYS);
 
 			ps = computerMapper.preparedStatementFromComputer(ps, c);
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
-		} finally {
-			this.closeConnection();
+			logger.error("Couldn't create the computer "+e.getMessage());
 		}
 	}
 
 	public void delete(int id) {
-		try {
-			this.openConnection();
-			PreparedStatement ps = this.getConnection()
-					.prepareStatement(DELETE_QUERY, Statement.RETURN_GENERATED_KEYS);
+		try (Connection con = this.getConnection()){
+			PreparedStatement ps = con.prepareStatement(DELETE_QUERY, Statement.RETURN_GENERATED_KEYS);
 
 			ps.setInt(1, id);
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
-		} finally {
-			this.closeConnection();
+			logger.error("Couldn't delete the computer "+e.getMessage());
 		}
 	}
-
-	public void update(int id, Computer c) {
-		try {
-			this.openConnection();
-			PreparedStatement ps = this.getConnection()
-					.prepareStatement(UPDATE_QUERY, Statement.RETURN_GENERATED_KEYS);
+	
+	public void update(int id, ComputerDTO c) {
+		try (Connection con = this.getConnection()){
+			PreparedStatement ps = con.prepareStatement(UPDATE_QUERY, Statement.RETURN_GENERATED_KEYS);
 
 			ps = computerMapper.preparedStatementFromComputer(ps, c);
 			ps.setInt(5, id);
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
-		} finally {
-			this.closeConnection();
+			logger.error("Couldn't update the computer "+e.getMessage());
 		}
 	}
 
-	public List<Computer> find(int id) {
-		try {
-			this.openConnection();
-			PreparedStatement ps = this.getConnection()
-					.prepareStatement(SELECT_BY_ID_QUERY,
+	public List<ComputerDTO> find(int id) {
+		try (Connection con = this.getConnection()){
+			PreparedStatement ps = con.prepareStatement(SELECT_BY_ID_QUERY,
 							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			ps.setInt(1, id);
 
@@ -106,20 +94,15 @@ public class ComputerDAO extends DAO<Computer> {
 			return computerMapper.computersFromResultSet(result);
 
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
-		} finally {
-			this.closeConnection();
+			logger.error("Couldn't find the computer by its id "+e.getMessage());
 		}
-		return null;
+		return new ArrayList<ComputerDTO>();
 	}
 
-	public List<Computer> find(String name) {
+	public List<ComputerDTO> find(String name) {
 
-		List<Computer> computers = new ArrayList<Computer>();
-		try {
-			this.openConnection();
-			PreparedStatement ps = this.getConnection()
-					.prepareStatement(SELECT_BY_NAME_QUERY,
+		try (Connection con = this.getConnection()){
+			PreparedStatement ps = con.prepareStatement(SELECT_BY_NAME_QUERY,
 							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			ps.setString(1, "%"+name+"%");
 
@@ -128,36 +111,27 @@ public class ComputerDAO extends DAO<Computer> {
 			return computerMapper.computersFromResultSet(result);
 
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
-		} finally {
-			this.closeConnection();
+			logger.error("Couldn't find the computer by its name "+e.getMessage());
 		}
-		return computers;
+		return new ArrayList<ComputerDTO>();
 	}
 
-	public List<Computer> findAll() {
-		try {
-			this.openConnection();
+	public List<ComputerDTO> findAll() {
+		try (Connection con = this.getConnection()){
 
-			ResultSet result = this.getConnection().createStatement().executeQuery(SELECT_ALL_QUERY);
+			ResultSet result = con.createStatement().executeQuery(SELECT_ALL_QUERY);
 
 			return computerMapper.computersFromResultSet(result);
 
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
-		} finally {
-			this.closeConnection();
+			logger.error("Couldn't find all computers "+e.getMessage());
 		}
-		return new ArrayList<Computer>();
+		return new ArrayList<ComputerDTO>();
 	}
 	
-	public List<Computer> findPage(String name, int pageSize, int offset) {
-
-		List<Computer> computers = new ArrayList<Computer>();
-		try {
-			this.openConnection();
-			PreparedStatement ps = this.getConnection()
-					.prepareStatement(SELECT_BY_NAME_LIMIT_QUERY,
+	public List<ComputerDTO> findPage(String name, int pageSize, int offset) {
+		try (Connection con = this.getConnection()){
+			PreparedStatement ps = con.prepareStatement(SELECT_BY_NAME_QUERY + LIMIT,
 							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			ps.setString(1, "%"+name+"%");
 			ps.setInt(2, offset);
@@ -168,18 +142,14 @@ public class ComputerDAO extends DAO<Computer> {
 			return computerMapper.computersFromResultSet(result);
 
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
-		} finally {
-			this.closeConnection();
+			logger.error("Couldn't find all the computers by their name in the page "+e.getMessage());
 		}
-		return computers;
+		return new ArrayList<ComputerDTO>();
 	}
 	
-	public List<Computer> findAllPage(int pageSize, int offset) {
-		try {
-			this.openConnection();
-			PreparedStatement ps = this.getConnection()
-					.prepareStatement(SELECT_ALL_LIMIT_QUERY,
+	public List<ComputerDTO> findAllPage(int pageSize, int offset) {
+		try (Connection con = this.getConnection()){
+			PreparedStatement ps = con.prepareStatement(SELECT_ALL_QUERY + LIMIT,
 							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			ps.setInt(1, offset);
 			ps.setInt(2, pageSize);
@@ -189,39 +159,80 @@ public class ComputerDAO extends DAO<Computer> {
 			return computerMapper.computersFromResultSet(result);
 
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
-		} finally {
-			this.closeConnection();
+			logger.error("Couldn't find all the computers in the page "+e.getMessage());
 		}
-		return new ArrayList<Computer>();
+		return new ArrayList<ComputerDTO>();
 	}
 
-	public List<Company> findCompany(int id) throws SQLException {
+	public List<ComputerDTO> findPageOrderBy(String name, int pageSize, int offset, String sort, boolean asc) {
+		try (Connection con = this.getConnection()){
+			String query = SELECT_BY_NAME_QUERY + ORDER_BY + "computer." + sort;
+			if(asc) {
+				query+=ASC;
+			} else {
+				query+=DESC;
+			}
+			query+=LIMIT;
+			PreparedStatement ps = con.prepareStatement(query,
+							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			ps.setString(1, "%"+name+"%");
+			ps.setInt(2, offset);
+			ps.setInt(3, pageSize);
+
+			ResultSet result = ps.executeQuery();
+
+			return computerMapper.computersFromResultSet(result);
+
+		} catch (SQLException e) {
+			logger.error("Couldn't find all the computers by their name in the page "+e.getMessage());
+		}
+		return new ArrayList<ComputerDTO>();
+	}
+	
+	public List<ComputerDTO> findAllPageOrderBy(int pageSize, int offset, String sort, boolean asc) {
+		try (Connection con = this.getConnection()){
+			String query = SELECT_ALL_QUERY + ORDER_BY + "computer." + sort;
+			if(asc) {
+				query+=ASC;
+			} else {
+				query+=DESC;
+			}
+			query+=LIMIT;
+			PreparedStatement ps = con.prepareStatement(query,
+							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			ps.setInt(2, offset);
+			ps.setInt(3, pageSize);
+
+			ResultSet result = ps.executeQuery();
+
+			return computerMapper.computersFromResultSet(result);
+
+		} catch (SQLException e) {
+			logger.error("Couldn't find all the computers in the page "+e.getMessage());
+		}
+		return new ArrayList<ComputerDTO>();
+	}
+	
+	public List<CompanyDTO> findCompany(int id) throws SQLException {
 		return CompanyDAO.getInstance().find(id);
 	}
 	
 	public int count() {
-		try {
-			this.openConnection();
-
-			ResultSet result = this.getConnection().createStatement().executeQuery(SELECT_COUNT_ALL_QUERY);
+		try (Connection con = this.getConnection()){
+			ResultSet result = con.createStatement().executeQuery(SELECT_COUNT_ALL_QUERY);
 			if(result.next()) {
 				return result.getInt(1);
 			}
 
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
-		} finally {
-			this.closeConnection();
+			logger.error("Couldn't count all the computer "+e.getMessage());
 		}
 		return 0; 
 	}
 	
 	public int count(String name) {
-		try {
-			this.openConnection();
-			PreparedStatement ps = this.getConnection()
-					.prepareStatement(SELECT_COUNT_BY_NAME_QUERY,
+		try (Connection con = this.getConnection()){
+			PreparedStatement ps = con.prepareStatement(SELECT_COUNT_BY_NAME_QUERY,
 							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			ps.setString(1, "%"+name+"%");
 
@@ -231,9 +242,7 @@ public class ComputerDAO extends DAO<Computer> {
 			}
 
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
-		} finally {
-			this.closeConnection();
+			logger.error("Couldn't count all the computer by their names "+e.getMessage());
 		}
 		return 0;
 	}

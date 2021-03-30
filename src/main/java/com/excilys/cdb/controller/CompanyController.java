@@ -3,6 +3,7 @@ package com.excilys.cdb.controller;
 import java.util.List;
 
 import com.excilys.cdb.model.Company;
+import com.excilys.cdb.model.dto.CompanyDTO;
 import com.excilys.cdb.service.CompanyService;
 
 public class CompanyController {
@@ -22,5 +23,13 @@ public class CompanyController {
 	public List<Company> findAll() {
 
 		return this.companyService.findAll();
+	}
+	
+	public void create(CompanyDTO c) {
+		this.companyService.create(c);
+	}
+	
+	public void delete(int id) {
+		this.companyService.delete(id);
 	}
 }
