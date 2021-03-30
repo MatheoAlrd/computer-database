@@ -69,6 +69,17 @@ $(function() {
     };
 }( jQuery ));
 
+// Function get selected: get every attribute of the selected computer
+(function ( $ ) {
+    $.fn.getSelectedComputerAttributes = function(computer) {        
+        $('#editForm input[name=computerNameSelected]').val(computer.id);
+        $('#editForm input[name=computerIntroducedSelected]').val(computer.introduced);
+        $('#editForm input[name=computerDiscontinuedSelected]').val(computer.discontinued);
+        $('#editForm input[name=computerCompanyNameSelected]').val(computer.company.name);
+		$('#editForm').submit();
+    };
+}( jQuery ));
+
 
 
 //Event handling

@@ -53,12 +53,12 @@ public class ComputerView {
 			this.printType();
 			this.printId(c.getId());
 			this.printName(c.getName());
-			this.printIntroduced(c.getIntroduced().orElse(null));
-			this.printDiscontinued(c.getDiscontinued().orElse(null));
-			if (c.getCompany().orElse(null) == null) {
+			this.printIntroduced(c.getIntroduced());
+			this.printDiscontinued(c.getDiscontinued());
+			if (c.getCompany() == null) {
 				this.printCompanyNull();
 			} else {
-				this.printCompanyId(c.getCompany().orElse(null).getId());
+				this.printCompanyId(c.getCompany().getId());
 			}
 		}
 	}

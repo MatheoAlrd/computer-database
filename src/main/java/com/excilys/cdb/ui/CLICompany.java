@@ -1,6 +1,7 @@
 package com.excilys.cdb.ui;
 
 import com.excilys.cdb.controller.CompanyController;
+import com.excilys.cdb.model.dto.CompanyDTO;
 
 public class CLICompany extends CLI {
 
@@ -35,6 +36,12 @@ public class CLICompany extends CLI {
 				this.listAllCompanies();
 				break;
 			case "3":
+				this.create();
+				break;
+			case "4":
+				this.delete();
+				break;
+			case "5":
 				return true;
 			default:
 				inputRight = false;
@@ -52,8 +59,19 @@ public class CLICompany extends CLI {
 	}
 
 	private void listAllCompanies() {
-
+		
 		viewCompany.printAll(ctrlCompany.findAll());
+	}
+	
+	private void create() {
+		System.out.println(ENTER_NAME);
+		this.ctrlCompany.create(new CompanyDTO("",this.useString()));
+	}
+	
+	private void delete() {
+		System.out.println(ID_RESEARCH);
+		this.ctrlCompany.delete(this.useInt());
+		
 	}
 
 }
