@@ -48,6 +48,14 @@ public class CompanyService {
 		}
 		return listCompany;
 	}
+	
+	public void create(CompanyDTO c){
+		companyDAO.create(c);
+	}
+	
+	public void delete(int id) {
+		companyDAO.delete(id);
+	}
 
 
 }

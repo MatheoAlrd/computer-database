@@ -20,7 +20,7 @@ public class ComputerDAO extends DAO<Computer> {
 	private static final String CREATE_QUERY = "INSERT INTO computer (name,introduced,discontinued,company_id) VALUES (?,?,?,?)";
 	private static final String DELETE_QUERY = "DELETE FROM computer WHERE id = ?";
 	private static final String UPDATE_QUERY = "UPDATE computer SET name = ?,  introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
-	
+		
 	private static final String SELECT_BY_ID_QUERY = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name FROM computer "
 			+ "LEFT JOIN company ON computer.company_id = company.id "
 			+ "WHERE computer.id = ? ";
@@ -77,7 +77,7 @@ public class ComputerDAO extends DAO<Computer> {
 			this.closeConnection();
 		}
 	}
-
+	
 	public void update(int id, ComputerDTO c) {
 		try {
 			this.openConnection();
@@ -252,7 +252,7 @@ public class ComputerDAO extends DAO<Computer> {
 		return new ArrayList<ComputerDTO>();
 	}
 	
-public List<CompanyDTO> findCompany(int id) throws SQLException {
+	public List<CompanyDTO> findCompany(int id) throws SQLException {
 		return CompanyDAO.getInstance().find(id);
 	}
 	

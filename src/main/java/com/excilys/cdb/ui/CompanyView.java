@@ -16,7 +16,11 @@ public class CompanyView {
 		System.out.println("+--------------------------+");
 		System.out.println("| 2.   List all Companies  |");
 		System.out.println("+--------------------------+");
-		System.out.println("| 3.         Quit          |");
+		System.out.println("| 3.    Create Company     |");
+		System.out.println("+--------------------------+");
+		System.out.println("| 4.    Delete Company     |");
+		System.out.println("+--------------------------+");
+		System.out.println("| 5.         Quit          |");
 		System.out.println("+--------------------------+");
 	}
 
