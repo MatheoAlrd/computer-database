@@ -63,32 +63,6 @@ public class DashboardServlet extends HttpServlet {
 		int totalComputers = this.countComputers(search);
 		request.setAttribute("totalComputers", totalComputers);
 
-		//this.doGet(request,response);
-	}
-
-	private List<ComputerDTO> listComputersPage(String search, int pageSize, int offset){
-
-		List<Computer> computers = new ArrayList<Computer>();
-		List<ComputerDTO> computersDTO = new ArrayList<ComputerDTO>();
-
-		if(search == null) {
-			return computersDTO;
-		}
-		if(search.equals("#")) {
-			computers = servComputer.findAllPage(pageSize, offset);
-		} else {
-			try {
-				computers = servComputer.find(Integer.parseInt(search));
-			} catch (NumberFormatException e) {
-				computers = servComputer.findPage(search, pageSize, offset);
-			}
-		}
-		
-		for(Computer c : computers) {
-			computersDTO.add(computerMapper.toComputerDTO(c));
-		}
-
-		return computersDTO;
 	}
 
 	private List<ComputerDTO> listComputerPageOrderBy(String search, int pageSize, int offset, String sort, boolean asc){
@@ -133,7 +107,7 @@ public class DashboardServlet extends HttpServlet {
 		int page = 1;
 		int pageSize = 100;
 		String search = null;
-		String sort = "computer.id";
+		String sort = "id";
 		boolean asc = true;
 
 		if(session.getAttribute("page") != null) {

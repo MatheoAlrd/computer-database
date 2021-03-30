@@ -1,6 +1,7 @@
 
 package com.excilys.cdb.model.dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -38,75 +39,59 @@ public class CompanyDAO extends DAO<CompanyDTO> {
 
 	public List<CompanyDTO> find(int id) {
 
-		try {
-			this.openConnection();
-			PreparedStatement ps = this.getConnection()
-					.prepareStatement(SELECT_BY_ID_QUERY,
+		try (Connection con = this.getConnection()){
+			PreparedStatement ps = con.prepareStatement(SELECT_BY_ID_QUERY,
 							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			ps.setInt(1, id);
 			return this.companyMapper.companyDTOFromResultSet(ps.executeQuery());
 
 		} catch (SQLException e) {
 			logger.error("Couldn't find the company by its id "+e.getMessage());
-		} finally {
-			this.closeConnection();
 		}
-
-		return null;
+		return new ArrayList<CompanyDTO>();
 	}
 
 	public List<CompanyDTO> findAll() {
 
 		List<CompanyDTO> companies = new ArrayList<CompanyDTO>();
 
-		try {
-			this.openConnection();
-			ResultSet result = this.getConnection()
-					.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+		try (Connection con = this.getConnection()){
+			ResultSet result = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
 							ResultSet.CONCUR_READ_ONLY).executeQuery(SELECT_ALL_QUERY);
 
 			companies = this.companyMapper.companyDTOFromResultSet(result);
 			
 		} catch (SQLException e) {
 			logger.error("Couldn't find all the companies "+e.getMessage());
-		} finally {
-			this.closeConnection();
 		}
 		return companies;
 	}
 	
 	public void create(CompanyDTO c) {
-		try {
-			this.openConnection();
-			PreparedStatement ps = this.getConnection()
-					.prepareStatement(CREATE_QUERY, Statement.RETURN_GENERATED_KEYS);
+		try (Connection con = this.getConnection()){
+			PreparedStatement ps = con.prepareStatement(CREATE_QUERY, Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1,c.getName());
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
 			logger.error("Couldn't create the company "+e.getMessage());
-		} finally {
-			this.closeConnection();
 		}
 	}
 	
 	public void delete(int id) {
-		try {
-			this.openConnection();
+		try (Connection con = this.getConnection()){
 			
-			this.getConnection().createStatement().executeQuery(SET_AUTOCOMMIT);
+			con.createStatement().executeQuery(SET_AUTOCOMMIT);
 
-			PreparedStatement ps = this.getConnection()
-					.prepareStatement(DELETE_COMPUTERS_BY_COMPANY_QUERY, Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement ps = con.prepareStatement(DELETE_COMPUTERS_BY_COMPANY_QUERY, Statement.RETURN_GENERATED_KEYS);
 			ps.setInt(1, id);
 			ps.executeUpdate();
 			
-			ps = this.getConnection()
-					.prepareStatement(DELETE_COMPANY_QUERY, Statement.RETURN_GENERATED_KEYS);
+			ps = con.prepareStatement(DELETE_COMPANY_QUERY, Statement.RETURN_GENERATED_KEYS);
 			ps.setInt(1, id);
 			ps.executeUpdate();
 			
-			this.getConnection().createStatement().executeQuery(COMMIT);
+			con.createStatement().executeQuery(COMMIT);
 
 			
 		} catch(Exception e1) {
