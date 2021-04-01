@@ -10,11 +10,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.model.dto.CompanyDTO;
 import com.excilys.cdb.model.dto.ComputerDTO;
 import com.excilys.cdb.model.mapper.ComputerMapper;
+
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 
 public class ComputerDAO extends DAO<Computer> {
 
@@ -38,9 +45,11 @@ public class ComputerDAO extends DAO<Computer> {
 	private static final String ORDER_BY = "ORDER BY ";
 	private static final String ASC = " ASC ";
 	private static final String DESC = " DESC ";
-
-	private static ComputerDAO instance;
-	private ComputerMapper computerMapper = new ComputerMapper();
+	
+	@Autowired
+	private CompanyDAO companyDAO;
+	@Autowired
+	private ComputerMapper computerMapper;
 
 	private ComputerDAO() {
 		super();
@@ -214,7 +223,7 @@ public class ComputerDAO extends DAO<Computer> {
 	}
 	
 	public List<CompanyDTO> findCompany(int id) throws SQLException {
-		return CompanyDAO.getInstance().find(id);
+		return this.companyDAO.find(id);
 	}
 	
 	public int count() {
@@ -246,12 +255,4 @@ public class ComputerDAO extends DAO<Computer> {
 		}
 		return 0;
 	}
-
-	public static ComputerDAO getInstance() {
-		if (instance == null) {
-			instance = new ComputerDAO();
-		}		
-		return instance;
-	}
-
 }

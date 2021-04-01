@@ -6,10 +6,14 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.model.Page;
@@ -17,11 +21,15 @@ import com.excilys.cdb.model.dto.ComputerDTO;
 import com.excilys.cdb.model.mapper.ComputerMapper;
 import com.excilys.cdb.service.ComputerService;
 
+@Component
+@WebServlet("/DashboardServlet")
 public class DashboardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
-	private ComputerService servComputer = new ComputerService();
-	private ComputerMapper computerMapper = ComputerMapper.getInstance();
+	
+	@Autowired
+	private ComputerService servComputer;
+	@Autowired
+	private ComputerMapper computerMapper;
 
 	public DashboardServlet() {
 		super();
@@ -147,7 +155,11 @@ public class DashboardServlet extends HttpServlet {
 		}
 		String currentSort = request.getParameter("sort");
 		if(currentSort != null) {
-			asc = !currentSort.equals(sort);
+			if(currentSort.equals(sort)) {
+				asc = !asc;
+			} else {
+				asc = true;
+			}
 			sort = currentSort;
 			session.setAttribute("sort",sort);
 		}

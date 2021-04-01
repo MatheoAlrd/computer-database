@@ -10,9 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import com.excilys.cdb.model.dto.CompanyDTO;
 import com.excilys.cdb.model.mapper.CompanyMapper;
+
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 
 public class CompanyDAO extends DAO<CompanyDTO> {
 
@@ -28,9 +35,8 @@ public class CompanyDAO extends DAO<CompanyDTO> {
 	private static final String ROLLBACK = "ROLLBACK";
 	private static final String COMMIT = "COMMIT";
 
-	private static CompanyDAO instance;
-	private CompanyMapper companyMapper = new CompanyMapper();
-
+	@Autowired
+	private CompanyMapper companyMapper;
 
 	private CompanyDAO() {
 		super();
@@ -91,9 +97,7 @@ public class CompanyDAO extends DAO<CompanyDTO> {
 			ps.setInt(1, id);
 			ps.executeUpdate();
 			
-			con.createStatement().executeQuery(COMMIT);
-
-			
+			con.createStatement().executeQuery(COMMIT);			
 		} catch(Exception e1) {
 			try {
 				logger.warn("Something didn't work in the transaction, start of the rollback" + e1.getMessage());
@@ -104,12 +108,4 @@ public class CompanyDAO extends DAO<CompanyDTO> {
 			}
 		}
 	}
-	
-	public static CompanyDAO getInstance() {
-		if (instance == null) {
-			instance = new CompanyDAO();
-		}		
-		return instance;
-	}
-
 }

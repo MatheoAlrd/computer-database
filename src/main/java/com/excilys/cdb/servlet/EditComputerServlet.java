@@ -6,9 +6,13 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
@@ -17,12 +21,17 @@ import com.excilys.cdb.model.mapper.ComputerMapper;
 import com.excilys.cdb.service.CompanyService;
 import com.excilys.cdb.service.ComputerService;
 
+@Component
+@WebServlet("EditComputerServlet")
 public class EditComputerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L; 
 	
-	private CompanyService servCompany = new CompanyService();
-	private ComputerService servComputer = new ComputerService();
-	private ComputerMapper computerMapper = ComputerMapper.getInstance();
+	@Autowired
+	private CompanyService servCompany;
+	@Autowired
+	private ComputerService servComputer;
+	@Autowired
+	private ComputerMapper computerMapper;
 	
     public EditComputerServlet() {
         super();

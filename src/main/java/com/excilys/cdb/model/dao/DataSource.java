@@ -3,14 +3,19 @@ package com.excilys.cdb.model.dao;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class DataSource {
 
 	private static HikariConfig config = new HikariConfig();
     private static HikariDataSource ds;
-    private static DataSource instance = null;
 
     static {
     	config.setDriverClassName("com.mysql.cj.jdbc.Driver");
@@ -23,16 +28,9 @@ public class DataSource {
         ds = new HikariDataSource(config);
     }
 
-    private DataSource() {}
+    public DataSource() {}
 
     public static Connection getConnection() throws SQLException {
         return ds.getConnection();
-    }
-    
-    public static DataSource getInstance() {
-    	if(instance == null) {
-    		instance = new DataSource();
-    	}
-    	return instance;
     }
 }

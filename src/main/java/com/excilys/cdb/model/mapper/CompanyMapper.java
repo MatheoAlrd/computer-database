@@ -10,6 +10,10 @@ import java.util.Optional;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import com.excilys.cdb.exception.InvalidValuesException;
 import com.excilys.cdb.model.Company;
@@ -17,9 +21,12 @@ import com.excilys.cdb.model.builder.CompanyBuilder;
 import com.excilys.cdb.model.dto.CompanyDTO;
 import com.excilys.cdb.model.validator.CompanyValidator;
 
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class CompanyMapper {
 	
-	private CompanyValidator companyValidator = CompanyValidator.getInstance();
+	@Autowired
+	private CompanyValidator companyValidator;
 	protected static Logger logger = LoggerFactory.getLogger(CompanyMapper.class);
 
 	private ObjectMapper mapper = new ObjectMapper();
