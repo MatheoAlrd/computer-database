@@ -1,13 +1,18 @@
 package com.excilys.cdb.model.validator;
 
+import org.springframework.stereotype.Component;
+
 import com.excilys.cdb.exception.IDInvalidException;
 import com.excilys.cdb.exception.InvalidValuesException;
 import com.excilys.cdb.exception.NameInvalidException;
 import com.excilys.cdb.model.dto.CompanyDTO;
 
+@Component
 public class CompanyValidator {
 	
-	private static CompanyValidator instance;
+	public CompanyValidator() {
+		super();
+	}
 	
 	public void validate(CompanyDTO c) throws InvalidValuesException {
 		
@@ -30,12 +35,4 @@ public class CompanyValidator {
 			throw new NameInvalidException();
 		}
 	}
-
-	public static CompanyValidator getInstance() {
-		if (instance == null) {
-			instance = new CompanyValidator();
-		}		
-		return instance;
-	}
-
 }

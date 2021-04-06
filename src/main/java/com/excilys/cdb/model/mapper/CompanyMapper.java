@@ -4,12 +4,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.springframework.stereotype.Component;
 
 import com.excilys.cdb.exception.InvalidValuesException;
 import com.excilys.cdb.model.Company;
@@ -17,24 +17,18 @@ import com.excilys.cdb.model.builder.CompanyBuilder;
 import com.excilys.cdb.model.dto.CompanyDTO;
 import com.excilys.cdb.model.validator.CompanyValidator;
 
+@Component
 public class CompanyMapper {
 	
-	private CompanyValidator companyValidator = CompanyValidator.getInstance();
 	protected static Logger logger = LoggerFactory.getLogger(CompanyMapper.class);
 
-	private ObjectMapper mapper = new ObjectMapper();
-
-	@SuppressWarnings("unchecked")
-	public Map<String,Object> mapFromCompany(Company company){
-
-		return mapper.convertValue(company, Map.class);
-	}
-
-	public Company companyFromMap(Map<String,Object> map) {
-
-		return mapper.convertValue(map, Company.class);		
-	}
+	private CompanyValidator companyValidator;
 	
+	public CompanyMapper(CompanyValidator companyValidator) {
+		super();
+		this.companyValidator = companyValidator;
+	}
+
 	public Optional<Company> toCompany(CompanyDTO c) {
 		
 		Optional<Company> company = Optional.empty();

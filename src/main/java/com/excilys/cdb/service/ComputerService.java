@@ -5,19 +5,28 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import com.excilys.cdb.model.Computer;
+import com.excilys.cdb.model.Page;
 import com.excilys.cdb.model.dao.ComputerDAO;
 import com.excilys.cdb.model.dto.ComputerDTO;
 import com.excilys.cdb.model.mapper.ComputerMapper;
 
+@Service
 public class ComputerService {
 	
 	protected static Logger logger = LoggerFactory.getLogger(ComputerService.class);
 	
-	private ComputerMapper computerMapper = new ComputerMapper();
-	private ComputerDAO computerDAO = ComputerDAO.getInstance();
+	private ComputerMapper computerMapper;
+	private ComputerDAO computerDAO;
 	
+	public ComputerService(ComputerMapper computerMapper, ComputerDAO computerDAO) {
+		super();
+		this.computerMapper = computerMapper;
+		this.computerDAO = computerDAO;
+	}
+
 	public void create(Computer c) {
 		this.computerDAO.create(computerMapper.toComputerDTO(c));
 	}
@@ -39,55 +48,19 @@ public class ComputerService {
 		return listComputer;
 	}
 	
-	public List<Computer> find(String name) {
+	public List<Computer> findPageOrderBy(String name, Page<ComputerDTO> page) {
 		List<Computer> listComputer = new ArrayList<Computer>();
 
-		for(ComputerDTO c : this.computerDAO.find(name)) {
+		for(ComputerDTO c : this.computerDAO.findPageOrderBy(name, page)) {
 			listComputer.add(this.computerMapper.toComputer(c).orElseThrow());
 		}
 		return listComputer;
 	}
 	
-	public List<Computer> findAll() {		
+	public List<Computer> findAllPageOrderBy(Page<ComputerDTO> page) {
 		List<Computer> listComputer = new ArrayList<Computer>();
 
-		for(ComputerDTO c : this.computerDAO.findAll()) {
-			listComputer.add(this.computerMapper.toComputer(c).orElseThrow());
-		}
-		return listComputer;
-	}
-	
-	public List<Computer> findPage(String name, int pageSize, int offset) {
-		List<Computer> listComputer = new ArrayList<Computer>();
-
-		for(ComputerDTO c : this.computerDAO.findPage(name, pageSize, offset)) {
-			listComputer.add(this.computerMapper.toComputer(c).orElseThrow());
-		}
-		return listComputer;
-	}
-	
-	public List<Computer> findAllPage(int pageSize, int offset) {
-		List<Computer> listComputer = new ArrayList<Computer>();
-
-		for(ComputerDTO c : this.computerDAO.findAllPage(pageSize, offset)) {
-			listComputer.add(this.computerMapper.toComputer(c).orElseThrow());
-		}
-		return listComputer;
-	}
-	
-	public List<Computer> findPageOrderBy(String name, int pageSize, int offset, String sort, boolean asc) {
-		List<Computer> listComputer = new ArrayList<Computer>();
-
-		for(ComputerDTO c : this.computerDAO.findPageOrderBy(name, pageSize, offset, sort, asc)) {
-			listComputer.add(this.computerMapper.toComputer(c).orElseThrow());
-		}
-		return listComputer;
-	}
-	
-	public List<Computer> findAllPageOrderBy(int pageSize, int offset, String sort, boolean asc) {
-		List<Computer> listComputer = new ArrayList<Computer>();
-
-		for(ComputerDTO c : this.computerDAO.findAllPageOrderBy(pageSize, offset, sort, asc)) {
+		for(ComputerDTO c : this.computerDAO.findAllPageOrderBy(page)) {
 			listComputer.add(this.computerMapper.toComputer(c).orElseThrow());
 		}
 		return listComputer;

@@ -7,12 +7,12 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.springframework.stereotype.Component;
 
 import com.excilys.cdb.exception.InvalidValuesException;
 import com.excilys.cdb.model.Computer;
@@ -21,23 +21,16 @@ import com.excilys.cdb.model.builder.ComputerBuilder;
 import com.excilys.cdb.model.dto.ComputerDTO;
 import com.excilys.cdb.model.validator.ComputerValidator;
 
+@Component
 public class ComputerMapper {
 
 	protected static Logger logger = LoggerFactory.getLogger(ComputerMapper.class);
+	
+	private ComputerValidator computerValidator;
 
-	private static ComputerMapper instance;
-	private ComputerValidator computerValidator = new ComputerValidator();
-
-
-	private ObjectMapper mapper = new ObjectMapper();
-
-	@SuppressWarnings("unchecked")
-	public Map<String,Object> mapFromComputer(Computer computer){				
-		return mapper.convertValue(computer, Map.class);
-	}
-
-	public Computer computerFromMap(Map<String,Object> map) {		
-		return mapper.convertValue(map, Computer.class);		
+	public ComputerMapper(ComputerValidator computerValidator) {
+		super();
+		this.computerValidator = computerValidator;
 	}
 
 	public Optional<Computer> toComputer(ComputerDTO c) {
@@ -147,12 +140,5 @@ public class ComputerMapper {
 			logger.error("Didn't change the PreparedStatement because there is a SQL exception \n\t"+e.getMessage());
 		}
 		return ps;
-	}
-
-	public static ComputerMapper getInstance() {
-		if(instance == null) {
-			instance = new ComputerMapper();
-		}
-		return instance;
 	}
 }

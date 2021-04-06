@@ -9,12 +9,15 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.excilys.cdb.model.dto.CompanyDTO;
 import com.excilys.cdb.model.mapper.CompanyMapper;
 
-public class CompanyDAO extends DAO<CompanyDTO> {
+@Component
+public class CompanyDAO {
 
 	private static final String SELECT_BY_ID_QUERY = "SELECT id, name FROM company WHERE id = ?";
 	private static final String SELECT_ALL_QUERY = "SELECT id, name FROM company";
@@ -28,18 +31,18 @@ public class CompanyDAO extends DAO<CompanyDTO> {
 	private static final String ROLLBACK = "ROLLBACK";
 	private static final String COMMIT = "COMMIT";
 
-	private static CompanyDAO instance;
-	private CompanyMapper companyMapper = new CompanyMapper();
+	protected static Logger logger = LoggerFactory.getLogger(CompanyDAO.class);
 
-
-	private CompanyDAO() {
+	private CompanyMapper companyMapper;
+	
+	public CompanyDAO(CompanyMapper companyMapper) {
 		super();
-		logger = LoggerFactory.getLogger(CompanyDAO.class);
+		this.companyMapper = companyMapper;
 	}
 
 	public List<CompanyDTO> find(int id) {
 
-		try (Connection con = this.getConnection()){
+		try (Connection con = DataSource.getConnection()){
 			PreparedStatement ps = con.prepareStatement(SELECT_BY_ID_QUERY,
 							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			ps.setInt(1, id);
@@ -55,7 +58,7 @@ public class CompanyDAO extends DAO<CompanyDTO> {
 
 		List<CompanyDTO> companies = new ArrayList<CompanyDTO>();
 
-		try (Connection con = this.getConnection()){
+		try (Connection con = DataSource.getConnection()){
 			ResultSet result = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
 							ResultSet.CONCUR_READ_ONLY).executeQuery(SELECT_ALL_QUERY);
 
@@ -68,7 +71,7 @@ public class CompanyDAO extends DAO<CompanyDTO> {
 	}
 	
 	public void create(CompanyDTO c) {
-		try (Connection con = this.getConnection()){
+		try (Connection con = DataSource.getConnection()){
 			PreparedStatement ps = con.prepareStatement(CREATE_QUERY, Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1,c.getName());
 			ps.executeUpdate();
@@ -79,7 +82,7 @@ public class CompanyDAO extends DAO<CompanyDTO> {
 	}
 	
 	public void delete(int id) {
-		try (Connection con = this.getConnection()){
+		try (Connection con = DataSource.getConnection()){
 			
 			con.createStatement().executeQuery(SET_AUTOCOMMIT);
 
@@ -91,25 +94,15 @@ public class CompanyDAO extends DAO<CompanyDTO> {
 			ps.setInt(1, id);
 			ps.executeUpdate();
 			
-			con.createStatement().executeQuery(COMMIT);
-
-			
+			con.createStatement().executeQuery(COMMIT);			
 		} catch(Exception e1) {
 			try {
 				logger.warn("Something didn't work in the transaction, start of the rollback" + e1.getMessage());
-				this.getConnection().createStatement().executeQuery(ROLLBACK);
+				DataSource.getConnection().createStatement().executeQuery(ROLLBACK);
 
 			} catch (SQLException e2) {
 				logger.error("Rollback didn't work " + e2.getMessage());
 			}
 		}
 	}
-	
-	public static CompanyDAO getInstance() {
-		if (instance == null) {
-			instance = new CompanyDAO();
-		}		
-		return instance;
-	}
-
 }

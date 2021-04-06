@@ -2,8 +2,11 @@ package com.excilys.cdb.ui;
 
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import com.excilys.cdb.model.Company;
 
+@Component
 public class CompanyView {
 	
 	public void showMenuCompany() {

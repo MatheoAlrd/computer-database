@@ -1,12 +1,20 @@
 package com.excilys.cdb.ui;
 
+import org.springframework.stereotype.Component;
+
 import com.excilys.cdb.controller.CompanyController;
+import com.excilys.cdb.controller.ComputerController;
 import com.excilys.cdb.model.dto.CompanyDTO;
 
+@Component
 public class CLICompany extends CLI {
+	
+	private CompanyView viewCompany;
 
-	private CompanyView viewCompany = new CompanyView();
-	private CompanyController ctrlCompany = new CompanyController();
+	public CLICompany(CompanyController ctrlCompany, ComputerController ctrlComputer, CompanyView viewCompany) {
+		super(ctrlCompany, ctrlComputer);
+		this.viewCompany = viewCompany;
+	}
 
 	protected void useMenuCompany() {
 
