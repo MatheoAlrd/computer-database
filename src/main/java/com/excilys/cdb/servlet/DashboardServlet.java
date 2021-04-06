@@ -27,17 +27,17 @@ import com.excilys.cdb.service.ComputerService;
 @WebServlet("/")
 public class DashboardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
+
 	private ComputerService servComputer;
 	private ComputerMapper computerMapper;
-		
+
 	@Override
 	public void init(ServletConfig config) throws ServletException {
-		
+
 		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
 		super.init(config);
 	}
-	
+
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		HttpSession session = request.getSession();
@@ -47,9 +47,9 @@ public class DashboardServlet extends HttpServlet {
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+
 		HttpSession session = request.getSession();
-		
+
 		String idSelected[] = request.getParameter("selection").split(",");
 		try {
 			for(String id : idSelected)
@@ -60,8 +60,8 @@ public class DashboardServlet extends HttpServlet {
 		} finally {
 			response.sendRedirect("");
 		}
-		
-	
+
+
 		String search = null;
 		if(session.getAttribute("search") != null) {
 			search = (String) session.getAttribute("search");
@@ -70,14 +70,14 @@ public class DashboardServlet extends HttpServlet {
 		if(currentSearch != null) {
 			search = currentSearch;
 		}
-		
+
 		int totalComputers = this.countComputers(search);
 		request.setAttribute("totalComputers", totalComputers);
 
 	}
 
-	private List<ComputerDTO> listComputerPageOrderBy(String search, int pageSize, int offset, String sort, boolean asc){
-		
+	private List<ComputerDTO> listComputerPageOrderBy(String search, Page<ComputerDTO> page){
+
 		List<Computer> computers = new ArrayList<Computer>();
 		List<ComputerDTO> computersDTO = new ArrayList<ComputerDTO>();
 
@@ -85,13 +85,9 @@ public class DashboardServlet extends HttpServlet {
 			return computersDTO;
 		}
 		if(search.equals("#")) {
-			computers = servComputer.findAllPageOrderBy(pageSize, offset, sort, asc);
+			//computers = servComputer.findAllPageOrderBy(page);
 		} else {
-			try {
-				computers = servComputer.find(Integer.parseInt(search));
-			} catch (NumberFormatException e) {
-				computers = servComputer.findPageOrderBy(search, pageSize, offset, sort, asc);
-			}
+			computers = servComputer.findPageOrderBy(search, page);
 		}
 
 		for(Computer c : computers) {
@@ -100,7 +96,7 @@ public class DashboardServlet extends HttpServlet {
 
 		return computersDTO;
 	}
-	
+
 	private int countComputers(String search) {
 		if(search == null) {
 			return 0;
@@ -169,10 +165,8 @@ public class DashboardServlet extends HttpServlet {
 
 		int totalComputers = this.countComputers(search);
 
-		List<ComputerDTO> computers = listComputerPageOrderBy(search, pageSize, pageSize*(page-1), sort ,asc);
-
-		Page<ComputerDTO> currentPage = new Page<ComputerDTO>(page, pageSize, totalComputers, computers);
-
+		Page<ComputerDTO> currentPage = new Page<ComputerDTO>(page, pageSize, totalComputers, sort, asc);
+		
 		if(page - 1 < 1) {
 			session.setAttribute("pageStart",1);
 		} else {
@@ -189,22 +183,24 @@ public class DashboardServlet extends HttpServlet {
 		request.setAttribute("previousPage", currentPage.previousPage());
 		request.setAttribute("nextPage", currentPage.nextPage());
 
+		List<ComputerDTO> computers = listComputerPageOrderBy(search, currentPage);
+		
 		request.setAttribute("computers", computers);
 		request.setAttribute("totalComputers", totalComputers);
 
 		return request;
 	}
 
-	
+
 	@Autowired
 	public void setServComputer(ComputerService servComputer) {
 		this.servComputer = servComputer;
 	}
-	
+
 	@Autowired
 	public void setComputerMapper(ComputerMapper computerMapper) {
 		this.computerMapper = computerMapper;
 	}
 
-	
+
 }

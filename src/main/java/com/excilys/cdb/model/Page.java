@@ -14,16 +14,20 @@ public class Page<T> {
     private int totalPage;
     //To display data, use generics
     private List<T> dataList;
+    //Sorting parameter
+    private String sort;
+    //Ascendant or descendant order by
+    private boolean asc;
     
     public Page() {
     	super();
     }
     
-    public Page(int pageNum, int pageSize, int totalRecord, List<T> sourceList) {
+    public Page(int pageNum, int pageSize, int totalRecord, String sort, boolean asc) {
     	
-    	if (sourceList == null){
-            return;
-        }
+    	this.sort = sort;
+    	this.asc = asc;
+    	
         //Total number of records
         this.totalRecord = totalRecord;
         //How many records are displayed per page
@@ -39,8 +43,6 @@ public class Page<T> {
 
         //Current Page Data
         this.currentPage = this.totalPage < pageNum ? this.totalPage : pageNum;
-
-        this.dataList = sourceList;
     	
     }
     
@@ -91,7 +93,20 @@ public class Page<T> {
 	public void setDataList(List<T> dataList) {
 		this.dataList = dataList;
 	}
-    
-    
 
+	public String getSort() {
+		return sort;
+	}
+
+	public void setSort(String sort) {
+		this.sort = sort;
+	}
+
+	public boolean isAsc() {
+		return asc;
+	}
+
+	public void setAsc(boolean asc) {
+		this.asc = asc;
+	}
 }

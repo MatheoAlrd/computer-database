@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 
 import com.excilys.cdb.model.Computer;
+import com.excilys.cdb.model.Page;
+import com.excilys.cdb.model.dto.ComputerDTO;
 import com.excilys.cdb.service.ComputerService;
 
 @Controller
@@ -28,16 +30,16 @@ public class ComputerController {
 	public void update(int id, Computer c) {
 		this.computerService.update(id, c);
 	}
-
-	public List<Computer> find(int id) {
-		return this.computerService.find(id);
+	
+	public List<Computer> findPageOrderBy(String name, Page<ComputerDTO> page) {
+		return this.computerService.findPageOrderBy(name, page);
 	}
 	
-	public List<Computer> find(String name) {
-		return this.computerService.find(name);
+	public List<Computer> findAllPageOrderBy(Page<ComputerDTO> page){
+		return this.computerService.findAllPageOrderBy(page);
 	}
 	
-	public List<Computer> findAll() {		
-		return this.computerService.findAll();
+	public int count() {
+		return this.computerService.count();
 	}
 }
