@@ -8,15 +8,19 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.stereotype.Controller;
+
 import com.excilys.cdb.controller.CompanyController;
+import com.excilys.cdb.controller.ComputerController;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.model.builder.ComputerBuilder;
 
+@Controller
 public abstract class CLI {
 	
-	protected Scanner sc = new Scanner(System.in);
-	
 	protected static final Logger logger = LoggerFactory.getLogger(CLI.class);
+	
+	protected Scanner sc = new Scanner(System.in);
 	
 	protected static final String WRONG_INPUT = "Wrong Input";
 	protected static final String WRONG_INPUT_TYPE = "Wrong Input Type";
@@ -34,9 +38,17 @@ public abstract class CLI {
 	protected static final String COMMAND_GOOD = "Command executed successfully.";
 	protected static final String COMMAND_BAD = "Command not executed.";
 	
+	protected CompanyController ctrlCompany;
+	protected ComputerController ctrlComputer;
+		
+	public CLI(CompanyController ctrlCompany, ComputerController ctrlComputer) {
+		super();
+		this.ctrlCompany = ctrlCompany;
+		this.ctrlComputer = ctrlComputer;
+	}
+
 	protected Computer useComputer() {
 		
-		CompanyController ctrlCompany = new CompanyController();
 		ComputerBuilder computerBuilder = new ComputerBuilder();
 
 		System.out.println(ENTER_NAME);
@@ -61,7 +73,7 @@ public abstract class CLI {
 		System.out.println(ENTER_ID);
 		int companyId = useInt();
 		if (companyId != -1) {
-			computerBuilder.setCompany(ctrlCompany.find(companyId).get(0));
+			computerBuilder.setCompany(this.ctrlCompany.find(companyId).get(0));
 		}					
 
 		return computerBuilder.build();

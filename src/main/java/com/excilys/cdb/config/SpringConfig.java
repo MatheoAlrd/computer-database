@@ -10,8 +10,8 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import com.excilys.cdb.model.dao.DataSource;
 
 @Configuration
-@ComponentScan({"com.excilys.cdb.model.dao","com.excilys.cdb.model.mapper","com.excilys.cdv.model.validator",
-	"com.excilys.cdb.service","com.excilys.cdb.servlet","com.excilys.cdb.controller"})
+@ComponentScan({"com.excilys.cdb.model.dao","com.excilys.cdb.model.mapper","com.excilys.cdb.model.validator",
+	"com.excilys.cdb.service","com.excilys.cdb.servlet","com.excilys.cdb.controller","com.excilys.cdb.ui"})
 
 public class SpringConfig  extends AbstractContextLoaderInitializer {
 

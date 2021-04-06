@@ -22,7 +22,7 @@ import com.excilys.cdb.service.CompanyService;
 import com.excilys.cdb.service.ComputerService;
 
 @Component
-@WebServlet("EditComputerServlet")
+@WebServlet("/editcomputer")
 public class EditComputerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L; 
 	

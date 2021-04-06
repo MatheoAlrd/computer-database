@@ -22,7 +22,7 @@ import com.excilys.cdb.model.mapper.ComputerMapper;
 import com.excilys.cdb.service.ComputerService;
 
 @Component
-@WebServlet("/DashboardServlet")
+@WebServlet("/")
 public class DashboardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	

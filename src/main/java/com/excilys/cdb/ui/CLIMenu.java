@@ -1,11 +1,22 @@
 package com.excilys.cdb.ui;
 
-public class CLIMenu extends CLI {
+import org.springframework.stereotype.Component;
 
-	private Menu menu = new Menu();
+import com.excilys.cdb.controller.CompanyController;
+import com.excilys.cdb.controller.ComputerController;
+
+@Component
+public class CLIMenu extends CLI {
 	
-	private CLICompany cliCompany = new CLICompany();
-	private CLIComputer cliComputer = new CLIComputer();
+	private CLICompany cliCompany;
+	private CLIComputer cliComputer;
+
+	public CLIMenu(CompanyController ctrlCompany, ComputerController ctrlComputer, CLICompany cliCompany,
+			CLIComputer cliComputer) {
+		super(ctrlCompany, ctrlComputer);
+		this.cliCompany = cliCompany;
+		this.cliComputer = cliComputer;
+	}
 
 	private static final String LEFT_MENU = "You left the menu.";
 
@@ -16,13 +27,12 @@ public class CLIMenu extends CLI {
 		while (!isOver) {
 			isOver = this.chooseMenu();
 		}
-
 		this.sc.close();
 	}
 
 	private boolean chooseMenu() {
 
-		this.menu.afficherMenu();
+		this.afficherMenu();
 
 		String input = "";
 		boolean inputRight = false;
@@ -48,5 +58,19 @@ public class CLIMenu extends CLI {
 			}
 		}
 		return false;
+	}
+	
+	public void afficherMenu() {
+		
+		System.out.println();
+		System.out.println("+--------------------------+");
+		System.out.println("|         Main Menu        |");
+		System.out.println("+--------------------------+");
+		System.out.println("| 1.   Work on computers   |");
+		System.out.println("+--------------------------+");
+		System.out.println("| 2.   Work on companies   |");
+		System.out.println("+--------------------------+");
+		System.out.println("| 3.         Quit          |");
+		System.out.println("+--------------------------+");
 	}
 }

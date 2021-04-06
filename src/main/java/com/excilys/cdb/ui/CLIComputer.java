@@ -1,12 +1,20 @@
 package com.excilys.cdb.ui;
 
+import org.springframework.stereotype.Component;
+
+import com.excilys.cdb.controller.CompanyController;
 import com.excilys.cdb.controller.ComputerController;
 
+@Component
 public class CLIComputer extends CLI {
 	
-	private ComputerView viewComputer = new ComputerView();
-	private ComputerController ctrlComputer = new ComputerController();
+	private ComputerView viewComputer;
 		
+	public CLIComputer(CompanyController ctrlCompany, ComputerController ctrlComputer, ComputerView viewComputer) {
+		super(ctrlCompany, ctrlComputer);
+		this.viewComputer = viewComputer;
+	}
+
 	protected void useMenuComputer() {
 
 		boolean isOver = false;
@@ -14,7 +22,6 @@ public class CLIComputer extends CLI {
 		while (!isOver) {
 			isOver = this.chooseMenuComputer();
 		}
-
 	}
 
 	private boolean chooseMenuComputer() {

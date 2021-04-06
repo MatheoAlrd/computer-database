@@ -21,36 +21,6 @@
 		<location>/views/404.html</location>
 	</error-page>
 
-	<servlet>
-		<servlet-name>DashboardServlet</servlet-name>
-		<servlet-class>com.excilys.cdb.servlet.DashboardServlet</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>DashboardServlet</servlet-name>
-		<url-pattern>/</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>AddComputerServlet</servlet-name>
-		<servlet-class>com.excilys.cdb.servlet.AddComputerServlet</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>AddComputerServlet</servlet-name>
-		<url-pattern>/addComputer</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>EditComputerServlet</servlet-name>
-		<servlet-class>com.excilys.cdb.servlet.EditComputerServlet</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>EditComputerServlet</servlet-name>
-		<url-pattern>/editComputer</url-pattern>
-	</servlet-mapping>
-
 	<jsp-config>
 		<jsp-property-group>
 			<url-pattern>*.jsp</url-pattern>

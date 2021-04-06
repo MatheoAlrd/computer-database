@@ -7,15 +7,11 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
+
 import org.springframework.stereotype.Component;
 
 import com.excilys.cdb.exception.InvalidValuesException;
@@ -26,24 +22,15 @@ import com.excilys.cdb.model.dto.ComputerDTO;
 import com.excilys.cdb.model.validator.ComputerValidator;
 
 @Component
-@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class ComputerMapper {
 
 	protected static Logger logger = LoggerFactory.getLogger(ComputerMapper.class);
 	
-	@Autowired
 	private ComputerValidator computerValidator;
 
-
-	private ObjectMapper mapper = new ObjectMapper();
-
-	@SuppressWarnings("unchecked")
-	public Map<String,Object> mapFromComputer(Computer computer){				
-		return mapper.convertValue(computer, Map.class);
-	}
-
-	public Computer computerFromMap(Map<String,Object> map) {		
-		return mapper.convertValue(map, Computer.class);		
+	public ComputerMapper(ComputerValidator computerValidator) {
+		super();
+		this.computerValidator = computerValidator;
 	}
 
 	public Optional<Computer> toComputer(ComputerDTO c) {

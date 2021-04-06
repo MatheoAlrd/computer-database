@@ -2,8 +2,6 @@ package com.excilys.cdb.model.validator;
 
 import java.time.LocalDate;
 
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.excilys.cdb.exception.IDInvalidException;
@@ -14,9 +12,12 @@ import com.excilys.cdb.exception.NameInvalidException;
 import com.excilys.cdb.model.dto.ComputerDTO;
 
 @Component
-@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class ComputerValidator {
-
+	
+	public ComputerValidator() {
+		super();
+	}
+	
 	public void validate(ComputerDTO c) throws InvalidValuesException{
 
 		this.isNameValid(c.getName());
