@@ -6,9 +6,6 @@ import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.excilys.cdb.model.Company;
@@ -17,15 +14,18 @@ import com.excilys.cdb.model.dto.CompanyDTO;
 import com.excilys.cdb.model.mapper.CompanyMapper;
 
 @Service
-@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class CompanyService {
 
 	protected static Logger logger = LoggerFactory.getLogger(CompanyService.class);
 	
-	@Autowired
 	private CompanyMapper companyMapper;
-	@Autowired
 	private CompanyDAO companyDAO;
+
+	public CompanyService(CompanyMapper companyMapper, CompanyDAO companyDAO) {
+		super();
+		this.companyMapper = companyMapper;
+		this.companyDAO = companyDAO;
+	}
 
 	public CompanyDAO getCompanyDAO() {
 		return companyDAO;

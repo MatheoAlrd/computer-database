@@ -5,9 +5,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.excilys.cdb.model.Computer;
@@ -16,16 +13,19 @@ import com.excilys.cdb.model.dto.ComputerDTO;
 import com.excilys.cdb.model.mapper.ComputerMapper;
 
 @Service
-@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class ComputerService {
 	
 	protected static Logger logger = LoggerFactory.getLogger(ComputerService.class);
 	
-	@Autowired
 	private ComputerMapper computerMapper;
-	@Autowired
 	private ComputerDAO computerDAO;
 	
+	public ComputerService(ComputerMapper computerMapper, ComputerDAO computerDAO) {
+		super();
+		this.computerMapper = computerMapper;
+		this.computerDAO = computerDAO;
+	}
+
 	public void create(Computer c) {
 		this.computerDAO.create(computerMapper.toComputerDTO(c));
 	}

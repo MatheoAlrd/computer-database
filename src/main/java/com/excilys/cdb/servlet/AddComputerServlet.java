@@ -22,17 +22,14 @@ import com.excilys.cdb.service.CompanyService;
 import com.excilys.cdb.service.ComputerService;
 
 @Component
-@WebServlet("/addcomputer")
+@WebServlet("/addComputer")
 public class AddComputerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-	@Autowired
 	private CompanyService servCompany;
-	@Autowired
 	private ComputerService servComputer;
-	@Autowired
 	private ComputerMapper computerMapper;
-	
+
 	@Override
 	public void init(ServletConfig config) throws ServletException{
 		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
@@ -59,7 +56,7 @@ public class AddComputerServlet extends HttpServlet {
 		} catch(NoSuchElementException e) {
 			
 		} finally {
-			response.sendRedirect("dashboard");
+			response.sendRedirect("");
 		}
 	}
 
@@ -67,4 +64,18 @@ public class AddComputerServlet extends HttpServlet {
 		return servCompany.findAll();
 	}
 
+	@Autowired
+	public void setServCompany(CompanyService servCompany) {
+		this.servCompany = servCompany;
+	}
+	
+	@Autowired
+	public void setServComputer(ComputerService servComputer) {
+		this.servComputer = servComputer;
+	}
+	
+	@Autowired
+	public void setComputerMapper(ComputerMapper computerMapper) {
+		this.computerMapper = computerMapper;
+	}
 }
