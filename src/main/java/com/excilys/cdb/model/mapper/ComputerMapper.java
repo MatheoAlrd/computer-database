@@ -33,12 +33,12 @@ public class ComputerMapper {
 		this.computerValidator = computerValidator;
 	}
 
-	public Optional<Computer> toComputer(ComputerDTO c) {
+	public Computer toComputer(ComputerDTO c) {
 
-		Optional<Computer> computer = Optional.empty();
+		Computer computer = new Computer();
 		try {
 			computerValidator.validate(c);
-			computer = Optional.of(new ComputerBuilder()
+			computer = new ComputerBuilder()
 					.setId(Integer.parseInt(c.getId()))
 					.setName(c.getName())
 					.setIntroduced(c.getIntroduced() == null || "".equals(c.getIntroduced()) ? null : LocalDate.parse(c.getIntroduced()))
@@ -47,7 +47,7 @@ public class ComputerMapper {
 							.setId(Integer.parseInt(c.getCompanyId()))
 							.setName(c.getCompanyName())
 							.build())
-					.build());
+					.build();
 		} catch (InvalidValuesException e) {
 			logger.error("Didn't transform Computer DTO Computer because values were invalid \n\t"+e.getMessage());
 		}
@@ -66,11 +66,11 @@ public class ComputerMapper {
 
 	}
 
-	public Optional<ComputerDTO> computerFromResultSet(ResultSet result) {
+	public ComputerDTO computerFromResultSet(ResultSet result) throws SQLException {
 
-		Optional<ComputerDTO> computerDTO = Optional.empty();
+		ComputerDTO c = new ComputerDTO();
 		String id,name,introduced,discontinued,companyId,companyName;
-		try {
+		
 			while (result.next()) {
 				
 				id = ""+result.getInt("computer.id");
@@ -100,17 +100,14 @@ public class ComputerMapper {
 				} else {
 					companyName = result.getString("company.name");
 				}
-				
-				ComputerDTO c = new ComputerDTO(id,name, introduced, discontinued, companyId, companyName);
-				computerValidator.validate(c);
-				computerDTO = Optional.of(c);		
+				c = new ComputerDTO(id,name, introduced, discontinued, companyId, companyName);
 			}
-		} catch (InvalidValuesException e) {
-			logger.error("Didn't transform ResultSet because values were Invalid \n\t"+e.getMessage());
-		} catch (SQLException e) {
-			logger.error("Didn't transform ResultSet because there is an SQL Exception \n\t"+e.getMessage());
-		}
-		return computerDTO;
+			try {
+				computerValidator.validate(c);
+			} catch (InvalidValuesException e) {
+				c = new ComputerDTO();
+			}
+			return c;
 	}
 	
 	public List<ComputerDTO> computersFromResultSet(ResultSet result) {
@@ -139,7 +136,7 @@ public class ComputerMapper {
 				if(result.getObject("computer.company_id") == null) {
 					companyId = null;
 				} else {
-					companyId = result.getObject("computer.company_id").toString();
+					companyId = ""+result.getInt("computer.company_id");
 				}
 				
 				if(result.getString("company.name") == null) {

@@ -52,7 +52,7 @@ public class AddComputerServlet extends HttpServlet {
 		String companyId = request.getParameter("companyId");
 		try {
 			servComputer.create(computerMapper
-					.toComputer(new ComputerDTO("0",name, introduced, discontinued, companyId,"")).orElseThrow());
+					.toComputer(new ComputerDTO("0",name, introduced, discontinued, companyId,"")));
 		} catch(NoSuchElementException e) {
 			
 		} finally {

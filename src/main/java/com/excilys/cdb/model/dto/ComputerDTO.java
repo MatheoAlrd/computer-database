@@ -2,12 +2,12 @@ package com.excilys.cdb.model.dto;
 
 public class ComputerDTO {
 	
-	private String id;
-	private String name;
-	private String introduced;
-	private String discontinued;
-	private String companyID;
-	private String companyName;
+	private String id = "";
+	private String name = "";
+	private String introduced = "";
+	private String discontinued = "";
+	private String companyID = "";
+	private String companyName = "";
 	
 	public ComputerDTO() { }
 

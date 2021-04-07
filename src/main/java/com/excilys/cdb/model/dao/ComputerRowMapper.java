@@ -21,8 +21,7 @@ public class ComputerRowMapper implements RowMapper<ComputerDTO> {
 
 	@Override
 	public ComputerDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-		
-		return this.computerMapper.computerFromResultSet(rs).orElseThrow();
+		return this.computerMapper.computerFromResultSet(rs);
 	}
 	
 	

@@ -68,7 +68,7 @@ public class EditComputerServlet extends HttpServlet {
 		
 		try {
 			servComputer.update(Integer.parseInt(id), computerMapper
-					.toComputer(new ComputerDTO(id, name, introduced, discontinued, companyId,companyName)).orElseThrow());
+					.toComputer(new ComputerDTO(id, name, introduced, discontinued, companyId,companyName)));
 		} catch(NoSuchElementException e) {
 			
 		} finally {

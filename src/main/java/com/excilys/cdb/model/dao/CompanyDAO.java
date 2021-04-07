@@ -29,7 +29,7 @@ public class CompanyDAO {
 	private static final String SELECT_BY_ID_QUERY = "SELECT id, name FROM company WHERE id = :id";
 	private static final String SELECT_ALL_QUERY = "SELECT id, name FROM company";
 	
-	private static final String CREATE_QUERY = "INSERT INTO company (name) VALUES (?)";
+	private static final String CREATE_QUERY = "INSERT INTO company (name) VALUES (:name)";
 	
 	private static final String DELETE_COMPUTERS_BY_COMPANY_QUERY = "DELETE FROM computer WHERE company_id = ?";
 	private final static String DELETE_COMPANY_QUERY = "DELETE FROM company WHERE id = ?";
@@ -62,14 +62,11 @@ public class CompanyDAO {
 	}
 	
 	public void create(CompanyDTO c) {
-		try (Connection con = DataSource2.getConnection()){
-			PreparedStatement ps = con.prepareStatement(CREATE_QUERY, Statement.RETURN_GENERATED_KEYS);
-			ps.setString(1,c.getName());
-			ps.executeUpdate();
-
-		} catch (SQLException e) {
-			logger.error("Couldn't create the company "+e.getMessage());
-		}
+		
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("name", c.getName(), Types.VARCHAR);
+	
+		new NamedParameterJdbcTemplate(datasource).update(CREATE_QUERY, params);
 	}
 	
 	public void delete(int id) {

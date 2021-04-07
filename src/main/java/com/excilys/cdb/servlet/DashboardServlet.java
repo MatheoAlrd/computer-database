@@ -102,7 +102,7 @@ public class DashboardServlet extends HttpServlet {
 			return 0;
 		}
 		if(search.equals("#")) {
-			return servComputer.count();
+			return servComputer.count("");
 		} else {
 			return servComputer.count(search);
 		}
