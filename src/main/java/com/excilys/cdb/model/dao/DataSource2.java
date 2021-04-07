@@ -9,7 +9,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 @Component
-public class DataSource {
+public class DataSource2 {
 
 	private static HikariConfig config = new HikariConfig();
     private static HikariDataSource ds;
@@ -25,7 +25,7 @@ public class DataSource {
         ds = new HikariDataSource(config);
     }
 
-    public DataSource() {}
+    public DataSource2() {}
 
     public static Connection getConnection() throws SQLException {
         return ds.getConnection();

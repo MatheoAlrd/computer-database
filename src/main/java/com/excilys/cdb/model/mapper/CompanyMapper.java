@@ -48,8 +48,25 @@ public class CompanyMapper {
 	public CompanyDTO toCompanyDTO(Company c) {
 		return new CompanyDTO(""+c.getId(),c.getName());
 	}
+	
+	public Optional<CompanyDTO> companyDTOFromResultSet(ResultSet result) throws SQLException {
 
-	public List<CompanyDTO> companyDTOFromResultSet(ResultSet result) throws SQLException {
+		Optional<CompanyDTO> company = Optional.empty();;
+
+		while(result.next()) {
+			CompanyDTO c = new CompanyDTO(""+result.getInt("id"),result.getString("name"));
+			
+			try {
+				companyValidator.validate(c);
+				company = Optional.of(c);
+			} catch (InvalidValuesException e) {
+				logger.error(e.getMessage());
+			}
+		}
+		return company;
+	} 
+
+	public List<CompanyDTO> companiesDTOFromResultSet(ResultSet result) throws SQLException {
 
 		List<CompanyDTO> companies = new ArrayList<CompanyDTO>();
 

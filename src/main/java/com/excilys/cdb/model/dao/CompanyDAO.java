@@ -6,11 +6,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Component;
 
 import com.excilys.cdb.model.dto.CompanyDTO;
@@ -19,7 +25,7 @@ import com.excilys.cdb.model.mapper.CompanyMapper;
 @Component
 public class CompanyDAO {
 
-	private static final String SELECT_BY_ID_QUERY = "SELECT id, name FROM company WHERE id = ?";
+	private static final String SELECT_BY_ID_QUERY = "SELECT id, name FROM company WHERE id = :id";
 	private static final String SELECT_ALL_QUERY = "SELECT id, name FROM company";
 	
 	private static final String CREATE_QUERY = "INSERT INTO company (name) VALUES (?)";
@@ -33,45 +39,28 @@ public class CompanyDAO {
 
 	protected static Logger logger = LoggerFactory.getLogger(CompanyDAO.class);
 
+	private DataSource datasource;
 	private CompanyMapper companyMapper;
 	
 	public CompanyDAO(CompanyMapper companyMapper) {
 		super();
 		this.companyMapper = companyMapper;
 	}
-
-	public List<CompanyDTO> find(int id) {
-
-		try (Connection con = DataSource.getConnection()){
-			PreparedStatement ps = con.prepareStatement(SELECT_BY_ID_QUERY,
-							ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			ps.setInt(1, id);
-			return this.companyMapper.companyDTOFromResultSet(ps.executeQuery());
-
-		} catch (SQLException e) {
-			logger.error("Couldn't find the company by its id "+e.getMessage());
-		}
-		return new ArrayList<CompanyDTO>();
+	
+	public List<CompanyDTO> find(int id){
+		
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("id", id, Types.INTEGER);
+	
+		return new JdbcTemplate(datasource).query(SELECT_ALL_QUERY, new CompanyRowMapper());
 	}
-
-	public List<CompanyDTO> findAll() {
-
-		List<CompanyDTO> companies = new ArrayList<CompanyDTO>();
-
-		try (Connection con = DataSource.getConnection()){
-			ResultSet result = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-							ResultSet.CONCUR_READ_ONLY).executeQuery(SELECT_ALL_QUERY);
-
-			companies = this.companyMapper.companyDTOFromResultSet(result);
-			
-		} catch (SQLException e) {
-			logger.error("Couldn't find all the companies "+e.getMessage());
-		}
-		return companies;
+	
+	public List<CompanyDTO> findAll() {			
+		return new JdbcTemplate(datasource).query(SELECT_BY_ID_QUERY, new CompanyRowMapper());
 	}
 	
 	public void create(CompanyDTO c) {
-		try (Connection con = DataSource.getConnection()){
+		try (Connection con = DataSource2.getConnection()){
 			PreparedStatement ps = con.prepareStatement(CREATE_QUERY, Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1,c.getName());
 			ps.executeUpdate();
@@ -82,7 +71,7 @@ public class CompanyDAO {
 	}
 	
 	public void delete(int id) {
-		try (Connection con = DataSource.getConnection()){
+		try (Connection con = DataSource2.getConnection()){
 			
 			con.createStatement().executeQuery(SET_AUTOCOMMIT);
 
@@ -98,7 +87,7 @@ public class CompanyDAO {
 		} catch(Exception e1) {
 			try {
 				logger.warn("Something didn't work in the transaction, start of the rollback" + e1.getMessage());
-				DataSource.getConnection().createStatement().executeQuery(ROLLBACK);
+				DataSource2.getConnection().createStatement().executeQuery(ROLLBACK);
 
 			} catch (SQLException e2) {
 				logger.error("Rollback didn't work " + e2.getMessage());

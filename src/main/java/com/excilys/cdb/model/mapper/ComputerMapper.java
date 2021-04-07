@@ -66,6 +66,53 @@ public class ComputerMapper {
 
 	}
 
+	public Optional<ComputerDTO> computerFromResultSet(ResultSet result) {
+
+		Optional<ComputerDTO> computerDTO = Optional.empty();
+		String id,name,introduced,discontinued,companyId,companyName;
+		try {
+			while (result.next()) {
+				
+				id = ""+result.getInt("computer.id");
+				
+				name = result.getString("computer.name");
+
+				if(result.getDate("computer.introduced") == null) {
+					introduced = null;
+				} else {
+					introduced = result.getDate("computer.introduced").toString();
+				}
+
+				if(result.getDate("computer.discontinued") == null) {
+					discontinued = null;
+				} else {
+					discontinued = result.getDate("computer.discontinued").toString();
+				}
+
+				if(result.getObject("computer.company_id") == null) {
+					companyId = null;
+				} else {
+					companyId = result.getObject("computer.company_id").toString();
+				}
+				
+				if(result.getString("company.name") == null) {
+					companyName = null;
+				} else {
+					companyName = result.getString("company.name");
+				}
+				
+				ComputerDTO c = new ComputerDTO(id,name, introduced, discontinued, companyId, companyName);
+				computerValidator.validate(c);
+				computerDTO = Optional.of(c);		
+			}
+		} catch (InvalidValuesException e) {
+			logger.error("Didn't transform ResultSet because values were Invalid \n\t"+e.getMessage());
+		} catch (SQLException e) {
+			logger.error("Didn't transform ResultSet because there is an SQL Exception \n\t"+e.getMessage());
+		}
+		return computerDTO;
+	}
+	
 	public List<ComputerDTO> computersFromResultSet(ResultSet result) {
 
 		List<ComputerDTO> computersDTO = new ArrayList<ComputerDTO>();
