@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import com.excilys.cdb.model.Page;
@@ -53,11 +54,14 @@ public class ComputerDAO {
 	private DataSource datasource;
 	private CompanyDAO companyDAO;
 	private ComputerMapper computerMapper;
+	private ComputerRowMapper computerRowMapper;
 
-	private ComputerDAO(CompanyDAO companyDAO, ComputerMapper computerMapper) {
+	private ComputerDAO(CompanyDAO companyDAO, ComputerMapper computerMapper, ComputerRowMapper computerRowMapper, DataSource datasource) {
 		super();
 		this.companyDAO = companyDAO;
 		this.computerMapper = computerMapper;
+		this.computerRowMapper = computerRowMapper;
+		this.datasource = datasource;
 	}
 
 	public void create(ComputerDTO c) {
@@ -128,7 +132,7 @@ public class ComputerDAO {
 		params.addValue("offset", page.getPageSize()*(page.getCurrentPage()-1), Types.INTEGER);
 		params.addValue("limit", page.getPageSize(), Types.INTEGER);
 
-		return new JdbcTemplate(datasource).query(query, new ComputerRowMapper());
+		return new NamedParameterJdbcTemplate(datasource).query(query, params, this.computerRowMapper);
 	}
 
 	public List<ComputerDTO> findAllPageOrderBy(Page<ComputerDTO> page) {
@@ -145,7 +149,7 @@ public class ComputerDAO {
 		params.addValue("offset", page.getPageSize()*(page.getCurrentPage()-1), Types.INTEGER);
 		params.addValue("limit", page.getPageSize(), Types.INTEGER);
 
-		return new JdbcTemplate(datasource).query(query, new ComputerRowMapper());
+		return new NamedParameterJdbcTemplate(datasource).query(query, params, this.computerRowMapper);
 	}
 
 	public List<CompanyDTO> findCompany(int id) throws SQLException {

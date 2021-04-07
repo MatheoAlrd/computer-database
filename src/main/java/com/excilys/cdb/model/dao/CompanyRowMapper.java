@@ -14,6 +14,11 @@ public class CompanyRowMapper implements RowMapper<CompanyDTO> {
 	
 	private CompanyMapper companyMapper;
 	
+	public CompanyRowMapper(CompanyMapper companyMapper) {
+		super();
+		this.companyMapper = companyMapper;
+	}
+	
 	@Override
 	public CompanyDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
 		return this.companyMapper.companyDTOFromResultSet(rs).orElseThrow();

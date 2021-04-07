@@ -18,7 +18,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 public class SpringConfig  extends AbstractContextLoaderInitializer {
 	
-	private static final String PROPERTIES = "datasource.properties";
+	//private static final String PROPERTIES = "datasource.properties";
 
 	@Override
 	protected WebApplicationContext createRootApplicationContext() {
@@ -29,6 +29,12 @@ public class SpringConfig  extends AbstractContextLoaderInitializer {
 	
 	@Bean
 	public DataSource getDataSource() {
-		return new HikariDataSource(new HikariConfig(PROPERTIES));
+		HikariConfig config = new HikariConfig();
+		config.setDriverClassName("com.mysql.cj.jdbc.Driver");
+    	config.setJdbcUrl("jdbc:mysql://localhost:3306/computer-database-db");
+        config.setUsername("admincdb");
+        config.setPassword("qwerty1234");
+        
+		return new HikariDataSource(config);
 	}
 }

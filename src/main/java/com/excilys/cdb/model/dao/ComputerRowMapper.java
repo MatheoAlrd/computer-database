@@ -14,6 +14,11 @@ public class ComputerRowMapper implements RowMapper<ComputerDTO> {
 	
 	private ComputerMapper computerMapper;
 
+	public ComputerRowMapper(ComputerMapper computerMapper) {
+		super();
+		this.computerMapper = computerMapper;
+	}
+
 	@Override
 	public ComputerDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
 		

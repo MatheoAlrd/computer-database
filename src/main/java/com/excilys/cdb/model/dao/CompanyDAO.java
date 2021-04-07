@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import com.excilys.cdb.model.dto.CompanyDTO;
@@ -40,11 +41,12 @@ public class CompanyDAO {
 	protected static Logger logger = LoggerFactory.getLogger(CompanyDAO.class);
 
 	private DataSource datasource;
-	private CompanyMapper companyMapper;
+	private CompanyRowMapper companyRowMapper;
 	
-	public CompanyDAO(CompanyMapper companyMapper) {
+	public CompanyDAO(CompanyRowMapper companyRowMapper, DataSource datasource) {
 		super();
-		this.companyMapper = companyMapper;
+		this.companyRowMapper = companyRowMapper;
+		this.datasource = datasource;
 	}
 	
 	public List<CompanyDTO> find(int id){
@@ -52,11 +54,11 @@ public class CompanyDAO {
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("id", id, Types.INTEGER);
 	
-		return new JdbcTemplate(datasource).query(SELECT_ALL_QUERY, new CompanyRowMapper());
+		return new NamedParameterJdbcTemplate(datasource).query(SELECT_ALL_QUERY, params, companyRowMapper);
 	}
 	
 	public List<CompanyDTO> findAll() {			
-		return new JdbcTemplate(datasource).query(SELECT_BY_ID_QUERY, new CompanyRowMapper());
+		return new JdbcTemplate(datasource).query(SELECT_BY_ID_QUERY, companyRowMapper);
 	}
 	
 	public void create(CompanyDTO c) {
