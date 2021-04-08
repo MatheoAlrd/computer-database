@@ -35,10 +35,6 @@ public class ComputerController {
 		return this.computerService.findPageOrderBy(name, page);
 	}
 	
-	public List<Computer> findAllPageOrderBy(Page<ComputerDTO> page){
-		return this.computerService.findAllPageOrderBy(page);
-	}
-	
 	public int count() {
 		return this.computerService.count();
 	}

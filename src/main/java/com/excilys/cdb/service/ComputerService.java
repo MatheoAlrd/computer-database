@@ -43,7 +43,7 @@ public class ComputerService {
 		List<Computer> listComputer = new ArrayList<Computer>();
 
 		for(ComputerDTO c : this.computerDAO.find(id)) {
-			listComputer.add(this.computerMapper.toComputer(c).orElseThrow());
+			listComputer.add(this.computerMapper.toComputer(c));
 		}
 		return listComputer;
 	}
@@ -52,23 +52,13 @@ public class ComputerService {
 		List<Computer> listComputer = new ArrayList<Computer>();
 
 		for(ComputerDTO c : this.computerDAO.findPageOrderBy(name, page)) {
-			listComputer.add(this.computerMapper.toComputer(c).orElseThrow());
+			listComputer.add(this.computerMapper.toComputer(c));
 		}
 		return listComputer;
-	}
-	
-	public List<Computer> findAllPageOrderBy(Page<ComputerDTO> page) {
-		List<Computer> listComputer = new ArrayList<Computer>();
-
-		for(ComputerDTO c : this.computerDAO.findAllPageOrderBy(page)) {
-			listComputer.add(this.computerMapper.toComputer(c).orElseThrow());
-		}
-		return listComputer;
-	}
-	
+	}	
 	
 	public int count() {		
-		return this.computerDAO.count();
+		return this.computerDAO.count("");
 	}
 	
 	public int count(String name) {		

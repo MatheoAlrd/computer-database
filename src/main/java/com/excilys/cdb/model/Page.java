@@ -53,6 +53,10 @@ public class Page<T> {
     public int nextPage() {
     	return this.currentPage	== this.totalPage ? this.totalPage : this.currentPage + 1;
     }
+    
+    public int offset() {
+    	return this.pageSize*(this.currentPage-1);
+    }
 
 	public int getPageSize() {
 		return pageSize;
