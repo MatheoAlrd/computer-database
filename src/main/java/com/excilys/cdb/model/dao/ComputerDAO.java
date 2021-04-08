@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import com.excilys.cdb.model.Page;
 import com.excilys.cdb.model.dto.CompanyDTO;
 import com.excilys.cdb.model.dto.ComputerDTO;
+import com.excilys.cdb.model.mapper.ComputerRowMapper;
 
 @Component
 public class ComputerDAO {
@@ -99,15 +100,10 @@ public class ComputerDAO {
 			query+=DESC;
 		}
 		query+=LIMIT;
-		/*
-		System.out.println(query);
-		System.out.println("%"+name+"%");
-		System.out.println(page.getPageSize()*(page.getCurrentPage()-1));
-		System.out.println(page.getPageSize());
-		 */
+				
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("name", "%"+name+"%", Types.VARCHAR);
-		params.addValue("offset", page.getPageSize()*(page.getCurrentPage()-1), Types.INTEGER);
+		params.addValue("offset", page.offset(), Types.INTEGER);
 		params.addValue("limit", page.getPageSize(), Types.INTEGER);
 
 		NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(datasource);
@@ -124,7 +120,7 @@ public class ComputerDAO {
 	public int count(String name) {
 
 		MapSqlParameterSource params = new MapSqlParameterSource();
-		params.addValue("name", name, Types.VARCHAR);
+		params.addValue("name", "%"+name+"%", Types.VARCHAR);
 
 		return new NamedParameterJdbcTemplate(datasource).queryForObject(SELECT_COUNT_BY_NAME_QUERY, params, Integer.class);
 	}

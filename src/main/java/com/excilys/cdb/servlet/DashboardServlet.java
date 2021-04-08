@@ -58,6 +58,7 @@ public class DashboardServlet extends HttpServlet {
 		} catch(NoSuchElementException e) {
 
 		} finally {
+			
 			response.sendRedirect("");
 		}
 

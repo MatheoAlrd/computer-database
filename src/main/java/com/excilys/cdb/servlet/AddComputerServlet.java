@@ -56,7 +56,7 @@ public class AddComputerServlet extends HttpServlet {
 		} catch(NoSuchElementException e) {
 			
 		} finally {
-			response.sendRedirect("");
+			response.sendRedirect("/cdb");
 		}
 	}
 

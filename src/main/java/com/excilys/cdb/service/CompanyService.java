@@ -36,7 +36,7 @@ public class CompanyService {
 		List<Company> listCompany = new ArrayList<Company>();
 		try {
 			for(CompanyDTO c : this.companyDAO.find(id)) {
-				listCompany.add(this.companyMapper.toCompany(c).orElseThrow());
+				listCompany.add(this.companyMapper.toCompany(c));
 			}
 		} catch (NoSuchElementException e) {
 			logger.warn("Didn't find the company by its id"+e.getMessage());
@@ -48,7 +48,7 @@ public class CompanyService {
 		List<Company> listCompany = new ArrayList<Company>();
 		try {
 			for(CompanyDTO c : this.companyDAO.findAll()) {
-				listCompany.add(this.companyMapper.toCompany(c).orElseThrow());
+				listCompany.add(this.companyMapper.toCompany(c));
 			}
 
 		} catch (NoSuchElementException e) {

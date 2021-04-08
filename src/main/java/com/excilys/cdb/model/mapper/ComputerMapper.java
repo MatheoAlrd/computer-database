@@ -25,7 +25,7 @@ import com.excilys.cdb.model.validator.ComputerValidator;
 public class ComputerMapper {
 
 	protected static Logger logger = LoggerFactory.getLogger(ComputerMapper.class);
-	
+
 	private ComputerValidator computerValidator;
 
 	public ComputerMapper(ComputerValidator computerValidator) {
@@ -35,7 +35,7 @@ public class ComputerMapper {
 
 	public Computer toComputer(ComputerDTO c) {
 
-		Computer computer = new Computer();
+		Computer computer = null;
 		try {
 			computerValidator.validate(c);
 			computer = new ComputerBuilder()
@@ -51,7 +51,6 @@ public class ComputerMapper {
 		} catch (InvalidValuesException e) {
 			logger.error("Didn't transform Computer DTO Computer because values were invalid \n\t"+e.getMessage());
 		}
-
 		return computer;
 	}
 
@@ -60,101 +59,53 @@ public class ComputerMapper {
 		String discontinued = c.getDiscontinued() == null ? null : c.getDiscontinued().toString();
 		String companyId = c.getCompany() == null ? null : ""+c.getCompany().getId();
 		String companyName = c.getCompany() == null ? null : c.getCompany().getName();
-		
-		
+
+
 		return new ComputerDTO(""+c.getId(),c.getName(),introduced,discontinued,companyId,companyName);
 
 	}
 
 	public ComputerDTO computerFromResultSet(ResultSet result) throws SQLException {
 
-		ComputerDTO c = new ComputerDTO();
+		ComputerDTO c = null;
 		String id,name,introduced,discontinued,companyId,companyName;
-		
-			while (result.next()) {
-				
-				id = ""+result.getInt("computer.id");
-				
-				name = result.getString("computer.name");
 
-				if(result.getDate("computer.introduced") == null) {
-					introduced = null;
-				} else {
-					introduced = result.getDate("computer.introduced").toString();
-				}
 
-				if(result.getDate("computer.discontinued") == null) {
-					discontinued = null;
-				} else {
-					discontinued = result.getDate("computer.discontinued").toString();
-				}
+		id = ""+result.getInt("computer.id");
 
-				if(result.getObject("computer.company_id") == null) {
-					companyId = null;
-				} else {
-					companyId = result.getObject("computer.company_id").toString();
-				}
-				
-				if(result.getString("company.name") == null) {
-					companyName = null;
-				} else {
-					companyName = result.getString("company.name");
-				}
-				c = new ComputerDTO(id,name, introduced, discontinued, companyId, companyName);
-			}
-			try {
-				computerValidator.validate(c);
-			} catch (InvalidValuesException e) {
-				c = new ComputerDTO();
-			}
-			return c;
-	}
-	
-	public List<ComputerDTO> computersFromResultSet(ResultSet result) {
+		name = result.getString("computer.name");
 
-		List<ComputerDTO> computersDTO = new ArrayList<ComputerDTO>();
-		String id,name,introduced,discontinued,companyId,companyName;
-		try {
-			while (result.next()) {
-				
-				id = ""+result.getInt("computer.id");
-				
-				name = result.getString("computer.name");
-
-				if(result.getDate("computer.introduced") == null) {
-					introduced = null;
-				} else {
-					introduced = result.getDate("computer.introduced").toString();
-				}
-
-				if(result.getDate("computer.discontinued") == null) {
-					discontinued = null;
-				} else {
-					discontinued = result.getDate("computer.discontinued").toString();
-				}
-
-				if(result.getObject("computer.company_id") == null) {
-					companyId = null;
-				} else {
-					companyId = ""+result.getInt("computer.company_id");
-				}
-				
-				if(result.getString("company.name") == null) {
-					companyName = null;
-				} else {
-					companyName = result.getString("company.name");
-				}
-				
-				ComputerDTO c = new ComputerDTO(id,name, introduced, discontinued, companyId, companyName);
-				computerValidator.validate(c);
-				computersDTO.add(c);			
-			}
-		} catch (InvalidValuesException e) {
-			logger.error("Didn't transform ResultSet because values were Invalid \n\t"+e.getMessage());
-		} catch (SQLException e) {
-			logger.error("Didn't transform ResultSet because there is an SQL Exception \n\t"+e.getMessage());
+		if(result.getDate("computer.introduced") == null) {
+			introduced = null;
+		} else {
+			introduced = result.getDate("computer.introduced").toString();
 		}
-		return computersDTO;
+
+		if(result.getDate("computer.discontinued") == null) {
+			discontinued = null;
+		} else {
+			discontinued = result.getDate("computer.discontinued").toString();
+		}
+
+		if(result.getObject("computer.company_id") == null) {
+			companyId = null;
+		} else {
+			companyId = result.getObject("computer.company_id").toString();
+		}
+
+		if(result.getString("company.name") == null) {
+			companyName = null;
+		} else {
+			companyName = result.getString("company.name");
+		}
+		c = new ComputerDTO(id,name, introduced, discontinued, companyId, companyName);
+
+		try {
+			computerValidator.validate(c);
+		} catch (InvalidValuesException e) {
+			c = null;
+		}
+		return c;
 	}
 
 	public PreparedStatement preparedStatementFromComputer(PreparedStatement ps, ComputerDTO c) {

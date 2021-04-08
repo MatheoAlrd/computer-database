@@ -1,4 +1,4 @@
-package com.excilys.cdb.model.dao;
+package com.excilys.cdb.model.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import com.excilys.cdb.model.dto.CompanyDTO;
-import com.excilys.cdb.model.mapper.CompanyMapper;
 
 @Component
 public class CompanyRowMapper implements RowMapper<CompanyDTO> {
@@ -21,7 +20,7 @@ public class CompanyRowMapper implements RowMapper<CompanyDTO> {
 	
 	@Override
 	public CompanyDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-		return this.companyMapper.companyDTOFromResultSet(rs).orElseThrow();
+		return this.companyMapper.companyDTOFromResultSet(rs);
 	}
 	
 

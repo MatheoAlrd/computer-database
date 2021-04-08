@@ -47,7 +47,7 @@ public class EditComputerServlet extends HttpServlet {
 		String id = request.getParameter("id");
 		ComputerDTO computerToEdit = this.findComputer(request,Integer.parseInt(id)).get(0);
 		
-		request.setAttribute("id", id);
+		request.setAttribute("computerId", id);
 		request.setAttribute("computerName", computerToEdit.getName());
 		request.setAttribute("introduced", computerToEdit.getIntroduced());
 		request.setAttribute("discontinued", computerToEdit.getDiscontinued());
@@ -68,16 +68,15 @@ public class EditComputerServlet extends HttpServlet {
 		
 		try {
 			servComputer.update(Integer.parseInt(id), computerMapper
-					.toComputer(new ComputerDTO(id, name, introduced, discontinued, companyId,companyName)));
+					.toComputer(new ComputerDTO(id, name, introduced, discontinued, companyId, companyName)));
 		} catch(NoSuchElementException e) {
 			
 		} finally {
-			response.sendRedirect("");
+			response.sendRedirect("/cdb");
 		}
 	}
 
 	private List<Company> listCompanies(HttpServletRequest request) {
-
 		return servCompany.findAll();
 	}
 	
