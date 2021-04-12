@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -25,49 +26,58 @@ import com.excilys.cdb.service.ComputerService;
 @Controller
 @RequestMapping("/dashboard")
 public class DashboardController {
-	
+
 	private ComputerService servComputer;
 	private ComputerMapper computerMapper;
-	
+
 	private ModelAndView mv;
 	private Page<ComputerDTO> page;
-	
+
 	public DashboardController(ComputerService computerService, ComputerMapper computerMapper) {
 		this.servComputer = computerService;
 		this.computerMapper = computerMapper;
 		this.mv = new ModelAndView("dashboard");
 		this.page = new Page<ComputerDTO>();
 	}
-	
+
 	@GetMapping("")
 	public ModelAndView dashboard() {
 		return this.getModelAndView();
 	}
-			
+
 	@GetMapping("/listComputers")
-	public ModelAndView listComputers(@RequestParam(name ="search", defaultValue = "") String search){
-				
+	public ModelAndView listComputersGet(@RequestParam(name ="search", defaultValue = "") String search){
+
 		List<Computer> computers = new ArrayList<Computer>();
 		List<ComputerDTO> computersDTO = new ArrayList<ComputerDTO>();
-		
+
 		computers = servComputer.findPageOrderBy(search, this.page);
-		
-		
+
+
 		for(Computer c : computers) {
 			computersDTO.add(computerMapper.toComputerDTO(c));
 		}
-		
+
 		this.page.setDataList(computersDTO);
 		this.page.setTotalRecord(this.servComputer.count(search));
-		
+
 		return this.getModelAndView();
 	}	
-	
-	public ModelAndView getModelAndView() {
+
+	@PostMapping("/listComputers")
+	public ModelAndView listComputersPost(String selection){
+		String idSelected[] = selection.split(",");
+		for(String id : idSelected)
+			servComputer.delete(Integer.parseInt(id));
 		
+		return this.getModelAndView();
+	}
+
+	public ModelAndView getModelAndView() {
+
 		this.mv.addObject("computers", this.page.getDataList());
 		this.mv.addObject("totalComputers", this.page.getTotalRecord());
-		
+
 		this.mv.addObject("previousPage",this.page.previousPage());
 		this.mv.addObject("nextPage",this.page.nextPage());
 
@@ -85,5 +95,5 @@ public class DashboardController {
 
 		return mv;
 	}
-	
+
 }

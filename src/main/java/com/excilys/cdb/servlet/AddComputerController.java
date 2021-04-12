@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.excilys.cdb.model.dto.ComputerDTO;
 import com.excilys.cdb.model.mapper.ComputerMapper;
 import com.excilys.cdb.service.CompanyService;
 import com.excilys.cdb.service.ComputerService;
@@ -33,8 +34,9 @@ public class AddComputerController {
 	}
 	
 	@PostMapping("")
-	public ModelAndView addComputerPost() {
-		
+	public ModelAndView addComputerPost(String computerName, String introduced, String discontinued, String companyId) {
+		servComputer.create(computerMapper
+				.toComputer(new ComputerDTO(computerName, introduced, discontinued, companyId)));
 		return this.getModelAndView();
 	}
 	
