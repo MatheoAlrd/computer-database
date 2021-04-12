@@ -1,4 +1,4 @@
-package com.excilys.cdb.servlet;
+package com.excilys.cdb.oldServlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,8 +23,7 @@ import com.excilys.cdb.model.dto.ComputerDTO;
 import com.excilys.cdb.model.mapper.ComputerMapper;
 import com.excilys.cdb.service.ComputerService;
 
-@Component
-@WebServlet("/")
+
 public class DashboardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 

@@ -1,7 +1,6 @@
-package com.excilys.cdb.servlet;
+package com.excilys.cdb.oldServlet;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -17,21 +16,19 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.excilys.cdb.model.Company;
-import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.model.dto.ComputerDTO;
 import com.excilys.cdb.model.mapper.ComputerMapper;
 import com.excilys.cdb.service.CompanyService;
 import com.excilys.cdb.service.ComputerService;
 
-@Component
-@WebServlet("/editComputer")
-public class EditComputerServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L; 
+
+public class AddComputerServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
 	
 	private CompanyService servCompany;
 	private ComputerService servComputer;
 	private ComputerMapper computerMapper;
-    
+
 	@Override
 	public void init(ServletConfig config) throws ServletException{
 		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
@@ -40,35 +37,21 @@ public class EditComputerServlet extends HttpServlet {
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-
 		List<Company> companies = listCompanies(request);
 		request.setAttribute("companies", companies);
-		
-		String id = request.getParameter("id");
-		ComputerDTO computerToEdit = this.findComputer(request,Integer.parseInt(id)).get(0);
-		
-		request.setAttribute("computerId", id);
-		request.setAttribute("computerName", computerToEdit.getName());
-		request.setAttribute("introduced", computerToEdit.getIntroduced());
-		request.setAttribute("discontinued", computerToEdit.getDiscontinued());
-		request.setAttribute("companyId", computerToEdit.getCompanyId());
-		
-		this.getServletContext().getRequestDispatcher("/WEB-INF/jsp/editComputer.jsp").forward(request,response);
+
+		this.getServletContext().getRequestDispatcher("/WEB-INF/jsp/addComputer.jsp").forward(request,response);
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		String id = request.getParameter("computerId");
+
 		String name = request.getParameter("computerName");
 		String introduced = request.getParameter("introduced");
 		String discontinued = request.getParameter("discontinued");
 		String companyId = request.getParameter("companyId");
-		String companyName = request.getParameter("company.name");
-		
-		
 		try {
-			servComputer.update(Integer.parseInt(id), computerMapper
-					.toComputer(new ComputerDTO(id, name, introduced, discontinued, companyId, companyName)));
+			servComputer.create(computerMapper
+					.toComputer(new ComputerDTO("0",name, introduced, discontinued, companyId,"")));
 		} catch(NoSuchElementException e) {
 			
 		} finally {
@@ -79,26 +62,17 @@ public class EditComputerServlet extends HttpServlet {
 	private List<Company> listCompanies(HttpServletRequest request) {
 		return servCompany.findAll();
 	}
-	
-	private List<ComputerDTO> findComputer(HttpServletRequest request, int id) {
-		List<ComputerDTO> computersDTO = new ArrayList<ComputerDTO>();
-		
-		for (Computer c : servComputer.find(id)) {
-			computersDTO.add(computerMapper.toComputerDTO(c));
-		}
-		return computersDTO;
-	}
 
 	@Autowired
 	public void setServCompany(CompanyService servCompany) {
 		this.servCompany = servCompany;
 	}
-
+	
 	@Autowired
 	public void setServComputer(ComputerService servComputer) {
 		this.servComputer = servComputer;
 	}
-
+	
 	@Autowired
 	public void setComputerMapper(ComputerMapper computerMapper) {
 		this.computerMapper = computerMapper;
