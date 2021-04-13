@@ -37,11 +37,12 @@ public class AddComputerController {
 	public ModelAndView addComputerPost(String computerName, String introduced, String discontinued, String companyId) {
 		servComputer.create(computerMapper
 				.toComputer(new ComputerDTO(computerName, introduced, discontinued, companyId)));
+		
+		this.mv.setViewName("redirect:/dashboard");
 		return this.getModelAndView();
 	}
 	
-	public ModelAndView getModelAndView() {
-		
+	public ModelAndView getModelAndView() {		
 		this.mv.addObject("companies", this.servCompany.findAll());
 
 		return mv;

@@ -52,7 +52,17 @@ public class Page<T> {
     	
     }
     
-    public int previousPage() {
+    public Page(Page<T> page) {
+    	this.pageSize = page.getPageSize();
+    	this.currentPage = page.getCurrentPage();
+    	this.totalRecord = page.getTotalRecord();
+    	this.totalPage = page.getTotalPage();
+    	this.dataList = page.getDataList();
+    	this.sort = page.getSort();
+    	this.asc = page.isAsc();
+	}
+
+	public int previousPage() {
     	return this.currentPage	== 1 ? this.currentPage : this.currentPage - 1;
     }
     
