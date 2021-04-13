@@ -10,51 +10,23 @@
 
 	<error-page>
 		<error-code>500</error-code>
-		<location>/views/500.html</location>
+		<location>/WEB-INF/jsp/500.jsp</location>
 	</error-page>
 	<error-page>
 		<error-code>403</error-code>
-		<location>/views/403.html</location>
+		<location>/WEB-INF/jsp/403.jsp</location>
 	</error-page>
 	<error-page>
 		<error-code>404</error-code>
-		<location>/views/404.html</location>
+		<location>/WEB-INF/jsp/404.jsp</location>
 	</error-page>
-
-	<servlet>
-		<servlet-name>DashboardServlet</servlet-name>
-		<servlet-class>com.excilys.cdb.servlet.DashboardServlet</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>DashboardServlet</servlet-name>
-		<url-pattern>/</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>AddComputerServlet</servlet-name>
-		<servlet-class>com.excilys.cdb.servlet.AddComputerServlet</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>AddComputerServlet</servlet-name>
-		<url-pattern>/addComputer</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>EditComputerServlet</servlet-name>
-		<servlet-class>com.excilys.cdb.servlet.EditComputerServlet</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>EditComputerServlet</servlet-name>
-		<url-pattern>/editComputer</url-pattern>
-	</servlet-mapping>
 
 	<jsp-config>
 		<jsp-property-group>
 			<url-pattern>*.jsp</url-pattern>
 			<include-prelude>/WEB-INF/jsp/taglibs.jsp</include-prelude>
+			<include-prelude>/WEB-INF/jsp/css.jsp</include-prelude>
+			<include-prelude>/WEB-INF/jsp/js.jsp</include-prelude>
 		</jsp-property-group>
 	</jsp-config>
 

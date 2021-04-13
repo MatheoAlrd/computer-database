@@ -1,12 +1,24 @@
 package com.excilys.cdb.ui;
 
-import com.excilys.cdb.controller.ComputerController;
+import org.springframework.stereotype.Component;
 
+import com.excilys.cdb.controller.CompanyController;
+import com.excilys.cdb.controller.ComputerController;
+import com.excilys.cdb.model.Page;
+import com.excilys.cdb.model.dto.ComputerDTO;
+
+@Component
 public class CLIComputer extends CLI {
 	
-	private ComputerView viewComputer = new ComputerView();
-	private ComputerController ctrlComputer = new ComputerController();
+	private ComputerView viewComputer;
+	protected Page<ComputerDTO> page;
 		
+	public CLIComputer(CompanyController ctrlCompany, ComputerController ctrlComputer, ComputerView viewComputer) {
+		super(ctrlCompany, ctrlComputer);
+		this.viewComputer = viewComputer;
+		this.page = new Page<ComputerDTO>(1,10,this.count(),"id",true);
+	}
+
 	protected void useMenuComputer() {
 
 		boolean isOver = false;
@@ -14,7 +26,6 @@ public class CLIComputer extends CLI {
 		while (!isOver) {
 			isOver = this.chooseMenuComputer();
 		}
-
 	}
 
 	private boolean chooseMenuComputer() {
@@ -39,7 +50,7 @@ public class CLIComputer extends CLI {
 				this.updateComputer();
 				break;
 			case "4":
-				this.findComputerById();
+				this.findComputerByName();
 				break;
 			case "5":
 				this.listAllComputers();
@@ -69,13 +80,17 @@ public class CLIComputer extends CLI {
 		this.ctrlComputer.update(this.useInt(), this.useComputer());
 	}
 
-	private void findComputerById() {
+	private void findComputerByName() {
 		System.out.println(ID_RESEARCH);
-		viewComputer.printAll(this.ctrlComputer.find(this.useInt()));
+		viewComputer.printAll(this.ctrlComputer.findPageOrderBy(this.useString(),this.page));
 	}	
 
 	private void listAllComputers() {
-		viewComputer.printAll(this.ctrlComputer.findAll());
+		viewComputer.printAll(this.ctrlComputer.findPageOrderBy("",this.page));
+	}
+	
+	private int count() {
+		return this.ctrlComputer.count();
 	}
 
 }

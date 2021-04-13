@@ -1,29 +1,39 @@
 package com.excilys.cdb.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+@Component
+@Scope(value="session")
 public class Page<T> {
 	
     //How many records are displayed per page
-    private int pageSize;
+    private int pageSize = 10;
     //Current Page Data
-    private int currentPage;
+    private int currentPage = 1;
     //How many records are there altogether?
-    private int totalRecord;
+    private int totalRecord = 0;
     //How many pages of records are there?
-    private int totalPage;
+    private int totalPage = 1;
     //To display data, use generics
-    private List<T> dataList;
+    private List<T> dataList = new ArrayList<T>();
+    //Sorting parameter
+    private String sort = "id";
+    //Ascendant or descendant order by
+    private boolean asc = true;
     
     public Page() {
     	super();
     }
     
-    public Page(int pageNum, int pageSize, int totalRecord, List<T> sourceList) {
+    public Page(int pageNum, int pageSize, int totalRecord, String sort, boolean asc) {
     	
-    	if (sourceList == null){
-            return;
-        }
+    	this.sort = sort;
+    	this.asc = asc;
+    	
         //Total number of records
         this.totalRecord = totalRecord;
         //How many records are displayed per page
@@ -39,17 +49,29 @@ public class Page<T> {
 
         //Current Page Data
         this.currentPage = this.totalPage < pageNum ? this.totalPage : pageNum;
-
-        this.dataList = sourceList;
     	
     }
     
-    public int previousPage() {
+    public Page(Page<T> page) {
+    	this.pageSize = page.getPageSize();
+    	this.currentPage = page.getCurrentPage();
+    	this.totalRecord = page.getTotalRecord();
+    	this.totalPage = page.getTotalPage();
+    	this.dataList = page.getDataList();
+    	this.sort = page.getSort();
+    	this.asc = page.isAsc();
+	}
+
+	public int previousPage() {
     	return this.currentPage	== 1 ? this.currentPage : this.currentPage - 1;
     }
     
     public int nextPage() {
     	return this.currentPage	== this.totalPage ? this.totalPage : this.currentPage + 1;
+    }
+    
+    public int offset() {
+    	return this.pageSize*(this.currentPage-1);
     }
 
 	public int getPageSize() {
@@ -58,6 +80,11 @@ public class Page<T> {
 
 	public void setPageSize(int pageSize) {
 		this.pageSize = pageSize;
+		
+		this.totalPage = this.totalRecord / this.pageSize;
+        if (this.totalRecord % this.pageSize != 0) {
+            this.totalPage += 1;
+        }
 	}
 
 	public int getCurrentPage() {
@@ -74,6 +101,11 @@ public class Page<T> {
 
 	public void setTotalRecord(int totalRecord) {
 		this.totalRecord = totalRecord;
+		
+		this.totalPage = this.totalRecord / this.pageSize;
+        if (this.totalRecord % this.pageSize != 0) {
+            this.totalPage += 1;
+        }
 	}
 
 	public int getTotalPage() {
@@ -91,7 +123,20 @@ public class Page<T> {
 	public void setDataList(List<T> dataList) {
 		this.dataList = dataList;
 	}
-    
-    
 
+	public String getSort() {
+		return sort;
+	}
+
+	public void setSort(String sort) {
+		this.sort = sort;
+	}
+
+	public boolean isAsc() {
+		return asc;
+	}
+
+	public void setAsc(boolean asc) {
+		this.asc = asc;
+	}
 }

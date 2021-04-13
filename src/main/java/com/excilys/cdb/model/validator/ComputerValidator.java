@@ -2,6 +2,8 @@ package com.excilys.cdb.model.validator;
 
 import java.time.LocalDate;
 
+import org.springframework.stereotype.Component;
+
 import com.excilys.cdb.exception.IDInvalidException;
 import com.excilys.cdb.exception.DateIntervalInvalidException;
 import com.excilys.cdb.exception.DateInvalidException;
@@ -9,10 +11,13 @@ import com.excilys.cdb.exception.InvalidValuesException;
 import com.excilys.cdb.exception.NameInvalidException;
 import com.excilys.cdb.model.dto.ComputerDTO;
 
+@Component
 public class ComputerValidator {
-
-	private static ComputerValidator instance;
-
+	
+	public ComputerValidator() {
+		super();
+	}
+	
 	public void validate(ComputerDTO c) throws InvalidValuesException{
 
 		this.isNameValid(c.getName());
@@ -66,13 +71,4 @@ public class ComputerValidator {
 			throw new DateIntervalInvalidException();
 		}
 	}
-
-	public static ComputerValidator getInstance() {
-		if(instance == null) {
-			instance = new ComputerValidator();
-		}
-		return instance;
-	}
-
-
 }

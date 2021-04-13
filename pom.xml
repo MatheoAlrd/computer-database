@@ -15,29 +15,81 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.15</maven.compiler.source>
 		<maven.compiler.target>1.15</maven.compiler.target>
+
+		<spring.version>5.3.5</spring.version>
+		<mysql-connector-java.version>8.0.23</mysql-connector-java.version>
+		<HikariCP.version>3.4.5</HikariCP.version>
+		<junit.version>4.13.2</junit.version>
+		<dbunit.version>2.2</dbunit.version>
+		<log4j.version>1.2.17</log4j.version>
+		<slf4j.version>1.7.30</slf4j.version>
+		<javax-servlet-api.version>3.1.0</javax-servlet-api.version>
+		<jsp-api.version>2.2</jsp-api.version>
+		<jstl.version>1.2</jstl.version>
+		<jquery.version>3.5.1</jquery.version>
+		<selenium-java.version>3.141.59</selenium-java.version>
+		<jackson-xml-databind.version>0.6.2</jackson-xml-databind.version>
+		<mockito-all.version>1.10.19</mockito-all.version>
+
 	</properties>
 
 	<dependencies>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.23</version>
+			<version>${mysql-connector-java.version}</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-jasper -->
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-jasper</artifactId>
+			<version>9.0.44</version>
+		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/com.zaxxer/HikariCP -->
 		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
-			<version>3.4.5</version>
+			<version>${HikariCP.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/junit/junit -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.13.2</version>
+			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -45,7 +97,7 @@
 		<dependency>
 			<groupId>dbunit</groupId>
 			<artifactId>dbunit</artifactId>
-			<version>2.2</version>
+			<version>${dbunit.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -53,28 +105,28 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
+			<version>${log4j.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.30</version>
+			<version>${slf4j.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.30</version>
+			<version>${slf4j.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
-			<version>3.1.0</version>
+			<version>${javax-servlet-api.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -82,7 +134,7 @@
 		<dependency>
 			<groupId>javax.servlet.jsp</groupId>
 			<artifactId>jsp-api</artifactId>
-			<version>2.2</version>
+			<version>${jsp-api.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -91,35 +143,35 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
-			<version>1.2</version>
+			<version>${jstl.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.webjars.bower/jquery -->
 		<dependency>
 			<groupId>org.webjars.bower</groupId>
 			<artifactId>jquery</artifactId>
-			<version>3.5.1</version>
+			<version>${jquery.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
-			<version>3.141.59</version>
+			<version>${selenium-java.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.fasterxml/jackson-xml-databind -->
 		<dependency>
 			<groupId>com.fasterxml</groupId>
 			<artifactId>jackson-xml-databind</artifactId>
-			<version>0.6.2</version>
+			<version>${jackson-xml-databind.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
-			<version>1.10.19</version>
+			<version>${mockito-all.version}</version>
 			<scope>test</scope>
 		</dependency>
 
