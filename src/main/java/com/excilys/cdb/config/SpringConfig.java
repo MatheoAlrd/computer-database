@@ -1,29 +1,64 @@
 package com.excilys.cdb.config;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRegistration;
+import javax.sql.DataSource;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.context.AbstractContextLoaderInitializer;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.web.servlet.view.JstlView;
 
-import com.excilys.cdb.model.dao.DataSource;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
-@ComponentScan({"com.excilys.cdb.model.dao","com.excilys.cdb.model.mapper","com.excilys.cdb.model.validator",
-	"com.excilys.cdb.service","com.excilys.cdb.servlet","com.excilys.cdb.controller","com.excilys.cdb.ui"})
-
-public class SpringConfig  extends AbstractContextLoaderInitializer {
+@EnableWebMvc
+@ComponentScan({"com.excilys.cdb.model","com.excilys.cdb.service","com.excilys.cdb.servlet"})
+public class SpringConfig implements WebApplicationInitializer, WebMvcConfigurer {
 
 	@Override
-	protected WebApplicationContext createRootApplicationContext() {
-		AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
-		context.register(SpringConfig.class);
-		return context;
+	public void onStartup(ServletContext servletContext) throws ServletException {
+		AnnotationConfigWebApplicationContext root = new AnnotationConfigWebApplicationContext();
+		root.register(SpringConfig.class);
+		root.setServletContext(servletContext);
+						
+		ServletRegistration.Dynamic appServlet = servletContext.addServlet("dispatcher", new DispatcherServlet(root));
+		appServlet.setLoadOnStartup(1);
+		appServlet.addMapping("/");
+	}
+	
+	@Override
+	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+		configurer.enable();
+	}
+	
+	@Bean
+	public ViewResolver viewResolver() {
+		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+ 		viewResolver.setViewClass(JstlView.class);
+		viewResolver.setPrefix("/WEB-INF/jsp/");
+		viewResolver.setSuffix(".jsp");
+		return viewResolver;
 	}
 	
 	@Bean
 	public DataSource getDataSource() {
-		return new DataSource();
+		HikariConfig config = new HikariConfig();
+		config.setDriverClassName("com.mysql.cj.jdbc.Driver");
+    	config.setJdbcUrl("jdbc:mysql://localhost:3306/computer-database-db");
+        config.setUsername("admincdb");
+        config.setPassword("qwerty1234");
+        
+		return new HikariDataSource(config);
 	}
 }

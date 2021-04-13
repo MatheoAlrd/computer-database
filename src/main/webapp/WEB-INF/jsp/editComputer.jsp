@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 <title>Computer Database</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,16 +8,14 @@
 
 <body>
 	<%@include file="header.jsp"%>
-
+	
 	<section id="main">
 		<div class="container">
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
 					<h1>Edit Computer</h1>
-
 					<form action="editComputer" method="POST">
-						<input type="hidden" value="${id}" id="id" name="computerId" />
-						<!-- TODO: Change this value with the computer id -->
+						<input type="hidden" value="${computerId}" id="computerId" name="computerId" />
 						<fieldset>
 							<div class="form-group">
 								<label for="computerName">Computer name</label> <input

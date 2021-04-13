@@ -86,7 +86,7 @@ public class CLIComputer extends CLI {
 	}	
 
 	private void listAllComputers() {
-		viewComputer.printAll(this.ctrlComputer.findAllPageOrderBy(this.page));
+		viewComputer.printAll(this.ctrlComputer.findPageOrderBy("",this.page));
 	}
 	
 	private int count() {
