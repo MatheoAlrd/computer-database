@@ -1,71 +1,55 @@
 package com.excilys.cdb.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.model.Page;
-import com.excilys.cdb.dao.ComputerDAO;
-import com.excilys.cdb.dto.ComputerDTO;
-import com.excilys.cdb.mapper.ComputerMapper;
+import com.excilys.cdb.dao.ComputerRepository;
 
 @Service
 public class ComputerService {
 	
 	protected static Logger logger = LoggerFactory.getLogger(ComputerService.class);
 	
-	private ComputerMapper computerMapper;
-	private ComputerDAO computerDAO;
+	private ComputerRepository computerDAO;
 	
-	public ComputerService(ComputerMapper computerMapper, ComputerDAO computerDAO) {
+	public ComputerService(ComputerRepository computerDAO) {
 		super();
-		this.computerMapper = computerMapper;
 		this.computerDAO = computerDAO;
 	}
 
 	public void create(Computer c) {
-		this.computerDAO.create(computerMapper.toComputerDTO(c));
+		this.computerDAO.create(c);
 	}
 	
 	public void delete(int id) {
 		this.computerDAO.delete(id);
 	}
 	
-	public void update(int id, Computer c) {
-		this.computerDAO.update(id, computerMapper.toComputerDTO(c));
+	public void update(int i, Computer c) {
+		//this.computerDAO.save(c);
 	}
 
-	public List<Computer> find(int id) {
-		List<Computer> listComputer = new ArrayList<Computer>();
-
-		for(ComputerDTO c : this.computerDAO.find(id)) {
-			listComputer.add(this.computerMapper.toComputer(c));
-		}
-		return listComputer;
+	public Computer find(int id) {
+		
+		return this.computerDAO.findById(id);
 	}
 	
-	public List<Computer> findPageOrderBy(String name, Page<ComputerDTO> page) {
-		List<Computer> listComputer = new ArrayList<Computer>();
-
-		for(ComputerDTO c : this.computerDAO.findPageOrderBy(name, page)) {
-			listComputer.add(this.computerMapper.toComputer(c));
-		}
-		return listComputer;
+	public List<Computer> findPageOrderBy(String name, Pageable pageable, Sort sort) {
+		
+		return this.computerDAO.findByNameLike(name, pageable, sort);
 	}	
 	
-	public int count() {		
-		return this.computerDAO.count("");
+	public long count() {		
+		return this.computerDAO.countByNameLike("");
 	}
 	
-	public int count(String name) {		
-		return this.computerDAO.count(name);
-	}
-
-	public ComputerDAO getComputerDAO() {
-		return computerDAO;
+	public long count(String name) {		
+		return this.computerDAO.countByNameLike(name);
 	}
 }

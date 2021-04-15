@@ -33,7 +33,7 @@ public class EditComputerController {
 	public ModelAndView editComputerGet(@RequestParam(name = "id", defaultValue = "0") String id) {
 		
 		ComputerDTO computerToEdit = this.computerMapper.toComputerDTO(
-				this.servComputer.find(Integer.parseInt(id)).get(0));
+				this.servComputer.find(Integer.parseInt(id)));
 		
 		this.mv.addObject("computerName", computerToEdit.getName());
 		this.mv.addObject("introduced", computerToEdit.getIntroduced());

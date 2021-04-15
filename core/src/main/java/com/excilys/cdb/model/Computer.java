@@ -3,11 +3,22 @@ package com.excilys.cdb.model;
 
 import java.time.LocalDate;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import com.excilys.cdb.model.builder.ComputerBuilder;
 
+@Entity(name = "computer")
+@Table(name = "computer")
 public class Computer {
 
 	// ID of the Computer
+	@Id
+	@GeneratedValue
 	private int id = 0;
 
 	// Name of the Computer
@@ -20,6 +31,8 @@ public class Computer {
 	private LocalDate discontinued = null;
 
 	// Company of the Computer
+	@ManyToOne
+	@JoinColumn(name = "company_id")
 	private Company company = null;
 
 	/*

@@ -2,6 +2,9 @@ package com.excilys.cdb.controller;
 
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,8 +40,9 @@ public class DashboardController {
 	}
 
 	public void setSearch(String search) {
-		if(search != null) {			
+		if(search != null || search == "") {			
 			this.search = search;
+			this.currentPage.setCurrentPage(1);
 		}
 	}
 	
@@ -72,10 +76,13 @@ public class DashboardController {
 		
 		this.setSearch(search);
 		this.setPage(page, pageSize, sort);
-
-		this.currentPage.setDataList(this.servComputer.findPageOrderBy(this.search, this.currentPage).stream()
+		
+		Pageable currentPageable = PageRequest.of(this.currentPage.getCurrentPage(), this.currentPage.getPageSize());
+		Sort currentSort = Sort.by(sort);
+	
+		this.currentPage.setDataList(this.servComputer.findPageOrderBy(this.search, currentPageable, currentSort).stream()
 				.map(c -> computerMapper.toComputerDTO(c)).collect(Collectors.toList()));
-		this.currentPage.setTotalRecord(this.servComputer.count(this.search));
+		this.currentPage.setTotalRecord((int) this.servComputer.count(this.search));
 
 		return this.getModelAndView();
 	}	
