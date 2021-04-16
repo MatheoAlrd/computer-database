@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.excilys.cdb.dto.CompanyDTO;
 import com.excilys.cdb.mapper.CompanyRowMapper;
 
-@Component
 public class CompanyDAO {
 
 	private static final String SELECT_BY_ID_QUERY = "SELECT id, name FROM company WHERE id = :id";
@@ -61,7 +60,6 @@ public class CompanyDAO {
 		new NamedParameterJdbcTemplate(datasource).update(CREATE_QUERY, params);
 	}
 
-	@Transactional
 	public void delete(int id) {
 
 		MapSqlParameterSource params = new MapSqlParameterSource();

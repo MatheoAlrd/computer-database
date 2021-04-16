@@ -13,7 +13,7 @@ public class CompanyDTO {
 		this.name = name;
 	}
 
-	public String getID() {
+	public String getId() {
 		return id;
 	}
 

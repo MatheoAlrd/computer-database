@@ -16,44 +16,53 @@ import com.excilys.cdb.service.ComputerService;
 @RequestMapping("/editComputer")
 public class EditComputerController {
 	
-	private ComputerService servComputer;
-	private CompanyService servCompany;
+	private ComputerService computerService;
+	private CompanyService companyService;
 	private ComputerMapper computerMapper;
 	
-	private ModelAndView mv;
+	private ModelAndView mv = new ModelAndView("editComputer");
+	
+	private int id = 0;
 	
 	public EditComputerController(ComputerService computerService, CompanyService companyService, ComputerMapper computerMapper){
-		this.servComputer = computerService;
-		this.servCompany = companyService;
+		this.computerService = computerService;
+		this.companyService = companyService;
 		this.computerMapper = computerMapper;
-		this.mv = new ModelAndView("editComputer");
+	}
+	
+	private void setId(int id) {
+		if(id != -1) {
+			this.id = id;
+		}
 	}
 	
 	@GetMapping("")
-	public ModelAndView editComputerGet(@RequestParam(name = "id", defaultValue = "0") String id) {
+	public ModelAndView editComputerGet(@RequestParam(name = "id", defaultValue = "-1") String id) {
 		
-		ComputerDTO computerToEdit = this.computerMapper.toComputerDTO(
-				this.servComputer.find(Integer.parseInt(id)));
+		this.setId(Integer.parseInt(id));
+		
+		ComputerDTO computerToEdit = this.computerService.find(this.id);
 		
 		this.mv.addObject("computerName", computerToEdit.getName());
 		this.mv.addObject("introduced", computerToEdit.getIntroduced());
 		this.mv.addObject("discontinued", computerToEdit.getDiscontinued());
 		this.mv.addObject("companyId", computerToEdit.getCompanyId());
 		
+		this.mv.setViewName("editComputer");
 		return this.getModelAndView();
 	}
 	
 	@PostMapping("")
-	public ModelAndView editComputerPost(String computerId, String computerName, String introduced, String discontinued, String companyId) {
-		servComputer.update(Integer.parseInt(computerId), computerMapper
-				.toComputer(new ComputerDTO(computerName, introduced, discontinued, companyId)));
+	public ModelAndView editComputerPost(String computerName, String introduced, String discontinued, String companyId) {
+		computerService.update(computerMapper
+				.toComputer(new ComputerDTO(""+this.id, computerName, introduced, discontinued, companyId, "")));
 		
 		this.mv.setViewName("redirect:/dashboard");
 		return this.getModelAndView();
 	}
 	
 	public ModelAndView getModelAndView() {		
-		this.mv.addObject("companies", this.servCompany.findAll());		
+		this.mv.addObject("companies", this.companyService.findAll());		
 
 		return mv;
 	}

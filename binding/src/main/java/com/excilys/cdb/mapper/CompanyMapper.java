@@ -35,7 +35,7 @@ public class CompanyMapper {
 		try {
 			companyValidator.validate(c);
 			company = new CompanyBuilder()
-					.setId(Integer.parseInt(c.getID()))
+					.setId(Integer.parseInt(c.getId()))
 					.setName(c.getName())
 					.build();
 		} catch (InvalidValuesException e) {

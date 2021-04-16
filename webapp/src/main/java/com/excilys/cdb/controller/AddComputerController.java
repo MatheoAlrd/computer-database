@@ -15,27 +15,27 @@ import com.excilys.cdb.service.ComputerService;
 @RequestMapping("/addComputer")
 public class AddComputerController {
 	
-	private ComputerService servComputer;
-	private CompanyService servCompany;
+	private ComputerService computerService;
+	private CompanyService companyService;
 	private ComputerMapper computerMapper;
 	
-	private ModelAndView mv;
+	private ModelAndView mv = new ModelAndView("addComputer");;
 	
 	public AddComputerController(ComputerService computerService, CompanyService companyService, ComputerMapper computerMapper){
-		this.servComputer = computerService;
-		this.servCompany = companyService;
+		this.computerService = computerService;
+		this.companyService = companyService;
 		this.computerMapper = computerMapper;
-		this.mv = new ModelAndView("addComputer");
 	}
 	
 	@GetMapping("")
-	public ModelAndView addComputerGet() {		
+	public ModelAndView addComputerGet() {
+		this.mv.setViewName("addComputer");
 		return this.getModelAndView();
 	}
 	
 	@PostMapping("")
 	public ModelAndView addComputerPost(String computerName, String introduced, String discontinued, String companyId) {
-		servComputer.create(computerMapper
+		computerService.create(computerMapper
 				.toComputer(new ComputerDTO(computerName, introduced, discontinued, companyId)));
 		
 		this.mv.setViewName("redirect:/dashboard");
@@ -43,7 +43,7 @@ public class AddComputerController {
 	}
 	
 	public ModelAndView getModelAndView() {		
-		this.mv.addObject("companies", this.servCompany.findAll());
+		this.mv.addObject("companies", this.companyService.findAll());
 
 		return mv;
 	}
