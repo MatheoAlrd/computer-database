@@ -1,5 +1,7 @@
 package com.excilys.cdb.config;
 
+import java.util.Properties;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
@@ -8,6 +10,14 @@ import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
@@ -23,9 +33,15 @@ import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan({"com.excilys.cdb.model","com.excilys.cdb.mapper","com.excilys.cdb.validator","com.excilys.cdb.dao",
+@ComponentScan(basePackages = {"com.excilys.cdb.model","com.excilys.cdb.mapper","com.excilys.cdb.validator","com.excilys.cdb.dao",
 	"com.excilys.cdb.service","com.excilys.cdb.controller"})
+@EnableJpaRepositories(basePackages = {"com.excilys.cdb.dao"})
+@EnableTransactionManagement
 public class SpringConfig implements WebApplicationInitializer, WebMvcConfigurer {
+	
+	/*
+	 * Spring Controller Configuration
+	 */
 
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
@@ -51,6 +67,47 @@ public class SpringConfig implements WebApplicationInitializer, WebMvcConfigurer
 		viewResolver.setSuffix(".jsp");
 		return viewResolver;
 	}
+	
+	/*
+	 * Persistence Configuration
+	 */
+	
+	@Bean
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+		em.setDataSource(this.getDataSource());
+		em.setPackagesToScan(new String[] {"com.excilys.cdb.model"});
+		
+		JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+		em.setJpaVendorAdapter(vendorAdapter);
+		em.setJpaProperties(this.additionalProperties());
+		
+		return em;
+	}
+	
+	protected Properties additionalProperties() {
+		Properties props = new Properties();
+		props.setProperty("hibernate.dialect","org.hibernate.dialect.MySQL5Dialect");
+		
+		return props;
+	}
+	
+	@Bean
+	public PlatformTransactionManager transactionManager() {
+		JpaTransactionManager transactionManager = new JpaTransactionManager();
+		transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
+		
+		return transactionManager;
+	}
+	
+	@Bean
+	public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
+		return new PersistenceExceptionTranslationPostProcessor();
+	}
+	
+	/*
+	 * Database Access Configuration
+	 */
 	
 	@Bean
 	public DataSource getDataSource() {

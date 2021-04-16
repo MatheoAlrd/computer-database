@@ -1,7 +1,9 @@
 package com.excilys.cdb.controller;
 
-import java.util.stream.Collectors;
-
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,7 +14,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.excilys.cdb.model.Page;
 import com.excilys.cdb.dto.ComputerDTO;
-import com.excilys.cdb.mapper.ComputerMapper;
 import com.excilys.cdb.service.ComputerService;
 
 @Controller
@@ -20,34 +21,30 @@ import com.excilys.cdb.service.ComputerService;
 @SessionAttributes({"search","currentPage"})
 public class DashboardController {
 
-	private ComputerService servComputer;
-	private ComputerMapper computerMapper;
+	private ComputerService computerService;
 
-	private ModelAndView mv;
+	private ModelAndView mv = new ModelAndView("dashboard");
 	
-	private Page<ComputerDTO> currentPage;
-	private String search;
+	private Page<ComputerDTO> currentPage = new Page<ComputerDTO>();
+	private String search = "";
 
-	public DashboardController(ComputerService computerService, ComputerMapper computerMapper) {
-		this.servComputer = computerService;
-		this.computerMapper = computerMapper;
-		this.mv = new ModelAndView("dashboard");
-		this.currentPage = new Page<ComputerDTO>();
-		this.search = "";
+	public DashboardController(ComputerService computerService) {
+		this.computerService = computerService;
 	}
 
 	public void setSearch(String search) {
-		if(search != null) {			
+		if(search != null || search == "") {			
 			this.search = search;
+			this.currentPage.setCurrentPage(1);
 		}
 	}
 	
 	public void setPage(int page, int pageSize, String sort) {			
-		if(page != 0){
+		if(page != -1){
 			this.currentPage.setCurrentPage(page);
 		}
 
-		if(pageSize != 0){
+		if(pageSize != -1){
 			this.currentPage.setPageSize(pageSize);
 			this.currentPage.setCurrentPage(1);
 		}
@@ -65,17 +62,24 @@ public class DashboardController {
 	}
 
 	@GetMapping("")
-	public ModelAndView listComputers(@RequestParam(name ="search", required = false) String search,
-			@RequestParam(name ="page", defaultValue="0") int page,
-			@RequestParam(name="pageSize", defaultValue="0") int pageSize,
+	public ModelAndView listComputers(@RequestParam(name="search", required=false) String search,
+			@RequestParam(name="page", defaultValue="-1") int page,
+			@RequestParam(name="pageSize", defaultValue="-1") int pageSize,
 			@RequestParam(name="sort", required=false) String sort){
-		
+				
 		this.setSearch(search);
-		this.setPage(page, pageSize, sort);
+		this.setPage(page, pageSize, sort);	
+		
+		Sort currentSort = 	Sort.by(Order.asc(this.currentPage.getSort()));
 
-		this.currentPage.setDataList(this.servComputer.findPageOrderBy(this.search, this.currentPage).stream()
-				.map(c -> computerMapper.toComputerDTO(c)).collect(Collectors.toList()));
-		this.currentPage.setTotalRecord(this.servComputer.count(this.search));
+		if(!this.currentPage.isAsc()) {
+			currentSort = Sort.by(Order.desc(this.currentPage.getSort()));
+		}
+		
+		Pageable currentPageable = PageRequest.of(this.currentPage.getCurrentPage()-1, this.currentPage.getPageSize(), currentSort);
+	
+		this.currentPage.setDataList(this.computerService.findPageOrderBy("%"+this.search+"%", currentPageable));
+		this.currentPage.setTotalRecord((int) this.computerService.count("%"+this.search+"%"));
 
 		return this.getModelAndView();
 	}	
@@ -84,7 +88,7 @@ public class DashboardController {
 	public ModelAndView deleteComputers(String selection){
 		String idSelected[] = selection.split(",");
 		for(String id : idSelected)
-			servComputer.delete(Integer.parseInt(id));
+			computerService.delete(Integer.parseInt(id));
 
 		return this.getModelAndView();
 	}
