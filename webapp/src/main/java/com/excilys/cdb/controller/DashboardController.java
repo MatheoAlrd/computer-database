@@ -1,14 +1,16 @@
 package com.excilys.cdb.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -16,7 +18,7 @@ import com.excilys.cdb.model.Page;
 import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.service.ComputerService;
 
-@Controller
+@RestController
 @RequestMapping("/dashboard")
 @SessionAttributes({"search","currentPage"})
 public class DashboardController {
@@ -82,7 +84,23 @@ public class DashboardController {
 		this.currentPage.setTotalRecord((int) this.computerService.count("%"+this.search+"%"));
 
 		return this.getModelAndView();
-	}	
+	}
+	
+	@GetMapping("json")
+	public List<ComputerDTO> getComputers(@RequestParam(name="search", defaultValue="") String search,
+			@RequestParam(name="page", defaultValue="1") int page,
+			@RequestParam(name="pageSize", defaultValue="10") int pageSize,
+			@RequestParam(name="sort", defaultValue="id") String sort,
+			@RequestParam(name="asc", defaultValue="asc") String asc){
+		
+		Sort currentSort = 	Sort.by(Order.asc(sort));
+		if(asc.equals("desc")) {
+			currentSort = Sort.by(Order.desc(sort));
+		}		
+		Pageable currentPageable = PageRequest.of(page-1, pageSize, currentSort);
+		
+		return this.computerService.findPageOrderBy("%"+search+"%", currentPageable);
+	}
 
 	@PostMapping("")
 	public ModelAndView deleteComputers(String selection){
