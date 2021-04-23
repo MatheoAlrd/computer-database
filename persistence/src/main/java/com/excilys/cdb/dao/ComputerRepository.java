@@ -11,7 +11,7 @@ import com.excilys.cdb.model.Computer;
 @Repository
 public interface ComputerRepository extends JpaRepository<Computer,Integer>{
 	
-	public long countByNameLike(String name);
+	public int countByNameLike(String name);
 	
 	public Computer findById(int id);
 	public List<Computer> findByNameLike(String name, Pageable pageable);

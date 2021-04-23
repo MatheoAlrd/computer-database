@@ -26,6 +26,10 @@ public class CompanyService {
 		this.companyRepository = companyDAO;
 		this.companyMapper = companyMapper;
 	}
+	
+	public Company findById(int id) {
+		return this.companyRepository.findById(id);
+	}
 
 	public List<CompanyDTO> findAll() {		
 		return this.companyRepository.findAll().stream().map(c -> this.companyMapper.toCompanyDTO(c)).collect(Collectors.toList());
