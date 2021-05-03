@@ -16,7 +16,7 @@ public class CompanyValidator {
 	
 	public void validate(CompanyDTO c) throws InvalidValuesException {
 		
-		this.isIDValid(c.getID());
+		this.isIDValid(c.getId());
 		this.isNameValid(c.getName());		
 	}
 	

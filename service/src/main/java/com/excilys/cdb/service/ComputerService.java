@@ -1,15 +1,15 @@
 package com.excilys.cdb.service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.model.Page;
-import com.excilys.cdb.dao.ComputerDAO;
+import com.excilys.cdb.dao.ComputerRepository;
 import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.mapper.ComputerMapper;
 
@@ -18,54 +18,41 @@ public class ComputerService {
 	
 	protected static Logger logger = LoggerFactory.getLogger(ComputerService.class);
 	
+	private ComputerRepository computerRepository;
 	private ComputerMapper computerMapper;
-	private ComputerDAO computerDAO;
-	
-	public ComputerService(ComputerMapper computerMapper, ComputerDAO computerDAO) {
-		super();
-		this.computerMapper = computerMapper;
-		this.computerDAO = computerDAO;
-	}
 
-	public void create(Computer c) {
-		this.computerDAO.create(computerMapper.toComputerDTO(c));
+	
+	public ComputerService(ComputerRepository computerRepository, ComputerMapper computerMapper) {
+		super();
+		this.computerRepository = computerRepository;
+		this.computerMapper = computerMapper;
+	}
+	
+	public ComputerDTO create(Computer c) {
+		return this.computerMapper.toComputerDTO(this.computerRepository.save(c));
 	}
 	
 	public void delete(int id) {
-		this.computerDAO.delete(id);
+		this.computerRepository.deleteById(id);
 	}
 	
-	public void update(int id, Computer c) {
-		this.computerDAO.update(id, computerMapper.toComputerDTO(c));
+	public ComputerDTO update(Computer c) {
+		return this.computerMapper.toComputerDTO(this.computerRepository.save(c));
 	}
 
-	public List<Computer> find(int id) {
-		List<Computer> listComputer = new ArrayList<Computer>();
-
-		for(ComputerDTO c : this.computerDAO.find(id)) {
-			listComputer.add(this.computerMapper.toComputer(c));
-		}
-		return listComputer;
+	public ComputerDTO find(int id) {		
+		return this.computerMapper.toComputerDTO(this.computerRepository.findById(id));
 	}
 	
-	public List<Computer> findPageOrderBy(String name, Page<ComputerDTO> page) {
-		List<Computer> listComputer = new ArrayList<Computer>();
-
-		for(ComputerDTO c : this.computerDAO.findPageOrderBy(name, page)) {
-			listComputer.add(this.computerMapper.toComputer(c));
-		}
-		return listComputer;
+	public List<ComputerDTO> findPageOrderBy(String name, Pageable pageable) {		
+		return this.computerRepository.findByNameLike(name, pageable).stream().map(c -> this.computerMapper.toComputerDTO(c)).collect(Collectors.toList());
 	}	
 	
 	public int count() {		
-		return this.computerDAO.count("");
+		return this.computerRepository.countByNameLike("");
 	}
 	
 	public int count(String name) {		
-		return this.computerDAO.count(name);
-	}
-
-	public ComputerDAO getComputerDAO() {
-		return computerDAO;
+		return this.computerRepository.countByNameLike(name);
 	}
 }

@@ -139,4 +139,12 @@ public class Page<T> {
 	public void setAsc(boolean asc) {
 		this.asc = asc;
 	}
+
+	@Override
+	public String toString() {
+		return "Page [pageSize=" + pageSize + ", currentPage=" + currentPage + ", totalRecord=" + totalRecord
+				+ ", totalPage=" + totalPage + ", dataList=" + dataList + ", sort=" + sort + ", asc=" + asc + "]";
+	}
+	
+	
 }
