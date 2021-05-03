@@ -1,5 +1,7 @@
 package com.excilys.cdb.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -82,7 +84,7 @@ public class DashboardController {
 		this.currentPage.setTotalRecord((int) this.computerService.count("%"+this.search+"%"));
 
 		return this.getModelAndView();
-	}	
+	}
 
 	@PostMapping("")
 	public ModelAndView deleteComputers(String selection){

@@ -28,16 +28,16 @@ public class ComputerService {
 		this.computerMapper = computerMapper;
 	}
 	
-	public void create(Computer c) {
-		this.computerRepository.save(c);
+	public ComputerDTO create(Computer c) {
+		return this.computerMapper.toComputerDTO(this.computerRepository.save(c));
 	}
 	
 	public void delete(int id) {
 		this.computerRepository.deleteById(id);
 	}
 	
-	public void update(Computer c) {
-		this.computerRepository.save(c);
+	public ComputerDTO update(Computer c) {
+		return this.computerMapper.toComputerDTO(this.computerRepository.save(c));
 	}
 
 	public ComputerDTO find(int id) {		
@@ -48,11 +48,11 @@ public class ComputerService {
 		return this.computerRepository.findByNameLike(name, pageable).stream().map(c -> this.computerMapper.toComputerDTO(c)).collect(Collectors.toList());
 	}	
 	
-	public long count() {		
+	public int count() {		
 		return this.computerRepository.countByNameLike("");
 	}
 	
-	public long count(String name) {		
+	public int count(String name) {		
 		return this.computerRepository.countByNameLike(name);
 	}
 }

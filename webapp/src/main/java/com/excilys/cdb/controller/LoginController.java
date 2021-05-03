@@ -19,7 +19,7 @@ public class LoginController {
 
 	UserService userService;
 
-	private ModelAndView mv = new ModelAndView("user");
+	private ModelAndView mv = new ModelAndView("login");
 
 	public LoginController(UserService userService) {
 		this.userService = userService;
@@ -27,13 +27,14 @@ public class LoginController {
 
 	@GetMapping("/registration")
 	public ModelAndView showRegistrationForm() {
-		UserDTO userDTO = new UserDTO();
-		mv.addObject("user", userDTO);
+
 		return this.getModelAndView();
 	}
 
 	@PostMapping("/registration")
-	public ModelAndView registerUserAccount(@ModelAttribute("user") @Valid UserDTO userDTO) {
+	public ModelAndView registerUserAccount(String firstName, String lastName, String password, String role) {
+		
+		UserDTO userDTO = new UserDTO(firstName, lastName, password, role);
 
 		try {
 			this.userService.registerNewUserAccount(userDTO);

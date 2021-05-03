@@ -7,6 +7,7 @@ import com.excilys.cdb.model.Company;
 
 @Repository
 public interface CompanyRepository  extends JpaRepository<Company, Integer>{
-		
+	
+	public Company findById(int id);
 	public void deleteById(int id);
 }

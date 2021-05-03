@@ -1,7 +1,5 @@
 package com.excilys.cdb.dto;
 
-import java.util.List;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -11,22 +9,32 @@ import com.excilys.cdb.annotation.PasswordMatches;
 public class UserDTO {
     @NotNull
     @NotEmpty
-    private String firstName;
+    private String firstName = "";
     
     @NotNull
     @NotEmpty
-    private String lastName;
+    private String lastName = "";
     
     @NotNull
     @NotEmpty
-    private String password;
-    private String matchingPassword;
+    private String password = "";
+    
+    private String matchingPassword = "";
     
     @NotNull
     @NotEmpty
-    private List<String> roles;
+    private String role = "";
     
-  
+	public UserDTO() {
+	}
+	
+	public UserDTO(String firstName, String lastName, String password, String role) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.password = password;
+		this.role = role;
+	}
+	
 	public String getFirstName() {
 		return firstName;
 	}
@@ -51,10 +59,10 @@ public class UserDTO {
 	public void setMatchingPassword(String matchingPassword) {
 		this.matchingPassword = matchingPassword;
 	}
-	public List<String> getRoles() {
-		return roles;
+	public String getRoles() {
+		return role;
 	}
-	public void setRoles(List<String> roles) {
-		this.roles = roles;
+	public void setRoles(String role) {
+		this.role = role;
 	}    
 }

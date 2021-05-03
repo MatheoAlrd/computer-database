@@ -42,7 +42,7 @@
 		<tomcat.version>9.0.44</tomcat.version>
 		<jquery.version>3.5.1</jquery.version>
 		<selenium-java.version>3.141.59</selenium-java.version>
-		<jackson-xml-databind.version>0.6.2</jackson-xml-databind.version>
+		<jackson.version>2.12.2</jackson.version>
 		<mockito-all.version>1.10.19</mockito-all.version>
 
 	</properties>
@@ -216,11 +216,18 @@
 			<version>${selenium-java.version}</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.fasterxml/jackson-xml-databind -->
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
 		<dependency>
-			<groupId>com.fasterxml</groupId>
-			<artifactId>jackson-xml-databind</artifactId>
-			<version>${jackson-xml-databind.version}</version>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
